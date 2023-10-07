@@ -34,21 +34,7 @@ export function Dashboard() {
         <div className="mt-12 mb-8 flex flex-col gap-12">
           <Suspense fallback={<>Please Wait...</>}>
             <Routes>
-              {/* {routes.map(
-              ({ layout, pages }) =>
-                layout === "dashboard" &&
-                pages.map(({ path, element, accordion }, i) => (
-                  <>
-                    <Route exact path={path} element={element} key={i} />
-                    {accordion && (
-                      accordion.map((e, i) => (
-                        <Route exact path={e.path} element={e.element} key={i} />
-                      ))
-                    )}
-                  </>
-                ))
-            )} */}
-              <Route path="/home" element={<Home />} />
+              <Route path="/" element={<Home />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/tables" element={<Tables />} />

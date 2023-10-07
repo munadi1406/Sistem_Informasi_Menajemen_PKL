@@ -1,12 +1,4 @@
-import {
-  HomeIcon,
-  BellIcon,
-} from "@heroicons/react/24/solid";
-import { FaDatabase } from 'react-icons/fa'
-import { FaUser } from 'react-icons/fa'
-import { Home, Profile, Tables, Notifications } from "@/pages/dashboard";
-import TemplateSurat from "./pages/dashboard/TemplateSurat";
-import TemplateSertifikat from "./pages/dashboard/TemplateSertifikat";
+import { FaMailBulk, FaDatabase, FaHouseUser,FaUsers,FaCertificate,FaIdCard } from 'react-icons/fa'
 
 
 const icon = {
@@ -18,10 +10,9 @@ export const routes = [
     layout: "dashboard",
     pages: [
       {
-        icon: <HomeIcon {...icon} />,
+        icon: <FaHouseUser {...icon} />,
         name: "dashboard",
         path: "/",
-        element: <Home />,
       },
       {
         icon: <FaDatabase {...icon} />,
@@ -30,32 +21,38 @@ export const routes = [
           {
             name: "Template Surat",
             path: "/templateSurat",
-            element: <TemplateSurat />,
+
           },
           {
             name: "Template Sertifikat",
             path: "/templateSertifikat",
-            element: <TemplateSertifikat />,
+          },
+          {
+            name: "Kepala Sekolah",
+            path: "/Kepsek",
           },
         ]
       },
       {
-        icon: <FaUser {...icon} />,
+        icon: <FaUsers {...icon} />,
         name: "Users",
         path: "/profile",
-        element: <Profile />,
       },
       {
-        icon: <BellIcon {...icon} />,
+        icon: <FaMailBulk {...icon} />,
         name: "Surat",
-        path: "/notifactions",
-        element: <Notifications />,
+        path: "/notifications",
+
       },
       {
-        icon: <BellIcon {...icon} />,
-        name: "Table",
+        icon: <FaCertificate {...icon} />,
+        name: "Sertifikat",
         path: "/tables",
-        element: <Tables />,
+      },
+      {
+        icon: <FaIdCard {...icon} />,
+        name: "Kartu Pelajar",
+        path: "/Kartu Pelajar",
       },
     ],
   },

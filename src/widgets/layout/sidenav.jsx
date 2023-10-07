@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
 import { Link, NavLink } from "react-router-dom";
-import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, ChevronRightIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import {
   AccordionBody,
   AccordionHeader,
   Avatar,
-  Button,
   IconButton,
+  ListItem,
   ListItemPrefix,
   Typography,
 } from "@material-tailwind/react";
@@ -15,10 +15,11 @@ import Logo from '../../assets/logosma1.png'
 import { Accordion } from "@material-tailwind/react";
 import { useState } from "react";
 import { List } from "@material-tailwind/react";
+import { FaDatabase } from "react-icons/fa";
 
 export function Sidenav({ brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
-  const { sidenavColor, sidenavType, openSidenav } = controller;
+  const { sidenavType, openSidenav } = controller;
   const sidenavTypes = {
     dark: "bg-gradient-to-br from-blue-gray-800 to-blue-gray-900",
     white: "bg-white shadow-lg",
@@ -33,7 +34,7 @@ export function Sidenav({ brandName, routes }) {
 
   return (
     <aside
-      className={`${sidenavTypes[sidenavType]} ${openSidenav ? "translate-x-0" : "-translate-x-80"
+      className={`${sidenavTypes["dark"]} ${openSidenav ? "translate-x-0" : "-translate-x-80"
         } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0`}
     >
       <div
@@ -77,90 +78,64 @@ export function Sidenav({ brandName, routes }) {
             {pages.map(({ icon, name, path, accordion }) => (
               <li key={name}>
                 {accordion ? (
+                  <>
                   <Accordion
                     open={open === 1}
-                    icon={<ChevronDownIcon color="white"
-                      strokeWidth={2.5}
-                      className={`mx-auto h-4 w-4 transition-transform ${open === 1 ? "rotate-180" : ""}`}
-                    />}
-                  >
-                    <Button color={
-                      "white"
+                    icon={
+                      <ChevronDownIcon
+                        strokeWidth={2.5}
+                        className={`mx-auto h-4 w-4 transition-transform ${open === 1 ? "rotate-180" : ""}`}
+                      />
                     }
-                      variant={"text"}
-                      className="flex items-center gap-4 px-4 capitalize p-0"
-                      fullWidth selected={open === 1}>
-                      <AccordionHeader onClick={() => handleOpen(1)} className="border-b-0 p-3">
-                        <ListItemPrefix className="text-white">
-                          {icon}
+                  >
+                    <ListItem className="p-0" selected={open === 1}>
+                      <AccordionHeader onClick={() => handleOpen(1)} className="border-b-0 p-3 text-white">
+                        <ListItemPrefix>
+                          <FaDatabase className="h-5 w-5" />
                         </ListItemPrefix>
                         <Typography color="white" className="mr-auto font-normal">
                           {name}
                         </Typography>
                       </AccordionHeader>
-                    </Button>
-                    <AccordionBody className="py-1 pl-3 gap-2 flex flex-col">
+                    </ListItem>
+                    <AccordionBody className="py-1">
                       {accordion.map(({ name, path }, i) => (
-                        <List className="p-0" key={i}>
-                          <NavLink to={`/${layout}${path}`}>
-                            {({ isActive }) => (
-                              <Button
-                                variant={isActive ? "gradient" : "text"}
-                                color={
-                                  isActive
-                                    ? sidenavColor
-                                    : sidenavType === "dark"
-                                      ? "white"
-                                      : "blue-gray"
-                                }
-                                className="flex items-center gap-4 capitalize "
-                                fullWidth
-                              >
-                                <Typography
-                                  color="inherit"
-                                  className="text-sm capitalize"
-                                >
-                                  {name}
-                                </Typography>
-                              </Button>
-                            )}
-                          </NavLink>
+                            <NavLink to={`/${layout}${path}`} key={i} >
+                        <List className="p-0 text-white" >
+                          <ListItem>
+                            <ListItemPrefix>
+                              <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                            </ListItemPrefix>
+                              {name}
+                          </ListItem>
                         </List>
+                            </NavLink>
                       ))}
+
                     </AccordionBody>
                   </Accordion>
-                ) : (
-                  <NavLink to={`/${layout}${path}`}>
-                    {({ isActive }) => (
-                      <Button
-                        variant={isActive ? "gradient" : "text"}
-                        color={
-                          isActive
-                            ? sidenavColor
-                            : sidenavType === "dark"
-                              ? "white"
-                              : "blue-gray"
-                        }
-                        className="flex items-center gap-4 px-4 capitalize"
-                        fullWidth
-                      >
-                        {icon}
+                  <hr className="my-2 border-blue-gray-50" />
 
-                        <Typography
-                          color="inherit"
-                          className="font-medium capitalize"
-                        >
-                          {name}
-                        </Typography>
-                      </Button>
-                    )}
+                  </>
+
+                ) : (
+                  <>
+                  <NavLink to={`/${layout}${path}`}>
+                    <ListItem className="text-white capitalize">
+                      <ListItemPrefix>
+                        {icon}
+                      </ListItemPrefix>
+                      {name}
+                    </ListItem>
                   </NavLink>
+                  </>
                 )}
               </li>
             ))}
           </ul>
         ))}
       </div>
+
     </aside>
   );
 }

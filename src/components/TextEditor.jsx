@@ -1,13 +1,21 @@
+import { useEffect } from "react";
 import { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-export default function TextEditor() {
+export default function TextEditor({onChange}) {
     const [editorHtml, setEditorHtml] = useState('');
+    
+
+
+    useEffect(()=>{
+      onChange(editorHtml)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[editorHtml])
     
     const modules = {
         toolbar: [
-            [{ header: "1" }, { header: "2" }, { font: [] }],
+            [{ header: ['1','2','3','4','5','6'] }, { font: [] }],
             [{ size: [] }],
             ["bold", "italic", "underline", "strike", "blockquote"],
             [
@@ -17,7 +25,6 @@ export default function TextEditor() {
                 { indent: "+1" },
             ],
             [{ 'align': [] }],
-            ["table"],
             ["clean"],
         ],
         clipboard: {
@@ -41,11 +48,11 @@ export default function TextEditor() {
     return (
         <div>
             <ReactQuill
-               
+                onChange={(e)=>setEditorHtml(e)}
                 value={editorHtml}
                 modules={modules}
                 formats={formats}
-                className="h-[250px]"
+                className="text-black h-max overflow-auto"
             />
         </div>
     );

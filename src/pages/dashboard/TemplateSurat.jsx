@@ -78,9 +78,9 @@ export default function TemplateSurat() {
                         <Button className="flex items-center gap-3" size="sm" onClick={handleOpen}>
                             <FaPlusCircle className="h-4 w-4" /> Buat Template
                         </Button>
-                        <Dialog open={open} handler={handleOpen} className="h-[90vh]">
+                        <Dialog open={open} handler={handleOpen} className="max-h-[90vh] overflow-y-auto">
                             <DialogHeader>Buat Template Surat</DialogHeader>
-                            <DialogBody>
+                            <DialogBody >
                                 <Form />
                             </DialogBody>
                         </Dialog>

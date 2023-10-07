@@ -1,11 +1,16 @@
 import { Routes, Route } from "react-router-dom";
-import {
-  Sidenav,
-  DashboardNavbar,
-  Footer,
-} from "@/widgets/layout";
+import { lazy, Suspense } from 'react'
+const Sidenav = lazy(() => import('../widgets/layout/sidenav'));
+const DashboardNavbar = lazy(() => import('../widgets/layout/dashboard-navbar'));
+const Footer = lazy(() => import('../widgets/layout/footer'));
 import routes from "@/routes";
 import { useMaterialTailwindController } from "@/context";
+import TemplateSurat from "../pages/dashboard/TemplateSurat";
+const Profile = lazy(() => import("../pages/dashboard/profile"));
+const Home = lazy(() => import("../pages/dashboard/home"));
+const Notifications = lazy(() => import("../pages/dashboard/notifications"));
+const Tables = lazy(() => import("../pages/dashboard/tables"));
+const TemplateSertifikat = lazy(() => import("../pages/dashboard/TemplateSertifikat"));
 
 
 export function Dashboard() {
@@ -14,18 +19,22 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen bg-blue-gray-50/50">
-      <Sidenav
-        routes={routes}
-        brandImg={
-          sidenavType === "dark" ? "/img/logo-ct.png" : "/img/logo-ct-dark.png"
-        }
-      />
-
+      <Suspense fallback={<>Loading...</>}>
+        <Sidenav
+          routes={routes}
+          brandImg={
+            sidenavType === "dark" ? "/img/logo-ct.png" : "/img/logo-ct-dark.png"
+          }
+        />
+      </Suspense>
       <div className="p-4 xl:ml-80">
-        <DashboardNavbar />
+        <Suspense fallback={<>Loading...</>}>
+          <DashboardNavbar />
+        </Suspense>
         <div className="mt-12 mb-8 flex flex-col gap-12">
-          <Routes>
-            {routes.map(
+          <Suspense fallback={<>Please Wait...</>}>
+            <Routes>
+              {/* {routes.map(
               ({ layout, pages }) =>
                 layout === "dashboard" &&
                 pages.map(({ path, element, accordion }, i) => (
@@ -38,11 +47,20 @@ export function Dashboard() {
                     )}
                   </>
                 ))
-            )}
-          </Routes>
+            )} */}
+              <Route path="/" element={<Home />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/tables" element={<Tables />} />
+              <Route path="/templateSertifikat" element={<TemplateSertifikat />} />
+              <Route path="/templateSurat" element={<TemplateSurat />} />
+            </Routes>
+          </Suspense>
         </div>
         <div className="text-blue-gray-600">
-          <Footer />
+          <Suspense fallback={<>Loading...</>}>
+            <Footer />
+          </Suspense>
         </div>
       </div>
     </div>

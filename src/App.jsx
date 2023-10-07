@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="font-Nunito">
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route index path="/" element={<Login />} />
           <Route path="/dashboard/*" element={<Dashboard />} />
         </Routes>
     </div>

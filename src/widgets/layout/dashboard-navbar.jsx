@@ -22,6 +22,7 @@ import {
   useMaterialTailwindController,
   setOpenSidenav,
 } from "@/context";
+import { useDataUser } from "../../store/store";
 
 export function DashboardNavbar() {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -29,6 +30,7 @@ export function DashboardNavbar() {
   const fixedNavbar = true
   const { pathname } = useLocation();
   const [layout, page] = pathname.split("/").filter((el) => el !== "");
+  const username = useDataUser((state) => state.username)
 
   return (
     <Navbar
@@ -63,7 +65,7 @@ export function DashboardNavbar() {
           </div>
         </div>
         <div className="flex items-center">
-        
+
           <IconButton
             variant="text"
             color="blue-gray"
@@ -72,7 +74,7 @@ export function DashboardNavbar() {
           >
             <Bars3Icon strokeWidth={3} className="h-6 w-6 text-blue-gray-500" />
           </IconButton>
-         
+
           <Menu>
             <MenuHandler>
               <IconButton variant="text" color="blue-gray">
@@ -154,8 +156,8 @@ export function DashboardNavbar() {
           <Menu>
             <MenuHandler color="blue-gray" variant="text">
               <Button className="flex gap-1 justify-center items-center">
-              <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
-                Fathullah Munadi</Button>
+                <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
+                {username}</Button>
             </MenuHandler>
             <MenuList>
               <MenuItem>Account</MenuItem>

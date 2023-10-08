@@ -4,21 +4,37 @@ import smaImage from '../../assets/sman.jpg'
 import TextInput from '../../components/TextInput';
 import Register from './Register';
 import { useNavigate } from 'react-router-dom';
-import { DialogBody, DialogHeader, Dialog ,Checkbox} from '@material-tailwind/react';
+import { DialogBody, DialogHeader, Dialog, Checkbox } from '@material-tailwind/react';
 import ButtonCustom from '../../components/ButtonCustom';
-
+import { useMutation } from '@tanstack/react-query';
+import { auth } from '../../api/authRegister';
+import { Spinner } from '@material-tailwind/react';
 
 
 export default function Login() {
     const [open, setOpen] = useState(false)
-    const [showPassword,setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const handleOpen = () => setOpen(!open)
     const navigate = useNavigate()
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState()
+    const [msg,setMsg] = useState();
+   
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        navigate('/dashboard')
-    }
+    const { mutate, isLoading } = useMutation({
+        mutationFn: async (e) => {
+            e.preventDefault()
+            const login = await auth(email, password)
+            return login
+        },
+        onSuccess:(data)=>{
+            navigate('/dashboard')
+            sessionStorage.setItem('at',data.data.data.accessToken)
+            sessionStorage.setItem('rt',data.data.data.refreshToken)
+        },onError:(error)=>{
+            setMsg(error.response.data.message)
+        }
+    })
     return (
         <div className='h-screen w-screen lg:grid lg:grid-cols-12 overflow-clip flex justify-center items-center'>
             <Dialog open={open} handler={handleOpen} >
@@ -50,14 +66,15 @@ export default function Login() {
                     <p className='text-center '>
                         Sistem Informasi Menajemen SMAN 1 Karang Intan
                     </p>
-                    <form className='w-full flex flex-col gap-2 justify-center items-start' onSubmit={handleSubmit}>
-                        <TextInput label='Email' type='email' />
-                        <TextInput label="Password" type={`${showPassword ? 'text':'password'}`} />
+                    <p className='text-sm font-semibold text-red-500'>{msg}</p>
+                    <form className='w-full flex flex-col gap-2 justify-center items-start' onSubmit={mutate} >
+                        <TextInput label='Email' type='email' required onChange={(e) => setEmail(e.target.value)} />
+                        <TextInput label="Password" type={`${showPassword ? 'text' : 'password'}`} onChange={(e) => setPassword(e.target.value)} />
                         <p className='lg:hidden block text-sm cursor-pointer font-semibold text-blue-600 underline' onClick={handleOpen}>Register</p>
                         <div>
-                            <Checkbox label="Show Password ?" color='blue' onChange={()=>setShowPassword(!showPassword)}/>
+                            <Checkbox label="Show Password ?" color='blue' onChange={() => setShowPassword(!showPassword)} />
                         </div>
-                        <ButtonCustom text={"Login"} className={"w-full"} type="submit"/>
+                        <ButtonCustom text={isLoading ? <Spinner /> : 'Login'} className={"w-full"} type="submit" disabled={isLoading && true}/>
                     </form>
                 </div>
             </div>

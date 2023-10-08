@@ -6,6 +6,12 @@ const Footer = lazy(() => import('../widgets/layout/footer'));
 import routes from "@/routes";
 import { useMaterialTailwindController } from "@/context";
 import TemplateSurat from "../pages/dashboard/TemplateSurat";
+import { useEffect } from "react";
+import JwtDecodedToken from "../utils/jwtDecode";
+import { useDataUser } from "../store/store";
+import { useNavigate } from "react-router-dom";
+import SideNavSkeleton from "../components/skeleton/SideNavSkeleton";
+import NavbarSkeleton from "../components/skeleton/NavbarSkeleton";
 const Profile = lazy(() => import("../pages/dashboard/profile"));
 const Home = lazy(() => import("../pages/dashboard/home"));
 const Notifications = lazy(() => import("../pages/dashboard/notifications"));
@@ -16,10 +22,32 @@ const TemplateSertifikat = lazy(() => import("../pages/dashboard/TemplateSertifi
 export function Dashboard() {
   const [controller] = useMaterialTailwindController();
   const { sidenavType } = controller;
+  const { setUsername, setIdUsers, setRole } = useDataUser()
+  const navigate = useNavigate()
+
+
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem('at')
+    try {
+      if (!accessToken || accessToken === undefined) {
+        navigate("/");
+        return;
+      }
+      const decrypt = JwtDecodedToken(accessToken)
+      setUsername(decrypt.username)
+      setRole(decrypt.role)
+      setIdUsers(decrypt.idUsers)
+    } catch (error) {
+      sessionStorage.setItem("rt", "");
+      sessionStorage.setItem("at", "");
+      navigate("");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="min-h-screen bg-blue-gray-50/50">
-      <Suspense fallback={<>Loading...</>}>
+      <Suspense fallback={<SideNavSkeleton />}>
         <Sidenav
           routes={routes}
           brandImg={
@@ -27,10 +55,12 @@ export function Dashboard() {
           }
         />
       </Suspense>
+
       <div className="p-4 xl:ml-80">
-        <Suspense fallback={<>Loading...</>}>
+        <Suspense fallback={<NavbarSkeleton />}>
           <DashboardNavbar />
         </Suspense>
+        
         <div className="mt-12 mb-8 flex flex-col gap-12">
           <Suspense fallback={<>Please Wait...</>}>
             <Routes>

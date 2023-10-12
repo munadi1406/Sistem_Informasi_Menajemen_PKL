@@ -12,6 +12,7 @@ import { useDataUser } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import SideNavSkeleton from "../components/skeleton/SideNavSkeleton";
 import NavbarSkeleton from "../components/skeleton/NavbarSkeleton";
+const Users = lazy(()=>import( "../pages/dashboard/Users"));
 const Profile = lazy(() => import("../pages/dashboard/profile"));
 const Home = lazy(() => import("../pages/dashboard/home"));
 const Notifications = lazy(() => import("../pages/dashboard/notifications"));
@@ -70,6 +71,7 @@ export function Dashboard() {
               <Route path="/tables" element={<Tables />} />
               <Route path="/templateSertifikat" element={<TemplateSertifikat />} />
               <Route path="/templateSurat" element={<TemplateSurat />} />
+              <Route path="/users" element={<Users />} />
             </Routes>
           </Suspense>
         </div>

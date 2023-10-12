@@ -36,7 +36,7 @@ export const routes = [
       {
         icon: <FaUsers {...icon} />,
         name: "Users",
-        path: "/profile",
+        path: "/users",
       },
       {
         icon: <FaMailBulk {...icon} />,

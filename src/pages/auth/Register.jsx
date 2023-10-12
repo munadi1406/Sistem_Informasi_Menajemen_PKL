@@ -1,11 +1,12 @@
 
 import TextInput from "../../components/TextInput";
 import ButtonCustom from "../../components/ButtonCustom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation } from "react-query";
 import { register } from "../../api/authRegister";
 import { useState } from "react";
 import { Spinner } from "@material-tailwind/react";
 import AlertNotification from "../../components/AlertNotification";
+import { Checkbox } from '@material-tailwind/react'
 
 
 export default function Register() {
@@ -14,8 +15,9 @@ export default function Register() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [msg, setMsg] = useState('');
-    const [isOpen,setIsOpen] = useState(false)
-    
+    const [isOpen, setIsOpen] = useState(false)
+    const [isShowPassword, setIsShowPassword] = useState(false);
+
 
 
     const { mutate, isLoading, isSuccess } = useMutation({
@@ -33,14 +35,22 @@ export default function Register() {
             setIsOpen(true)
         }
     })
+
+    const handleIsShowPassword = () => {
+        setIsShowPassword(!isShowPassword)
+    }
+
     return (
         <div className="w-full flex justify-center items-center flex-col gap-2">
             <AlertNotification open={isOpen} status={isSuccess} msg={msg} />
             <form className="w-full flex flex-col gap-2" onSubmit={mutate}>
                 <TextInput label='username' type='text' required onChange={(e) => setUsername(e.target.value)} />
                 <TextInput label='Email' type='email' required onChange={((e) => setEmail(e.target.value))} />
-                <TextInput label='Password' type='Password' required onChange={((e) => setPassword(e.target.value))} />
-                <TextInput label='Konfirmasi Password' type='Password' required onChange={((e) => setConfirmPassword(e.target.value))} />
+                <TextInput label='Password' type={isShowPassword ? 'text' : 'password'} required onChange={((e) => setPassword(e.target.value))} />
+                <TextInput label='Konfirmasi Password' type={isShowPassword ? 'text' : 'password'} required onChange={((e) => setConfirmPassword(e.target.value))} />
+                <div>
+                    <Checkbox label="Show Password ?" color='blue' onChange={handleIsShowPassword} />
+                </div>
                 <ButtonCustom text={isLoading ? <Spinner /> : 'Register'} type="submit" disabled={isLoading && true} />
             </form>
         </div>

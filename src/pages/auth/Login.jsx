@@ -6,7 +6,7 @@ import Register from './Register';
 import { useNavigate } from 'react-router-dom';
 import { DialogBody, DialogHeader, Dialog, Checkbox } from '@material-tailwind/react';
 import ButtonCustom from '../../components/ButtonCustom';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation } from 'react-query';
 import { auth } from '../../api/authRegister';
 import { Spinner } from '@material-tailwind/react';
 
@@ -69,7 +69,7 @@ export default function Login() {
                     <p className='text-sm font-semibold text-red-500'>{msg}</p>
                     <form className='w-full flex flex-col gap-2 justify-center items-start' onSubmit={mutate} >
                         <TextInput label='Email' type='email' required onChange={(e) => setEmail(e.target.value)} />
-                        <TextInput label="Password" type={`${showPassword ? 'text' : 'password'}`} onChange={(e) => setPassword(e.target.value)} />
+                        <TextInput label="Password" type={`${showPassword ? 'text' : 'password'}`} onChange={(e) => setPassword(e.target.value)} required/>
                         <p className='lg:hidden block text-sm cursor-pointer font-semibold text-blue-600 underline' onClick={handleOpen}>Register</p>
                         <div>
                             <Checkbox label="Show Password ?" color='blue' onChange={() => setShowPassword(!showPassword)} />

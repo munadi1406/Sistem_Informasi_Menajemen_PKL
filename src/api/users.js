@@ -8,14 +8,33 @@ export const getListUsers = async (lastIdUsers) => {
   return data;
 };
 
-
 export const changeAccountStatus = async (idUsers, status) => {
-  console.log(typeof idUsers)
+  const statusIsChange = status === 'active' ? 'inactive' : 'active';
   const data = await axiosJwt.post(`${endpoint}/users/changeAccountStatus`, {
     idUsers,
-    status: status === 'active' ? 'inactive' : 'active'
+    status: statusIsChange
   });
   return data;
 }
+export const searchUsers = async (username) => {
+ 
+  const data = await axiosJwt.post(`${endpoint}/users/search`, {
+   username
+  });
+  return data;
+}
+
+
+export const changeRole = async (idUsers, status) => {
+  const statusIsChange = status === 'active' ? 'inactive' : 'active';
+  console.log(status)
+  console.log(status === 'active');
+  const data = await axiosJwt.post(`${endpoint}/users/changeAccountStatus`, {
+    idUsers,
+    status: statusIsChange // Menggunakan nilai statusIsChange yang telah diubah
+  });
+  return data;
+}
+
 
 

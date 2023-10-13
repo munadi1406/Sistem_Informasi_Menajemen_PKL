@@ -1,15 +1,25 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Button, CardBody, CardFooter, Input, Tab, Tabs, TabsHeader, Card, CardHeader, Typography, Option } from "@material-tailwind/react";
-import { useState } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import PropTypes from 'prop-types'
-import DataTable from 'react-data-table-component'
-import { Tooltip } from "@material-tailwind/react";
-import { IconButton } from "@material-tailwind/react";
-import { Switch } from "@material-tailwind/react";
 import { useMutation } from "react-query";
 import { changeAccountStatus } from "../../../api/users";
-import { Select } from "@material-tailwind/react";
+import {
+    Card,
+    CardHeader,
+    Typography,
+    CardBody,
+    CardFooter,
+    IconButton,
+    Tooltip,
+    Switch,
+    Option,
+    Select
+} from "@material-tailwind/react";
+import ButtonCustom from "../../../components/ButtonCustom";
+import { Spinner } from "@material-tailwind/react";
+import TextInput from "../../../components/TextInput";
+
+const TABLE_HEAD = ["Username", "Email", "Role", "Status", "Created At", "Updated At", ''];
 
 
 const roles = ['Admin', 'Kepala Sekolah', 'Kepala Tas', 'Pegawai'];
@@ -17,74 +27,17 @@ const roles = ['Admin', 'Kepala Sekolah', 'Kepala Tas', 'Pegawai'];
 
 
 
-export default function Data({ data, isFetchingNextPage, hasNextPage, fetchNextPage }) {
+export default function DataUsers({ data, isFetchingNextPage, search, hasNextPage, fetchNextPage }) {
 
-
-    const { mutate } = useMutation({
-        mutationFn: async (idUsers, status) => {
-            const change = changeAccountStatus(idUsers, status)
+    const { mutate, isLoading } = useMutation({
+        mutationFn: async ({ id_users, status }) => {
+            const change = await changeAccountStatus(id_users, status)
             return change
         },
-        onSuccess: (data) => {
-            console.log(data)
-        },
-        onError: (error) => {
-            console.log(error)
-        }
     })
 
-    const [datas, setDatas] = useState(data.pages[0].data.data);
-    const TABS = [
-        {
-            label: "Active",
-            value: "monitored",
-        },
-        {
-            label: "Inactive",
-            value: "unmonitored",
-        },
-    ];
 
-    const column = [
-        {
-            name: 'Username',
-            selector: row => row.username,
-        },
-        {
-            name: "email",
-            selector: row => row.email
-        },
-        {
-            name: "role",
-            selector: row => (
-                <Select label={`${roles[row.role]}`} onChange={(e) => console.log(e)}>
-                    {roles.map((e, i) => (
-                        <Option key={i} value={i}>{e}</Option>
-                    ))}
-                </Select>
-            )
-        },
-        {
-            name: "status",
-            selector: row => <Switch color="green" defaultChecked={row.status === "active" ? true : false} onChange={() => mutate(row.id_users, row.status)} />
-        },
-        {
-            name: "created At",
-            selector: row => new Date(row.createdAt).toLocaleString()
-        },
-        {
-            name: "updated At",
-            selector: row => new Date(row.updatedAt).toLocaleString()
-        },
-        {
-            name: "Aksi",
-            selector: () => <Tooltip content="Inactive Template Surat">
-                <IconButton variant="text">
-                    <FaPencilAlt className="h-4 w-4" />
-                </IconButton>
-            </Tooltip>
-        },
-    ]
+
     return (
         <Card className="h-full w-full">
             <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -96,34 +49,138 @@ export default function Data({ data, isFetchingNextPage, hasNextPage, fetchNextP
                     </div>
                 </div>
                 <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-                    <Tabs value="all" className="w-full md:w-max">
-                        <TabsHeader>
-                            {TABS.map(({ label, value }) => (
-                                <Tab key={value} value={value}>
-                                    &nbsp;&nbsp;{label}&nbsp;&nbsp;
-                                </Tab>
-                            ))}
-                        </TabsHeader>
-                    </Tabs>
-                    <div className="w-full md:w-72">
-                        <Input
+                    <div className="w-full">
+                        <TextInput
                             label="Search"
                             icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+                            onChange={search}
                         />
                     </div>
                 </div>
             </CardHeader>
-            <CardBody className="overflow-auto px-0">
 
-                <DataTable data={datas} columns={column} />
+            <CardBody className="overflow-auto px-0">
+                <table className="w-full min-w-max table-auto text-left">
+                    <thead>
+                        <tr>
+                            {TABLE_HEAD.map((head) => (
+                                <th
+                                    key={head}
+                                    className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
+                                >
+                                    <Typography
+                                        variant="small"
+                                        color="blue-gray"
+                                        className="font-normal leading-none opacity-70"
+                                    >
+                                        {head}
+                                    </Typography>
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {data.map(
+                            (
+                                {
+                                    id_users,
+                                    username,
+                                    email,
+                                    role,
+                                    status,
+                                    createdAt,
+                                    updatedAt,
+
+                                },
+                                index,
+                            ) => {
+                                const isLast = index === data.length - 1;
+                                const classes = isLast
+                                    ? "p-4"
+                                    : "p-4 border-b border-blue-gray-50";
+
+                                return (
+                                    <tr key={username}>
+                                        <td className={classes}>
+                                            <div className="flex items-center gap-3">
+                                                <Typography
+                                                    variant="small"
+                                                    color="blue-gray"
+                                                    className="font-bold"
+                                                >
+                                                    {username}
+                                                </Typography>
+                                            </div>
+                                        </td>
+                                        <td className={classes}>
+                                            <Typography
+                                                variant="small"
+                                                color="blue-gray"
+                                                className="font-normal"
+                                            >
+                                                {email}
+                                            </Typography>
+                                        </td>
+                                        <td className={classes}>
+                                            <div className="flex flex-col gap-2 justify-center items-center">
+                                                <Select label={"Role"} onChange={(e) => console.log(e)} value={roles[role]}>
+                                                    {roles.map((e, i) => (
+                                                        <Option key={i} value={e}>
+                                                            {e}
+                                                        </Option>
+                                                    ))}
+                                                </Select>
+                                            </div>
+                                        </td>
+                                        <td className={classes}>
+                                            <div className="w-max flex flex-col gap-2 justify-center items-center ">
+                                                <div className={`text-xs font-semibold  py-1 px-4 rounded-full capitalize ${status === 'active' ? 'text-green-600' : 'text-red-300'}`}>{status}</div>
+                                                <Switch key={index} defaultChecked={status === 'active' ? true : false} color={"green"} onChange={() => mutate({ id_users, status })} disabled={isLoading} />
+                                            </div>
+                                        </td>
+                                        <td className={classes}>
+                                            <Typography
+                                                variant="small"
+                                                color="blue-gray"
+                                                className="font-normal"
+                                            >
+                                                {new Date(createdAt).toLocaleString()}
+                                            </Typography>
+                                        </td>
+                                        <td className={classes}>
+                                            <Typography
+                                                variant="small"
+                                                color="blue-gray"
+                                                className="font-normal"
+                                            >
+                                                {new Date(updatedAt).toLocaleString()}
+                                            </Typography>
+                                        </td>
+                                        <td className={classes}>
+                                            <Tooltip content="Edit User">
+                                                <IconButton variant="text">
+                                                    <FaPencilAlt className="h-4 w-4" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </td>
+                                    </tr>
+                                );
+                            },
+                        )}
+                    </tbody>
+                </table>
             </CardBody>
+
             <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-                <div className="flex gap-2">
-                    <Button variant="outlined" size="sm" onClick={fetchNextPage} disabled={isFetchingNextPage}>
-                        {isFetchingNextPage ? 'Loading...' : 'Load More'}
-                    </Button>
-                </div>
+                <ButtonCustom className={`${hasNextPage !== true && 'hidden'}`} text={isFetchingNextPage ? <Spinner /> : 'Load More'} onClick={fetchNextPage} disabled={isFetchingNextPage} />
             </CardFooter>
         </Card>
     )
+}
+DataUsers.propTypes = {
+    data: PropTypes.array.isRequired,
+    search: PropTypes.func.isRequired,
+    isFetchingNextPage: PropTypes.bool.isRequired,
+    hasNextPage: PropTypes.bool.isRequired,
+    fetchNextPage: PropTypes.func.isRequired,
 }

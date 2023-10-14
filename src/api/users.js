@@ -1,7 +1,7 @@
 import { axiosJwt } from "./axiosConfig";
 
 
-const endpoint = import.meta.env.VITE_SOME_ENDPOINT_API;
+export const endpoint = import.meta.env.VITE_SOME_ENDPOINT_API;
 
 export const getListUsers = async (lastIdUsers) => {
   const data = await axiosJwt.get(`${endpoint}/users/list/${lastIdUsers}`);
@@ -25,13 +25,10 @@ export const searchUsers = async (username) => {
 }
 
 
-export const changeRole = async (idUsers, status) => {
-  const statusIsChange = status === 'active' ? 'inactive' : 'active';
-  console.log(status)
-  console.log(status === 'active');
-  const data = await axiosJwt.post(`${endpoint}/users/changeAccountStatus`, {
+export const changeRole = async (idUsers, role) => {
+  const data = await axiosJwt.post(`${endpoint}/users/changeRole`, {
     idUsers,
-    status: statusIsChange // Menggunakan nilai statusIsChange yang telah diubah
+    role:String(role)
   });
   return data;
 }

@@ -1,23 +1,17 @@
 import PropTypes from "prop-types";
-import { Link, NavLink } from "react-router-dom";
-import { ChevronDownIcon, ChevronRightIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {lazy,Suspense} from 'react'
+import { Link } from "react-router-dom";
+import { XMarkIcon, } from "@heroicons/react/24/outline";
 import {
-  AccordionBody,
-  AccordionHeader,
   Avatar,
   IconButton,
-  ListItem,
-  ListItemPrefix,
-  Typography,
+  
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 import Logo from '../../assets/logosma1.png'
-import { Accordion } from "@material-tailwind/react";
-import { useState } from "react";
-import { List } from "@material-tailwind/react";
-import { FaDatabase } from "react-icons/fa";
+const SideNavMenuList = lazy(()=>import('../../components/SideNavMenuList'))
 
-export function Sidenav({ brandName, routes }) {
+export function Sidenav() {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavType, openSidenav } = controller;
   const sidenavTypes = {
@@ -26,15 +20,12 @@ export function Sidenav({ brandName, routes }) {
     transparent: "bg-transparent",
   };
 
-  const [open, setOpen] = useState(0);
-  const handleOpen = (value) => {
-    setOpen(open === value ? 0 : value);
-  };
+  
 
 
   return (
     <aside
-      className={`${sidenavTypes["dark"]} ${openSidenav ? "translate-x-0" : "-translate-x-80"
+      className={`${sidenavTypes["white"]} ${openSidenav ? "translate-x-0" : "-translate-x-80"
         } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0`}
     >
       <div
@@ -42,13 +33,10 @@ export function Sidenav({ brandName, routes }) {
           }`}
       >
         <Link to="/" className="flex items-center gap-4 py-6 px-8">
-          <Avatar src={Logo} size="lg" />
-          <Typography
-            variant="h6"
-            color={sidenavType === "dark" ? "white" : "blue-gray"}
-          >
-            {brandName}
-          </Typography>
+          <Avatar src={Logo} size="xl" />
+          <div className="flex flex-col gap-2 justify-center items-center">
+            <span className="text-2xl font-extrabold text-blue-900 font-Nunito text-center">SIMASAN</span>
+          </div>
         </Link>
         <IconButton
           variant="text"
@@ -61,88 +49,17 @@ export function Sidenav({ brandName, routes }) {
           <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-white" />
         </IconButton>
       </div>
-      <div className="m-4">
-        {routes.map(({ layout, title, pages }, key) => (
-          <ul key={key} className="mb-4 flex flex-col gap-1">
-            {title && (
-              <li className="mx-3.5 mt-4 mb-2">
-                <Typography
-                  variant="small"
-                  color={sidenavType === "dark" ? "white" : "blue-gray"}
-                  className="font-black uppercase opacity-75"
-                >
-                  {title}
-                </Typography>
-              </li>
-            )}
-            {pages.map(({ icon, name, path, accordion }) => (
-              <li key={name}>
-                {accordion ? (
-                  <>
-                  <Accordion
-                    open={open === 1}
-                    icon={
-                      <ChevronDownIcon
-                        strokeWidth={2.5}
-                        className={`mx-auto h-4 w-4 transition-transform ${open === 1 ? "rotate-180" : ""}`}
-                      />
-                    }
-                  >
-                    <ListItem className="p-0" selected={open === 1}>
-                      <AccordionHeader onClick={() => handleOpen(1)} className="border-b-0 p-3 text-white">
-                        <ListItemPrefix>
-                          <FaDatabase className="h-5 w-5" />
-                        </ListItemPrefix>
-                        <Typography color="white" className="mr-auto font-normal">
-                          {name}
-                        </Typography>
-                      </AccordionHeader>
-                    </ListItem>
-                    <AccordionBody className="py-1">
-                      {accordion.map(({ name, path }, i) => (
-                            <NavLink to={`/${layout}${path}`} key={i} >
-                        <List className="p-0 text-white" >
-                          <ListItem>
-                            <ListItemPrefix>
-                              <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                            </ListItemPrefix>
-                              {name}
-                          </ListItem>
-                        </List>
-                            </NavLink>
-                      ))}
-
-                    </AccordionBody>
-                  </Accordion>
-                  <hr className="my-2 border-blue-gray-50" />
-
-                  </>
-
-                ) : (
-                  <>
-                  <NavLink to={`/${layout}${path}`}>
-                    <ListItem className="text-white capitalize">
-                      <ListItemPrefix>
-                        {icon}
-                      </ListItemPrefix>
-                      {name}
-                    </ListItem>
-                  </NavLink>
-                  </>
-                )}
-              </li>
-            ))}
-          </ul>
-        ))}
+      <div className="m-4 h-[400px] overflow-auto">
+        <Suspense>
+          <SideNavMenuList/>
+        </Suspense>
       </div>
 
     </aside>
   );
 }
 
-Sidenav.defaultProps = {
-  brandName: "SIMASAN",
-};
+
 
 Sidenav.propTypes = {
   brandImg: PropTypes.string,

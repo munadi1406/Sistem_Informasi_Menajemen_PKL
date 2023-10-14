@@ -2,7 +2,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { FaPencilAlt } from "react-icons/fa";
 import PropTypes from 'prop-types'
 import { useMutation } from "react-query";
-import { changeAccountStatus } from "../../../api/users";
+import { changeAccountStatus, changeRole } from "../../../api/users";
 import {
     Card,
     CardHeader,
@@ -36,6 +36,16 @@ export default function DataUsers({ data, isFetchingNextPage, search, hasNextPag
         },
     })
 
+    const handleChangeRole = useMutation({
+        mutationFn: async ({ id_users, role }) => {
+            const indexOfRole = roles.indexOf(role)
+            const change = await changeRole(id_users, indexOfRole)
+            return change
+        }
+    })
+
+
+    
 
 
     return (
@@ -123,7 +133,7 @@ export default function DataUsers({ data, isFetchingNextPage, search, hasNextPag
                                         </td>
                                         <td className={classes}>
                                             <div className="flex flex-col gap-2 justify-center items-center">
-                                                <Select label={"Role"} onChange={(e) => console.log(e)} value={roles[role]}>
+                                                <Select label={"Role"} onChange={(e) => handleChangeRole.mutate({id_users,role:e})} value={roles[role]} disabled={handleChangeRole.isLoading}>
                                                     {roles.map((e, i) => (
                                                         <Option key={i} value={e}>
                                                             {e}

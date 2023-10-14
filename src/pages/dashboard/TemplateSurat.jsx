@@ -6,8 +6,8 @@ import { useState } from "react";
 import TextInput from "../../components/TextInput";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import ButtonCustom from "../../components/ButtonCustom";
-import { useInfiniteQuery, useQuery } from "react-query";
-import { getListTemplate, getTemplateById } from "../../api/templateSurat";
+import { useInfiniteQuery, useMutation, useQuery } from "react-query";
+import { createTemplate, getListTemplate, getTemplateById } from "../../api/templateSurat";
 import { Spinner } from "@material-tailwind/react";
 const DataTemplateSurat = lazy(() => import("./TemplateSurat/DataTemplateSurat"));
 const Form = lazy(() => import("./TemplateSurat/Form"));
@@ -16,36 +16,45 @@ import Index from '../../components/templateSuratLayout/Index'
 export default function TemplateSurat() {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(!open);
-    const [dataTemplate, setDataTemplate] = useState([])
     const [openPreview, setOpenPreview] = useState(false)
     const [currentIdTemplate, setCurrentIdTemplate] = useState(0)
-    const handleOpenPreview = (idTemplate) => {
-        setCurrentIdTemplate(idTemplate)
-        setOpenPreview(!openPreview)
-    }
 
-    const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+
+    const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, data } =
         useInfiniteQuery(`listTemplate`, {
             queryFn: async ({ pageParam }) => {
                 const data = await getListTemplate(pageParam || 0);
                 return data.data;
             },
-            getNextPageParam: (lastPage) => lastPage.data.lastIdUsers,
+            getNextPageParam: (lastPage) => lastPage.data.lastIdTemplate,
             staleTime: 5000,
-            onSuccess: (data) => {
-                setDataTemplate(data.pages[0].data.templates)
-            }
         });
 
-    // const TemplateById = useQuery(`template${currentIdTemplate}`, {
-    //     queryFn: async () => {
-    //         const data = await getTemplateById(currentIdTemplate)
-    //         return data.data
-    //     },
-    //     onSuccess: (data) => {
-    //         console.log(data)
-    //     }
-    // })
+    const TemplateById = useQuery(['template',currentIdTemplate], {
+        queryFn: async () => {  
+            const data = await getTemplateById(currentIdTemplate);
+            return data.data;
+        },
+        enabled:!!openPreview,
+    });
+
+
+    const handleCreateTemplate = useMutation({mutationFn:async(e)=>{
+        const isCreate = await createTemplate(e)
+        return isCreate.data
+    },
+    onSuccess:(data)=>{
+        console.log(data)
+    },
+    onError:(error)=>{
+        console.log(error)
+    }
+})
+
+    const handleOpenPreview = (idTemplate) => {
+        setCurrentIdTemplate(idTemplate)
+        setOpenPreview(!openPreview);
+    };
 
     if (isLoading) {
         return <TableSkeleton />
@@ -53,12 +62,10 @@ export default function TemplateSurat() {
 
     return (
         <Card className="h-full w-full">
-            <Dialog open={openPreview} handler={handleOpenPreview} className="max-h-[90vh] overflow-y-auto">
+            <Dialog open={openPreview} handler={handleOpenPreview} className="max-h-[90vh] overflow-y-auto" size="xl">
                 <DialogHeader>Preview</DialogHeader>
                 <DialogBody >
-                    <Index>
-                        Testing
-                    </Index>
+                    <Index isi={TemplateById.isLoading ? "Loading..." : TemplateById.data?.isi_template}/>
                 </DialogBody>
             </Dialog>
             <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -69,14 +76,14 @@ export default function TemplateSurat() {
                         </Typography>
                     </div>
                     <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-                        <Button className="flex items-center gap-3" size="sm" onClick={handleOpen}>
+                        <Button className="flex items-center gap-3" size="sm" onClick={handleOpen} color="blue">
                             <FaPlusCircle className="h-4 w-4" /> Buat Template
                         </Button>
-                        <Dialog open={open} handler={handleOpen} className="max-h-[90vh] overflow-y-auto">
+                        <Dialog open={open} handler={handleOpen} className="max-h-[90vh] overflow-y-auto" size="xl">
                             <DialogHeader>Buat Template Surat</DialogHeader>
                             <DialogBody >
                                 <Suspense>
-                                    <Form />
+                                    <Form handleSubmit={handleCreateTemplate}/>
                                 </Suspense>
                             </DialogBody>
                         </Dialog>
@@ -93,11 +100,13 @@ export default function TemplateSurat() {
             </CardHeader>
             <CardBody className="overflow-auto px-0">
                 <Suspense fallback={<TableSkeleton />}>
-                    <DataTemplateSurat data={dataTemplate} handleOpenPreview={handleOpenPreview} />
+                    <DataTemplateSurat data={data.pages[0].data.data} handleOpenPreview={handleOpenPreview} />
                 </Suspense>
             </CardBody>
             <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-                <ButtonCustom className={`${hasNextPage !== true && 'hidden'}`} text={isFetchingNextPage ? <Spinner /> : 'Load More'} onClick={fetchNextPage} disabled={isFetchingNextPage} />
+                {hasNextPage && (
+                    <ButtonCustom text={isFetchingNextPage ? <Spinner /> : 'Load More'} onClick={fetchNextPage} disabled={isFetchingNextPage} />
+                )}
             </CardFooter>
         </Card>
     );

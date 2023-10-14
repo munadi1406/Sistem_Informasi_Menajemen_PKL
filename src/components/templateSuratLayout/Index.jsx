@@ -20,7 +20,7 @@ export default function Index({ isi }) {
         const rightAlignedElement = document.querySelectorAll('.ql-align-right');
         const justifyAlignedElement = document.querySelectorAll('.ql-align-justify');
 
-
+      
         rightAlignedElement.forEach((e) => {
             e.classList.add("text-right");
         });
@@ -59,7 +59,7 @@ export default function Index({ isi }) {
         });
     }, [isi]);
     return (
-        <div className="p-3 text-black">
+        <div className="p-3 text-black w-[793px] m-auto ">
             <Header />
             <div className="h-[400px]">
                 <div

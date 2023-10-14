@@ -19,8 +19,8 @@ export default function Footer() {
         "desember",
     ];
     return (
-        <div className="border flex justify-end">
-            <div className="w-max h-max h-[200px] flex flex-col justify-between">
+        <div className="border flex justify-end text-[12px]">
+            <div className="w-max h-[150px] flex flex-col justify-between">
                 <div>
                     <div>
                         Karang Intan,{" "}

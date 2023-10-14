@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import PropTypes from 'prop-types'
+
+
 
 export default function TextEditor({onChange}) {
     const [editorHtml, setEditorHtml] = useState('');
@@ -56,4 +59,7 @@ export default function TextEditor({onChange}) {
             />
         </div>
     );
+}
+TextEditor.propTypes={
+    onChange:PropTypes.func
 }

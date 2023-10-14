@@ -12,3 +12,7 @@ export const getTemplateById = async (idTemplate) => {
     const data = await axiosJwt.get(`${endpoint}/templateById/${idTemplate}`);
     return data;
 };
+export const createTemplate = async (payload) => {
+    const data = await axiosJwt.post(`${endpoint}/template`,payload);
+    return data;
+};

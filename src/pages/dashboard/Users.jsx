@@ -10,7 +10,7 @@ export default function Users() {
     const [datas, setDatas] = useState([])
     const [dataSearch, setDataSearch] = useState([])
     const [isSearch, setIsSearch] = useState(false);
-    const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage,data } =
         useInfiniteQuery(`listUsers`, {
             queryFn: async ({ pageParam }) => {
                 const data = await getListUsers(pageParam || 0);
@@ -62,7 +62,7 @@ export default function Users() {
     return (
         <>
             <Suspense fallback={<TableSkeleton />}>
-                <DataUsers data={isSearch ? dataSearch : datas} fetchNextPage={fetchNextPage} hasNextPage={isSearch ? false : hasNextPage} isFetchingNextPage={isFetchingNextPage} search={search} />
+                <DataUsers data={isSearch ? dataSearch : data.pages[0].data.data} fetchNextPage={fetchNextPage} hasNextPage={isSearch ? false : hasNextPage} isFetchingNextPage={isFetchingNextPage} search={search} />
             </Suspense>
         </>
     )

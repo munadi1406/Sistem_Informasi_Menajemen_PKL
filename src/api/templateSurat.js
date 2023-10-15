@@ -16,3 +16,7 @@ export const createTemplate = async (payload) => {
     const data = await axiosJwt.post(`${endpoint}/template`,payload);
     return data;
 };
+export const editTemplate = async (payload) => {
+    const data = await axiosJwt.put(`${endpoint}/template`,payload);
+    return data;
+};

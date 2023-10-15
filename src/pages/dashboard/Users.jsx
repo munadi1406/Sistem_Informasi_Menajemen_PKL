@@ -7,7 +7,6 @@ const DataUsers = lazy(() => import('./users/DataUsers'))
 
 
 export default function Users() {
-    const [datas, setDatas] = useState([])
     const [dataSearch, setDataSearch] = useState([])
     const [isSearch, setIsSearch] = useState(false);
     const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage,data } =
@@ -18,12 +17,7 @@ export default function Users() {
             },
             getNextPageParam: (lastPage) => lastPage.data.lastIdUsers,
             staleTime: 5000,
-            onSuccess: (data) => {
-                setDatas(data.pages[0].data.data)
-            }
         });
-
-
     const handleSearchUsers = useMutation({
         mutationFn: async (username) => {
             const dataSearch = await searchUsers(username)
@@ -57,8 +51,6 @@ export default function Users() {
     if (isLoading) {
         return <TableSkeleton />
     }
-
-
     return (
         <>
             <Suspense fallback={<TableSkeleton />}>

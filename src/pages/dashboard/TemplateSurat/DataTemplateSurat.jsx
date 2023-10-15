@@ -1,17 +1,22 @@
 import {
     ChevronUpDownIcon,
 } from "@heroicons/react/24/outline";
-import { FaPencilAlt, FaEye } from 'react-icons/fa'
+import { FaPencilAlt, FaEye ,FaTrash} from 'react-icons/fa'
 import {
     Typography,
     IconButton,
     Tooltip,
 } from "@material-tailwind/react";
 import PropTypes from 'prop-types'
+import { randomBg } from "../../../utils/randomBackground";
+
 
 const TABLE_HEAD = ["Pembuat Template", "Jenis Template", 'Variabel','Tipe Data',"Di Buat", "Di Update", "Aksi"];
 
-export default function DataTemplateSurat({data,handleOpenPreview}) {
+export default function DataTemplateSurat({data,handleOpenPreview,handleOpenDelete,handleOpenEdit}) {
+
+    
+
 
   return (
         <table className="mt-4 w-full min-w-max table-auto text-left">
@@ -66,22 +71,19 @@ export default function DataTemplateSurat({data,handleOpenPreview}) {
 
                             </td>
                             <td className={classes}>
-                                <Typography
-                                    variant="small"
-                                    color="blue-gray"
+                                <div
+                                    
                                     className="flex justify-center items-center gap-2 flew-wrap"
                                 >
                                     {variable.split(' ').map((e,i)=>(
-                                        <div key={i} className="bg-blue-600 text-xs py-1 px-3 rounded-full text-white capitalize text-center ">{e}</div>
+                                        <div key={i} className={`${randomBg()} text-xs py-1 px-3 rounded-full text-white capitalize text-center `} >{e}</div>
                                     ))}
-                                </Typography>
-
+                                </div>
                             </td>
                             <td className={classes}>
-                               <div className="text-xs bg-blue-600 text-white py-1 px-2 rounded-full capitalize text-center">
+                               <div  className={`text-xs ${data_tipe ==='table' ? 'bg-blue-600' : 'bg-teal-600'} text-white py-1 px-2 rounded-full capitalize text-center`}>
                                     {data_tipe}
                                </div>
-                           
                             </td>
                             <td className={classes}>
                                 <Typography
@@ -105,13 +107,18 @@ export default function DataTemplateSurat({data,handleOpenPreview}) {
                             </td>
                             <td className={classes}>
                                 <Tooltip content="Inactive Template Surat">
-                                    <IconButton variant="text">
+                                    <IconButton variant="text" onClick={()=>handleOpenEdit(id_template_surat)}>
                                         <FaPencilAlt className="h-4 w-4" />
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip content="Lihat Template Surat" >
                                     <IconButton variant="text" onClick={()=>handleOpenPreview(id_template_surat)}>
                                         <FaEye className="h-4 w-4"/>
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip content="Lihat Template Surat" >
+                                    <IconButton variant="text" onClick={()=>handleOpenDelete(id_template_surat)}>
+                                        <FaTrash className="h-4 w-4"/>
                                     </IconButton>
                                 </Tooltip>
                             </td>
@@ -124,5 +131,7 @@ export default function DataTemplateSurat({data,handleOpenPreview}) {
 }
 DataTemplateSurat.propTypes ={
     data:PropTypes.array,
-    handleOpenPreview:PropTypes.func.isRequired
+    handleOpenPreview:PropTypes.func.isRequired,
+    handleOpenDelete:PropTypes.func.isRequired,
+    handleOpenEdit:PropTypes.func.isRequired,
 }

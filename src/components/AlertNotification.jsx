@@ -4,12 +4,12 @@ import { FaCheckCircle } from 'react-icons/fa'
 import { GiCancel } from 'react-icons/gi'
 import PropTypes from 'prop-types'
 
-export default function AlertNotification({ open, status, msg }) {
+export default function AlertNotification({ open, status, msg ,}) {
   return (
     <Alert
       open={open}
-      className="max-w-screen-md flex justify-start items-start"
-      icon={status ? <FaCheckCircle size={30} color='white'/> : <GiCancel className="text-white" size={30} />}
+      className={`flex justify-start items-start`}
+      icon={status ? <FaCheckCircle size={30} color='white'/> : <GiCancel className={`text-white`} size={30} />}
       color={status ? "green" : 'red'}
     >
       <Typography variant="h5" color="white">

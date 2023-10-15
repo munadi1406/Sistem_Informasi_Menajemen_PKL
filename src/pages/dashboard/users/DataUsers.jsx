@@ -59,18 +59,19 @@ export default function DataUsers({ data, isFetchingNextPage, search, hasNextPag
                     </div>
                 </div>
                 <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-                    <div className="w-full">
+                    <div className="w-max">
                         <TextInput
                             label="Search"
                             icon={<MagnifyingGlassIcon className="h-5 w-5" />}
                             onChange={search}
+                            className="relative z-10"
                         />
                     </div>
                 </div>
             </CardHeader>
 
-            <CardBody className="overflow-auto px-0">
-                <table className="w-full min-w-max table-auto text-left">
+            <CardBody className="px-0 ">
+                <table className="w-full table-auto">
                     <thead>
                         <tr>
                             {TABLE_HEAD.map((head) => (
@@ -132,15 +133,15 @@ export default function DataUsers({ data, isFetchingNextPage, search, hasNextPag
                                             </Typography>
                                         </td>
                                         <td className={classes}>
-                                            <div className="flex flex-col gap-2 justify-center items-center">
-                                                <Select label={"Role"} onChange={(e) => handleChangeRole.mutate({id_users,role:e})} value={roles[role]} disabled={handleChangeRole.isLoading}>
+                                            
+                                                <Select label={"Role"} onChange={(e) => handleChangeRole.mutate({id_users,role:e})} value={roles[role]} disabled={handleChangeRole.isLoading} color="blue">
                                                     {roles.map((e, i) => (
                                                         <Option key={i} value={e}>
                                                             {e}
                                                         </Option>
                                                     ))}
                                                 </Select>
-                                            </div>
+                                           
                                         </td>
                                         <td className={classes}>
                                             <div className="w-max flex flex-col gap-2 justify-center items-center ">

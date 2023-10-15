@@ -12,6 +12,7 @@ import { useDataUser } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import SideNavSkeleton from "../components/skeleton/SideNavSkeleton";
 import NavbarSkeleton from "../components/skeleton/NavbarSkeleton";
+import { AlertCustom } from "../components/AlertCustom";
 const Users = lazy(()=>import( "../pages/dashboard/Users"));
 const Profile = lazy(() => import("../pages/dashboard/profile"));
 const Home = lazy(() => import("../pages/dashboard/home"));
@@ -48,6 +49,7 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen bg-blue-gray-50/50">
+    <AlertCustom/>
       <Suspense fallback={<SideNavSkeleton />}>
         <Sidenav
           routes={routes}

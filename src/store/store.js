@@ -16,3 +16,13 @@ export const useDataUser = create((set) => ({
   role: "",
   setRole: (r) => set({ role: r }),
 }));
+
+
+export const useAlertNotification = create((set) => ({
+  open: false,
+  setOpen: (isOpen) => set({ open: isOpen }),
+  status: false,
+  setStatus: (status) => set({ status }),
+  msg: "",
+  setMsg: (msg) => set({ msg })
+}))

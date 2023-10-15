@@ -1,20 +1,11 @@
-import { useEffect } from "react";
-import { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import PropTypes from 'prop-types'
 
 
 
-export default function TextEditor({onChange}) {
-    const [editorHtml, setEditorHtml] = useState('');
+export default function TextEditor({defaultValue,onChange}) {
     
-
-
-    useEffect(()=>{
-      onChange(editorHtml)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[editorHtml])
     
     const modules = {
         toolbar: [
@@ -51,8 +42,8 @@ export default function TextEditor({onChange}) {
     return (
         <div>
             <ReactQuill
-                onChange={(e)=>setEditorHtml(e)}
-                value={editorHtml}
+                onChange={(e)=>onChange(e)}
+                value={defaultValue}
                 modules={modules}
                 formats={formats}
                 className="text-black h-max overflow-auto"

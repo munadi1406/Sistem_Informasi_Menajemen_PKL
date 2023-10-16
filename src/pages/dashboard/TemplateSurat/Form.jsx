@@ -16,13 +16,11 @@ const Form = ({ handleSubmit, errorMsg,isEdit,data }) => {
     const [templateContent, setTemplateContent] = useState()
     const handleSub = (e) => {
         e.preventDefault()
-        console.log({ jenisSurat, dataTipe: tipeData, variabel, isiTemplate: templateContent })
         handleSubmit.mutate({ jenisSurat, dataTipe: tipeData, variable: variabel, isiTemplate: templateContent })
     }
 
     useEffect(()=>{
         if(isEdit){
-           
             setJenisSurat(data?.jenis_surat ? data.jenis_surat : 'Loading...')
             setTipeData(data?.data_tipe ? data.data_tipe : 'Loading...')
             setVariabel(data?.variable ? data.variable : 'Loading...')
@@ -59,7 +57,6 @@ const Form = ({ handleSubmit, errorMsg,isEdit,data }) => {
                     <p>Tipe Data</p>
                     <div className="flex gap-10">
                         <Radio name="type" label="Text" color='blue' value={"text"} onChange={(e) => setTipeData(e.target.value)} required checked={tipeData.toLocaleLowerCase() === 'text' }/>
-                        {console.log(tipeData)}
                         <Radio name="type" label="Table" color='blue' value={"table"} onChange={(e) => setTipeData(e.target.value)} required checked={tipeData.toLocaleLowerCase() === 'table'}/>
                     </div>
                 </div>

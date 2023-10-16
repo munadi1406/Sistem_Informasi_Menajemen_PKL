@@ -20,3 +20,10 @@ export const editTemplate = async (payload) => {
     const data = await axiosJwt.put(`${endpoint}/template`,payload);
     return data;
 };
+export const searchTemplate = async (jenisSurat) => {
+ 
+    const data = await axiosJwt.post(`${endpoint}/template/search`, {
+     jenisSurat
+    });
+    return data;
+  }

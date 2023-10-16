@@ -18,7 +18,7 @@ export default function SideNavMenuList() {
   };
   const idUsers = useDataUser((state) => state.role)
   return (
-    <List>
+    <List className="h-max overflow-scroll">
       <NavLink to={'/dashboard'}>
         <ListItem>
           <ListItemPrefix>

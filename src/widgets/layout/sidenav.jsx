@@ -26,7 +26,7 @@ export function Sidenav() {
   return (
     <aside
       className={`${sidenavTypes["white"]} ${openSidenav ? "translate-x-0" : "-translate-x-80"
-        } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0`}
+        } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] flex justify-center items-center flex-col  border w-72 rounded-xl transition-transform duration-300 xl:translate-x-0`}
     >
       <div
         className={`relative border-b ${sidenavType === "dark" ? "border-white/20" : "border-blue-gray-50"
@@ -49,12 +49,11 @@ export function Sidenav() {
           <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-white" />
         </IconButton>
       </div>
-      <div className="m-4 h-[400px] overflow-auto">
+      <div className="m-4 h-full overflow-auto">
         <Suspense>
           <SideNavMenuList/>
         </Suspense>
       </div>
-
     </aside>
   );
 }

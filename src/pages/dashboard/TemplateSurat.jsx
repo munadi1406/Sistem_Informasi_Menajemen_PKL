@@ -7,7 +7,7 @@ import TextInput from "../../components/TextInput";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import ButtonCustom from "../../components/ButtonCustom";
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
-import { createTemplate, editTemplate, getListTemplate, getTemplateById } from "../../api/templateSurat";
+import { createTemplate, editTemplate, getListTemplate, getTemplateById, searchTemplate } from "../../api/templateSurat";
 import { Spinner } from "@material-tailwind/react";
 const DataTemplateSurat = lazy(() => import("./TemplateSurat/DataTemplateSurat"));
 const Form = lazy(() => import("./TemplateSurat/Form"));
@@ -82,11 +82,11 @@ export default function TemplateSurat() {
     })
     const handleEditTemplate = useMutation({
         mutationFn: async (e) => {
-            const isCreate = await editTemplate(e)
+            const isCreate = await editTemplate({idTemplateSurat:currentIdTemplate,...e})
             return isCreate.data
         },
         onSuccess: (data) => {
-            setOpenCreateForm(false);
+            setOpenModalEdit(false);
             setOpen(true)
             setStatus(true)
             setMsg(data.message)
@@ -96,8 +96,31 @@ export default function TemplateSurat() {
         }
     })
 
+    const [isSearch,setIsSearch]=useState();
+    
+    const handleSearchTemplate = useMutation({
+        mutationFn: async (jenisSurat) => {
+            const dataSearch = await searchTemplate(jenisSurat)
+            return dataSearch.data.data
+        },
+    })
 
 
+    let searchTimeout;
+    const search = (e) => {
+        const query = e.target.value;
+        if (query.length > 3) {
+            setIsSearch(true)
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+            searchTimeout = setTimeout(() => {
+                handleSearchTemplate.mutate(query);
+            }, 2000);
+        } else {
+            setIsSearch(false)
+        }
+    };
 
     const handleOpenPreview = (idTemplate) => {
         setCurrentIdTemplate(idTemplate)
@@ -143,14 +166,15 @@ export default function TemplateSurat() {
                     <div className="w-full md:w-72">
                         <TextInput
                             label="Search"
-                            icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+                            icon={handleSearchTemplate.isLoading ? <Spinner/> : <MagnifyingGlassIcon className="h-5 w-5" />}
+                            onChange={search}
                         />
                     </div>
                 </div>
             </CardHeader>
             <CardBody className="overflow-auto px-0">
                 <Suspense fallback={<TableSkeleton />}>
-                    <DataTemplateSurat data={data.pages[0].data.data} handleOpenPreview={handleOpenPreview} handleOpenDelete={handleOpenModalDelete} handleOpenEdit={handleOpenModalEdit} />
+                    <DataTemplateSurat data={isSearch ? handleSearchTemplate.data ? handleSearchTemplate.data : [] : data.pages[0].data.data} handleOpenPreview={handleOpenPreview} handleOpenDelete={handleOpenModalDelete} handleOpenEdit={handleOpenModalEdit} />
                 </Suspense>
             </CardBody>
             <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">

@@ -1,4 +1,13 @@
+import { useQuery } from "react-query";
+import { getDetailKepsek } from "../../api/kepsek";
+
 export default function Footer() {
+    const { data, isLoading } = useQuery("kepalaSekolah", {
+        queryFn: async () => {
+          const data = await getDetailKepsek();
+          return data.data;
+        },
+      });
     const date = new Date();
     const day = date.getDate();
     const month = date.getMonth();
@@ -6,7 +15,7 @@ export default function Footer() {
 
     const monthName = [
         "Januari",
-        "februaru",
+        "februari",
         "maret",
         "april",
         "mei",
@@ -18,9 +27,13 @@ export default function Footer() {
         "november",
         "desember",
     ];
+    if(isLoading){
+        return <>Loading...</>
+    }
     return (
         <div className="border flex justify-end text-[12px]">
-            <div className="w-max h-[150px] flex flex-col justify-between">
+        {console.log(data)}
+            <div className="w-max h-[150px] text-[14px] flex flex-col justify-between">
                 <div>
                     <div>
                         Karang Intan,{" "}
@@ -29,9 +42,9 @@ export default function Footer() {
                     <div>Kepala Sekolah</div>
                 </div>
                 <div>
-                    <p>Hj. Ayu Herlina Rustam,M.Pd</p>
+                    <p>{data.data.user.username}</p>
                     <p>Pembina Tingkat I</p>
-                    <p>NIP. 19760327 200604 2 01</p>
+                    <p>NIP. {data.data.nip}</p>
                 </div>
             </div>
         </div>

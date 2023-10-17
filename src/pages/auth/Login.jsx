@@ -1,15 +1,13 @@
-import { useState } from 'react';
+import { useState,lazy,Suspense } from 'react';
 import logoSma1 from '../../assets/logosma1.png'
 import smaImage from '../../assets/sman.jpg'
 import TextInput from '../../components/TextInput';
-import Register from './Register';
+const Register = lazy(()=>import( './Register'));
 import { useNavigate } from 'react-router-dom';
-import { DialogBody, DialogHeader, Dialog, Checkbox } from '@material-tailwind/react';
+import { DialogBody, DialogHeader, Dialog, Checkbox ,Spinner} from '@material-tailwind/react';
 import ButtonCustom from '../../components/ButtonCustom';
 import { useMutation } from 'react-query';
 import { auth } from '../../api/authRegister';
-import { Spinner } from '@material-tailwind/react';
-
 
 export default function Login() {
     const [open, setOpen] = useState(false)
@@ -40,7 +38,9 @@ export default function Login() {
             <Dialog open={open} handler={handleOpen} >
                 <DialogHeader>Register</DialogHeader>
                 <DialogBody>
+                <Suspense fallback={<div className='w-full h-56 bg-gray-600 animate-pulse'/>}>
                     <Register />
+                </Suspense>
                 </DialogBody>
             </Dialog>
             <div className='col-span-8 relative lg:block hidden'>

@@ -64,7 +64,7 @@ export default function SideNavMenuList() {
                 Template Sertifikat
               </ListItem>
             </NavLink>
-            <NavLink to={'./kepalasekolah'}>
+            <NavLink to={'./Kepsek'}>
               <ListItem>
                 <ListItemPrefix>
                   <FaArrowRight strokeWidth={3} className="h-3 w-5" />

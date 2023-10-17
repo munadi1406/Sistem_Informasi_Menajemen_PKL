@@ -1,6 +1,7 @@
+import { lazy } from "react";
 import { Routes, Route } from "react-router-dom";
-import Dashboard from "./layouts/dashboard";
-import Login from './pages/auth/Login'
+const Dashboard = lazy(()=>import( "./layouts/dashboard"));
+const Login = lazy(()=>import( './pages/auth/Login'))
 import {QueryClient,QueryClientProvider} from 'react-query'
 
 function App() {

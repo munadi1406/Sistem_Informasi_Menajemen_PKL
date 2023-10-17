@@ -1,15 +1,15 @@
 import PropTypes from "prop-types";
-import {lazy,Suspense} from 'react'
+import { lazy, Suspense } from 'react'
 import { Link } from "react-router-dom";
 import { XMarkIcon, } from "@heroicons/react/24/outline";
 import {
   Avatar,
   IconButton,
-  
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 import Logo from '../../assets/logosma1.png'
-const SideNavMenuList = lazy(()=>import('../../components/SideNavMenuList'))
+import SideNavMenuListSkeleton from "../../components/skeleton/SideNavMenuListSkeleton";
+const SideNavMenuList = lazy(() => import('../../components/SideNavMenuList'))
 
 export function Sidenav() {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -20,7 +20,7 @@ export function Sidenav() {
     transparent: "bg-transparent",
   };
 
-  
+
 
 
   return (
@@ -49,9 +49,9 @@ export function Sidenav() {
           <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-white" />
         </IconButton>
       </div>
-      <div className="m-4 h-full overflow-auto">
-        <Suspense>
-          <SideNavMenuList/>
+      <div className="m-4 h-full overflow-auto w-full">
+        <Suspense fallback={<SideNavMenuListSkeleton />}>
+          <SideNavMenuList />
         </Suspense>
       </div>
     </aside>

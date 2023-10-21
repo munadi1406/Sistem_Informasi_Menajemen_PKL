@@ -11,7 +11,7 @@ import PropTypes from 'prop-types'
 import { randomBg } from "../../../utils/randomBackground";
 
 
-const TABLE_HEAD = ["Pembuat Template", "Jenis Template", 'Variabel','Tipe Data',"Di Buat", "Di Update", "Aksi"];
+const TABLE_HEAD = ["Pembuat Template", "Jenis Template", 'Variabel',"Di Buat", "Di Update", "Aksi"];
 
 export default function DataTemplateSurat({data,handleOpenPreview,handleOpenDelete,handleOpenEdit}) {
 
@@ -42,7 +42,7 @@ export default function DataTemplateSurat({data,handleOpenPreview,handleOpenDele
                 </tr>
             </thead>
             <tbody>
-                {data.map(({id_template_surat, user,variable,data_tipe, jenis_surat, createdAt, updatedAt }, i) => {
+                {data.map(({id_template_surat, user,variable, jenis_surat, createdAt, updatedAt }, i) => {
                     const isLast = i === data.length - 1;
                     const classes = isLast
                         ? "p-4"
@@ -75,15 +75,12 @@ export default function DataTemplateSurat({data,handleOpenPreview,handleOpenDele
                                     
                                     className="flex justify-center items-center gap-2 flew-wrap"
                                 >
-                                    {variable.split(' ').map((e,i)=>(
+                                
+                                
+                                    {Object.keys(JSON.parse(variable)).map((e,i)=>(
                                         <div key={i} className={`${randomBg()} text-xs py-1 px-3 rounded-full text-white capitalize text-center `} >{e}</div>
                                     ))}
                                 </div>
-                            </td>
-                            <td className={classes}>
-                               <div  className={`text-xs ${data_tipe ==='table' ? 'bg-blue-600' : 'bg-teal-600'} text-white py-1 px-2 rounded-full capitalize text-center`}>
-                                    {data_tipe}
-                               </div>
                             </td>
                             <td className={classes}>
                                 <Typography

@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { lazy, Suspense } from 'react'
 import { Link } from "react-router-dom";
 import { XMarkIcon, } from "@heroicons/react/24/outline";
@@ -58,14 +57,5 @@ export function Sidenav() {
   );
 }
 
-
-
-Sidenav.propTypes = {
-  brandImg: PropTypes.string,
-  brandName: PropTypes.string,
-  routes: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
-
-Sidenav.displayName = "/src/widgets/layout/sidnave.jsx";
 
 export default Sidenav;

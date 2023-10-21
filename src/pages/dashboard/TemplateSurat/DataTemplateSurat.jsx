@@ -73,10 +73,8 @@ export default function DataTemplateSurat({data,handleOpenPreview,handleOpenDele
                             <td className={classes}>
                                 <div
                                     
-                                    className="flex justify-center items-center gap-2 flew-wrap"
+                                    className="flex justify-center items-center gap-2 flew-wrap max-w-[300px] flex-wrap"
                                 >
-                                
-                                
                                     {Object.keys(JSON.parse(variable)).map((e,i)=>(
                                         <div key={i} className={`${randomBg()} text-xs py-1 px-3 rounded-full text-white capitalize text-center `} >{e}</div>
                                     ))}

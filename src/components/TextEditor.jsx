@@ -40,13 +40,13 @@ export default function TextEditor({defaultValue,onChange}) {
         "align",
     ];
     return (
-        <div>
+        <div className="overflow-auto h-[200px] border-red-600 flex w-full ">
             <ReactQuill
                 onChange={(e)=>onChange(e)}
                 value={defaultValue}
                 modules={modules}
                 formats={formats}
-                className="text-black h-max overflow-auto"
+                className="text-black overflow-y-hidden h-full w-full"
             />
         </div>
     );

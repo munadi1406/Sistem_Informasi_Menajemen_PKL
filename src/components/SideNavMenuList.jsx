@@ -86,12 +86,14 @@ export default function SideNavMenuList() {
           </ListItem>
         </NavLink>
       )}
+      <NavLink to={'./surat'}>
       <ListItem>
         <ListItemPrefix>
           <CiMail className="h-5 w-5" />
         </ListItemPrefix>
         Surat
       </ListItem>
+      </NavLink>
       <ListItem>
         <ListItemPrefix>
           <PiCertificateLight className="h-5 w-5" />

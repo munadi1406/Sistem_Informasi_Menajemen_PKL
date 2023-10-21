@@ -27,3 +27,9 @@ export const searchTemplate = async (jenisSurat) => {
     });
     return data;
   }
+
+
+  export const deleteTemplate = async(idTemplateSurat)=>{
+    const data= await axiosJwt.delete(`${endpoint}/template/${idTemplateSurat}`)
+    return data
+  }

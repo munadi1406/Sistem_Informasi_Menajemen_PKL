@@ -11,11 +11,13 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import { Spinner } from '@material-tailwind/react'
 import { useState } from 'react'
 import Form from './Surat/Form'
+import { useAlertNotification } from '../../store/store'
 const DataSurat = lazy(() => import('./Surat/DataSurat'))
 
 export default function Surat() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
   const handleOpenForm = () => setOpenCreateForm(!openCreateForm)
+  const { setOpen, setStatus, setMsg } = useAlertNotification((state) => state);
   const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage,data } =
     useInfiniteQuery(`listSurat`, {
       queryFn: async ({ pageParam }) => {
@@ -34,14 +36,21 @@ export default function Surat() {
 
     const handleCreateSurat  = useMutation({
       mutationFn:async(payload)=>{
-        const data = await createSurat(payload)
-        return data
+        const datas = await createSurat(payload)
+        return datas.data
     },
     onSuccess:(data)=>{
-      console.log(data)
+
+      setOpenCreateForm(false);
+      setOpen(true);
+      setStatus(true);
+      setMsg(data.message);
     },
     onError:(error)=>{
-      console.log(error)
+      setOpenCreateForm(false);
+      setOpen(true);
+      setStatus(true);
+      setMsg(error.response.data.message);
     }
   })
 

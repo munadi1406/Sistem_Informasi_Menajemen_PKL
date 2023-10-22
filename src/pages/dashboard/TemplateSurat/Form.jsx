@@ -35,7 +35,6 @@ const Form = ({ handleSubmit, errorMsg, isEdit, data }) => {
   useEffect(() => {
     if (isEdit) {
       setJenisSurat(data?.jenis_surat ? data.jenis_surat : "Loading...");
-
       setVariabel(data?.variable ? JSON.parse(data.variable) : "Loading...");
       setTemplateContent(data?.isi_template ? data.isi_template : "Loading...");
     }
@@ -48,7 +47,6 @@ const Form = ({ handleSubmit, errorMsg, isEdit, data }) => {
       [key]: value
     }));
   }
-
 
 
   const VariableSet = () => {

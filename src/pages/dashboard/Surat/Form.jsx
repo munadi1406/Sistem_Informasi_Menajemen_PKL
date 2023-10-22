@@ -7,8 +7,10 @@ import WithContainerModal from "../../../utils/WithContainerModal"
 import { Option, Select } from "@material-tailwind/react";
 import { useState } from "react";
 import { useEffect } from "react";
+import PropTypes from 'prop-types'
+import { Spinner } from "@material-tailwind/react";
 
-const Form = ({handleSubmit}) => {
+const Form = ({ handleSubmit }) => {
     const [variabelData, setVariabelData] = useState({})
     const [variabelDataKey, setVariabelDataKey] = useState([])
     const hiddenInput = ['nomor', 'date', 'perihal']
@@ -16,7 +18,11 @@ const Form = ({handleSubmit}) => {
     const [isiData, setIsiData] = useState([]);
     const [perihal, setPerihal] = useState('')
     const [otherVariable, setOtherVariable] = useState();
-    const [templateSurat,setTemplateSurat] = useState();
+    const [templateSurat, setTemplateSurat] = useState();
+    const [currentTemplate, setCurrentTemplate] = useState(0)
+    const [isiIfTipeTable, setIsiIfTipeTable] = useState('')
+
+    const [tipeIsi, setTipeIsi] = useState("");
     const { data, isLoading } = useQuery('listJenisSurat', {
         queryFn: async () => {
             const datas = await getListTemplate();
@@ -33,72 +39,106 @@ const Form = ({handleSubmit}) => {
     //     console.log({perihal})
     //     console.log({otherVariable})
     // }, [isiData,perihal,otherVariable])
-    const handleSubmitCreate = (e)=>{
+    const handleSubmitCreate = (e) => {
         e.preventDefault()
         const payload = {
             perihal,
-            idTemplateSurat:templateSurat,
-            isiSurat:{
-                isi:isiData,
-                ...otherVariable
-            },
+            idTemplateSurat: templateSurat,
+            isiSurat: {
+                ...tipeIsi === 'Table' ? {
+
+                    isi: isiData,
+                    ...otherVariable
+                } : {
+                    isi: isiIfTipeTable
+                }
+            }
         }
         handleSubmit.mutate(payload)
-
     }
+
+
+    useEffect(() => {
+
+        if (currentTemplate && currentTemplate.variable) {
+            console.log(JSON.parse(currentTemplate.variable))
+            const kataYangMengandungIsi = Object.keys(JSON.parse(currentTemplate.variable)).find(key => key.includes('isi'));
+            if (kataYangMengandungIsi) {
+                const isiValue = JSON.parse(currentTemplate.variable);
+                console.log(kataYangMengandungIsi);
+                console.log(String(isiValue[kataYangMengandungIsi]));
+                setTipeIsi(String(isiValue[kataYangMengandungIsi]))
+            }
+        }
+
+    }, [currentTemplate])
+
     return (
         <>
             <form className="flex flex-col gap-2" onSubmit={handleSubmitCreate}>
+            <div className="grid grid-cols-2 gap-2">
                 <TextInput label={"Perihal"} required onChange={(e) => setPerihal(e.target.value)} />
                 {!isLoading &&
-                    <Select label={"Template Surat"} color="blue" onChange={(value)=>setTemplateSurat(value)}>
+                    <Select label={"Template Surat"} color="blue" onChange={(value) => setTemplateSurat(value)}>
                         {data.map((e, i) => (
-                            <Option key={i} className="bg-blue-600/60 text-white" value={e.id_template_surat} onClick={() => setVariabelData(JSON.parse(e.variable))}>{e.jenis_surat}</Option>
+                            <Option key={i} value={e.id_template_surat} onClick={() => { setVariabelData(JSON.parse(e.variable)); setCurrentTemplate(e) }}>{e.jenis_surat}</Option>
                         ))}
                     </Select>
                 }
+            </div>
                 {variabelDataKey.map((e, i) => (
                     !hiddenInput.includes(e) ? (
                         <>{!e.includes("isi") ? (
                             <TextInput label={e} key={i} required onChange={(event) => setOtherVariable((prev) => (
                                 { ...prev, [e]: event.target.value }
                             ))} />
-                        ) : (
-                            <>
-                                <TextInput label={"Jumlah Orang"} type={"number"} onChange={(e) => setJumlahOrang(e.target.value)} required defaultValue={jumlahOrang} />
-                                {Array.from({ length: jumlahOrang }).map((_, index) => (
-                                    <div key={index}>
-                                        <div>{`Orang Ke ${index + 1}`}</div>
-                                        {e.split(':')[1].split(',').map((variabelIsi, subIndex) => (
-                                            <TextInput
-                                                label={variabelIsi}
-                                                key={subIndex}
-                                                required
-                                                onChange={(event) => {
-                                                    setIsiData((prevData) => {
-                                                        const updatedData = [...prevData];
-                                                        updatedData[index] = {
-                                                            ...updatedData[index],
-                                                            [variabelIsi]: event.target.value,
-                                                        };
-                                                        return updatedData;
-                                                    });
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                ))}
-
-                            </>
+                        ) : (<>
+                            {tipeIsi.toLocaleLowerCase() === 'table' ? (
+                                <>
+                                    <TextInput label={"Jumlah Orang"} type={"number"} onChange={(e) => setJumlahOrang(e.target.value)} required defaultValue={jumlahOrang} />
+                                    {Array.from({ length: jumlahOrang }).map((_, index) => (
+                                        <div key={index} className="flex flex-col gap-2">
+                                            <div>{`Orang Ke ${index + 1}`}</div>
+                                            {e.split(':')[1].split(',').map((variabelIsi, subIndex) => (
+                                                <TextInput
+                                                    label={variabelIsi}
+                                                    key={subIndex}
+                                                    required
+                                                    onChange={(event) => {
+                                                        setIsiData((prevData) => {
+                                                            const updatedData = [...prevData];
+                                                            updatedData[index] = {
+                                                                ...updatedData[index],
+                                                                [variabelIsi]: event.target.value,
+                                                            };
+                                                            return updatedData;
+                                                        });
+                                                    }}
+                                                />
+                                            ))}
+                                        </div>
+                                    ))}
+                                </>
+                            ) : (
+                                <TextInput label={"Isi"} required onChange={(e) => setIsiIfTipeTable(e.target.value)} />
+                            )}
+                        </>
                         )
                         }
                         </>
                     ) : (<></>)
                 )
                 )}
-                <ButtonCustom text={"Simpan"} type={"submit"}/>
+                <ButtonCustom
+            text={handleSubmit.isLoading ? <Spinner /> : "Simpan"}
+            type={"submit"}
+            disabled={handleSubmit.isLoading}
+          />
             </form>
         </>
     )
+}
+Form.propTypes={
+    handleSubmit:PropTypes.object.isRequired
 }
 export default WithContainerModal(Form)

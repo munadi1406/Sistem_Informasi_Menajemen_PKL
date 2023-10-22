@@ -8,8 +8,6 @@ import {
     Tooltip,
 } from "@material-tailwind/react";
 import PropTypes from 'prop-types'
-import { randomBg } from "../../../utils/randomBackground";
-
 
 const TABLE_HEAD = ["Pembuat Surat", "Jenis Surat", 'Perihal',"Di Buat", "Di Update", "Aksi"];
 

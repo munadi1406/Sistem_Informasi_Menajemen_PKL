@@ -12,7 +12,7 @@ import SideNavSkeleton from "../components/skeleton/SideNavSkeleton";
 import NavbarSkeleton from "../components/skeleton/NavbarSkeleton";
 import { AlertCustom } from "../components/AlertCustom";
 import FooterSkeleton from "../components/skeleton/FooterSkeleton";
-const Surat = lazy(()=>import( "../pages/dashboard/Surat/DataSurat"));
+const Surat = lazy(()=>import( "../pages/dashboard/Surat"));
 const TemplateSurat = lazy(()=>import( "../pages/dashboard/TemplateSurat"));
 const Kepsek = lazy(()=>import( "../pages/dashboard/Kepsek"));
 const Users = lazy(()=>import( "../pages/dashboard/Users"));

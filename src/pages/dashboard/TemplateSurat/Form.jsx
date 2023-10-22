@@ -18,9 +18,16 @@ const Form = ({ handleSubmit, errorMsg, isEdit, data }) => {
   const [templateContent, setTemplateContent] = useState("");
   const handleSub = (e) => {
     e.preventDefault();
+    const newObj = {};
+    variableSetting.forEach(prop => {
+      if (prop in variabel) {
+        newObj[prop] = variabel[prop];
+      }
+    });
+    
     handleSubmit.mutate({
       jenisSurat,
-      variable: variabel,
+      variable: newObj,
       isiTemplate: templateContent,
     });
   };
@@ -28,7 +35,7 @@ const Form = ({ handleSubmit, errorMsg, isEdit, data }) => {
   useEffect(() => {
     if (isEdit) {
       setJenisSurat(data?.jenis_surat ? data.jenis_surat : "Loading...");
-      setVariableSetting(Object.keys(data?.variable && data.variable))
+
       setVariabel(data?.variable ? JSON.parse(data.variable) : "Loading...");
       setTemplateContent(data?.isi_template ? data.isi_template : "Loading...");
     }
@@ -41,19 +48,17 @@ const Form = ({ handleSubmit, errorMsg, isEdit, data }) => {
       [key]: value
     }));
   }
-  
 
-  useEffect(() => {
-    console.log(variabel);
-  }, [variabel]);
+
 
   const VariableSet = () => {
+
     return (
       <div className="flex flex-col gap-2">
         {variableSetting.map((e, i) => (
           <div className="flex justify-center items-center gap-2" key={i}>
             <TextInput label={"Nama Variabel"} value={e} disabled />
-            <Select label="Tipe Data" color="blue" onChange={(value)=>handleChange(e,value)} key={i} value={variabel[e]}>
+            <Select label="Tipe Data" color="blue" onChange={(value) => handleChange(e, value)} key={i} value={variabel[e]}>
               <Option value="Table">Table</Option>
               <Option value="Text">Text</Option>
             </Select>
@@ -77,11 +82,6 @@ const Form = ({ handleSubmit, errorMsg, isEdit, data }) => {
       }
     }
   }, [templateContent]);
-
-
-  useEffect(()=>{
-    console.log(variabel)
-  },[variabel])
 
   return (
     <>

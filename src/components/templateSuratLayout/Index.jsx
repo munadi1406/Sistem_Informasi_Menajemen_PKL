@@ -61,7 +61,7 @@ export default function Index({ isi }) {
     return (
         <div className="p-3 text-black w-[793px] m-auto ">
             <Header />
-            <div className="h-[400px]">
+            <div className="h-max">
                 <div
                     dangerouslySetInnerHTML={{ __html: isi }}
                     ref={containerRef}

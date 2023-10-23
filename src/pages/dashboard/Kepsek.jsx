@@ -33,7 +33,6 @@ export default function Kepsek() {
     setMsg(data.data.message)
   },
   onError:(error)=>{
-    console.log(error)
     setStatus(false)
     setOpen(true)
     setMsg(error.response.data.message)

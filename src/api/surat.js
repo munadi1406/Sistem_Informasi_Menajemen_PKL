@@ -10,3 +10,8 @@ export const createSurat= async(payload)=>{
     const data= await axiosJwt.post(`${endpoint}/surat`,payload)
     return data
 }
+
+export const getDetailSurat = async(idSurat)=>{
+    const data = await axiosJwt.get(`${endpoint}/surat/${idSurat}`)
+    return data
+}

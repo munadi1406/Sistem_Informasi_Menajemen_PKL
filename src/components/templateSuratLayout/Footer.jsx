@@ -31,8 +31,7 @@ export default function Footer() {
         return <>Loading...</>
     }
     return (
-        <div className="border flex justify-end text-[12px]">
-        {console.log(data)}
+        <div className=" flex justify-end text-[12px]">
             <div className="w-max h-[150px] text-[14px] flex flex-col justify-between">
                 <div>
                     <div>

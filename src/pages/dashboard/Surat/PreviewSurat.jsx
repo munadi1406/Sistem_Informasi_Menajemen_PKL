@@ -69,11 +69,8 @@ const PreviewSurat = ({ handleGetDetailSurat }) => {
       const pengganti = {
         "{nomor}": data.id_surat,
         "{date}": convertDate,
-        "{perihal}": data.perihal,
-        // Tambahkan kunci-pengganti lain yang Anda butuhkan di sini
+        "{perihal}": `<b class="font-semibold">${data.perihal}</b>`,
       };
-
-      // Membuat ekspresi reguler untuk mencari kata-kata dalam kurung kurawal
       const regex = /{[^{}]+}/g;
 
       // Menggantikan kata-kata yang sesuai dengan pengganti
@@ -100,6 +97,7 @@ const PreviewSurat = ({ handleGetDetailSurat }) => {
 
   return (
     <>
+    {console.log(handleGetDetailSurat.data)}
       <Index isi={isiTemplate} />
     </>
   );

@@ -6,9 +6,9 @@ export default function Header() {
         <div className="pb-3 border-b-2 border-black mb-6 flex justify-center items-center ">
             <div className="flex w-full justify-center items-center gap-2">
                 <div>
-                    <img src={LogoKalsel} width={60} />
+                    <img src={LogoKalsel} width={60} className="block"/>
                 </div>
-                <div className="font-sans w-3/4">
+                <div className="font-sans">
                     <p className="text-center  text-xl font-semibold uppercase">
                         Pemerintah Provinsi Kalimantan Selatan
                     </p>
@@ -30,7 +30,7 @@ export default function Header() {
                     </p>
                 </div>
                 <div>
-                    <img src={LogoSekolah} width={90} />
+                    <img src={LogoSekolah} width={90} className="block" />
                 </div>
             </div>
         </div>

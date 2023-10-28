@@ -4,18 +4,17 @@ import { getListTemplate } from "../../../api/templateSurat";
 import ButtonCustom from "../../../components/ButtonCustom";
 import TextInput from "../../../components/TextInput";
 import WithContainerModal from "../../../utils/WithContainerModal";
-import { Option, Select } from "@material-tailwind/react";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState ,useEffect,lazy,Suspense} from "react";
 import PropTypes from "prop-types";
-import { Spinner } from "@material-tailwind/react";
+import { Spinner ,Select,Option} from "@material-tailwind/react";
+const TextAreaCustom = lazy(()=>import( "../../../components/TextAreaCustom"));
 
 const Form = ({ handleSubmit }) => {
   const [variabelData, setVariabelData] = useState({});
   const [variabelDataKey, setVariabelDataKey] = useState([]);
   const hiddenInput = ["nomor", "date", "perihal"];
   const [jumlahOrang, setJumlahOrang] = useState(1);
-  const [mainContent,setMainContent] = useState('')
+  const [mainContent, setMainContent] = useState('')
   const [isiData, setIsiData] = useState([]);
   const [perihal, setPerihal] = useState("");
   const [otherVariable, setOtherVariable] = useState();
@@ -34,14 +33,8 @@ const Form = ({ handleSubmit }) => {
     setVariabelDataKey(Object.keys(variabelData));
   }, [variabelData]);
 
-  // useEffect(() => {
-  //     console.log({isiData})
-  //     console.log({perihal})
-  //     console.log({otherVariable})
-  // }, [isiData,perihal,otherVariable])
   const handleSubmitCreate = (e) => {
     e.preventDefault();
-    // console.log({variabelDataKey})
     const payload = {
       perihal,
       idTemplateSurat: templateSurat,
@@ -49,11 +42,11 @@ const Form = ({ handleSubmit }) => {
         ...(tipeIsi === "Table"
           ? {
             [mainContent]: isiData,
-              ...otherVariable,
-            }
+            ...otherVariable,
+          }
           : {
-              isi: isiIfTipeTable,
-            }),
+            isi: isiIfTipeTable,
+          }),
       },
     };
     // console.log(payload);
@@ -75,35 +68,33 @@ const Form = ({ handleSubmit }) => {
 
   return (
     <>
-      <form className="flex flex-col gap-2" onSubmit={handleSubmitCreate}>
-        <div className="">
-          <TextInput
-            label={"Perihal"}
-            required
-            onChange={(e) => setPerihal(e.target.value)}
-          />
-          {!isLoading && (
-            <Select
-              label={"Template Surat"}
-              color="blue"
-              className="mt-10"
-              onChange={(value) => setTemplateSurat(value)}
-            >
-              {data.map((e, i) => (
-                <Option
-                  key={i}
-                  value={e.id_template_surat}
-                  onClick={() => {
-                    setVariabelData(JSON.parse(e.variable));
-                    setCurrentTemplate(e);
-                  }}
-                >
-                  {e.jenis_surat}
-                </Option>
-              ))}
-            </Select>
-          )}
-        </div>
+      <form className="flex flex-col min-h-[90vh] gap-2" onSubmit={handleSubmitCreate}>
+      <Suspense fallback={<div className="bg-gray-600 animate-pulse rounded-md w-full h-32"/>}>
+        <TextAreaCustom label={"Perihal"} onChange={(e) => setPerihal(e.target.value)} />
+      </Suspense>
+        {!isLoading && (
+          <Select
+            label={"Template Surat"}
+            color="blue"
+            className=""
+            size="lg"
+            onChange={(value) => setTemplateSurat(value)}
+          >
+            {data.map((e, i) => (
+              <Option
+                key={i}
+                value={e.id_template_surat}
+                onClick={() => {
+                  setVariabelData(JSON.parse(e.variable));
+                  setCurrentTemplate(e);
+                }}
+              >
+                {e.jenis_surat}
+              </Option>
+            ))}
+          </Select>
+        )}
+
         {variabelDataKey.map((e, i) =>
           !hiddenInput.includes(e) ? (
             <>

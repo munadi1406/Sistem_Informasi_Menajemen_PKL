@@ -1,10 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import PropTypes from 'prop-types'
+import ButtonCustom from "../ButtonCustom";
+import './content.css'
+import ReactToPrint from 'react-to-print';
 
 export default function Index({ isi }) {
     const containerRef = useRef();
+    const targetRef = useRef();
+
     useEffect(() => {
         const container = containerRef.current;
         const ol = container.querySelectorAll("ol");
@@ -14,15 +19,19 @@ export default function Index({ isi }) {
         const a = container.querySelectorAll("a");
         const h1 = container.querySelectorAll("h1");
         const h2 = container.querySelectorAll("h2");
-        const p = container.querySelectorAll("p");
+        // const p = container.querySelectorAll("p");
         const h3 = container.querySelectorAll("h3");
+        const b = container.querySelectorAll("strong");
         const centerAlignedElement = document.querySelectorAll('.ql-align-center');
         const rightAlignedElement = document.querySelectorAll('.ql-align-right');
         const justifyAlignedElement = document.querySelectorAll('.ql-align-justify');
 
-      
+
         rightAlignedElement.forEach((e) => {
             e.classList.add("text-right");
+        });
+        b.forEach((e) => {
+            e.classList.add("font-semibold");
         });
         justifyAlignedElement.forEach((e) => {
             e.classList.add("text-justify");
@@ -33,9 +42,7 @@ export default function Index({ isi }) {
         li.forEach((e) => {
             e.classList.add("break-words");
         });
-        p.forEach((e) => {
-            e.classList.add("break-words", "overflow-clip");
-        });
+
         ol.forEach((e) => {
             e.classList.add("list-decimal", "ml-5");
         });
@@ -43,7 +50,7 @@ export default function Index({ isi }) {
             e.classList.add("list-disc", "ml-5");
         });
         u.forEach((e) => {
-            e.classList.add("underline-offset-1");
+            e.classList.add("underline-offset-3");
         });
         a.forEach((e) => {
             e.classList.add("text-blue-600", "underline");
@@ -59,18 +66,28 @@ export default function Index({ isi }) {
         });
     }, [isi]);
     return (
-        <div className="p-3 text-black w-[793px] m-auto ">
-            <Header />
-            <div className="h-max">
-                <div
-                    dangerouslySetInnerHTML={{ __html: isi }}
-                    ref={containerRef}
-                ></div>
+        <>
+            <div className="text-black w-[793px] m-auto" id="pdf">
+                <div id="pdf" className="m-3" ref={targetRef}>
+                    <Header />
+                    <div
+                        dangerouslySetInnerHTML={{ __html: isi }}
+                        ref={containerRef}
+                    />
+                    <Footer />
+                </div>
             </div>
-            <Footer/>
-        </div>
+            {isi && (
+                <ReactToPrint
+                    trigger={() => {
+                        return <ButtonCustom text={"Print"} />;
+                    }}
+                    content={() => targetRef.current}
+                />
+            )}
+        </>
     );
 }
-Index.propTypes ={
-    isi:PropTypes.node
+Index.propTypes = {
+    isi: PropTypes.node
 }

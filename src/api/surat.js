@@ -15,3 +15,13 @@ export const getDetailSurat = async(idSurat)=>{
     const data = await axiosJwt.get(`${endpoint}/surat/${idSurat}`)
     return data
 }
+
+export const deleteSurat = async(idSurat)=>{
+    const data = await axiosJwt.delete(`${endpoint}/surat/${idSurat}`)
+    return data
+}
+
+// export const searchSurat = async(query)=>{
+//     const data = await axiosJwt.delete(`${endpoint}/surat/${0}query?=`)
+//     return data
+// }

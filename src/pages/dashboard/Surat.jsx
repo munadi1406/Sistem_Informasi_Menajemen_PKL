@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import TableSkeleton from "../../components/skeleton/TableSkeleton";
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
-import { createSurat, getDetailSurat, getListSurats } from "../../api/surat";
+import { createSurat, deleteSurat, getDetailSurat, getListSurats } from "../../api/surat";
 import {
   Card,
   CardBody,
@@ -18,26 +18,44 @@ import { useState } from "react";
 import Form from "./Surat/Form";
 import { useAlertNotification } from "../../store/store";
 import PreviewSurat from "./Surat/PreviewSurat";
+import ModalDeleteSurat from "../../components/ModalDeleteSurat";
+import ModalConfirmTTD from "../../components/ModalConfirmTTD";
+import { useEffect } from "react";
 const DataSurat = lazy(() => import("./Surat/DataSurat"));
 
 export default function Surat() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
   const [isOpenPreview, setIsOpenPreview] = useState(false);
+  const [openModalDelete, setOpenModalDelete] = useState(false);
   const [currentIdSurat, setCurrentIdSurat] = useState(0);
+  const [deleteConfirmData, setDeleteConfirmData] = useState({});
+  const [openModalConfrimTTD, setOpenModalConfirmTTD] = useState(false)
+
+  const handleOpenModalConfirmTTD = (idSurat) => {
+    setOpenModalConfirmTTD(!openModalConfrimTTD)
+    setCurrentIdSurat(idSurat);
+  }
+
+
   const handleOpenPreview = (idSurat) => {
     setIsOpenPreview(!isOpenPreview);
     if (!idSurat) return;
     setCurrentIdSurat(idSurat);
   };
+  const handleOpenModalDelete = (currentId, data) => {
+    setDeleteConfirmData(data)
+    setCurrentIdSurat(currentId);
+    setOpenModalDelete(!openModalDelete);
+  };
   const handleOpenForm = () => setOpenCreateForm(!openCreateForm);
   const { setOpen, setStatus, setMsg } = useAlertNotification((state) => state);
-  const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, data } =
+  const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, data, refetch } =
     useInfiniteQuery(`listSurat`, {
       queryFn: async ({ pageParam }) => {
         const data = await getListSurats(pageParam || 0);
         return data.data;
       },
-      getNextPageParam: (lastPage) => lastPage.data.lastIdSurat,
+      getNextPageParam: (lastPage) => lastPage.data.data.lastIdSurat,
       staleTime: 5000,
     });
 
@@ -62,11 +80,54 @@ export default function Surat() {
 
   const handleGetDetailSurat = useQuery(`detailSurat-${currentIdSurat}`, {
     queryFn: async () => {
-      const datas= await getDetailSurat(currentIdSurat);
+      const datas = await getDetailSurat(currentIdSurat);
       return datas.data.data;
     },
+    staleTime: 10000,
   });
 
+  const handleDeleteSurat = useMutation({
+    mutationFn: async () => {
+      const data = await deleteSurat(currentIdSurat);
+      return data.data;
+    },
+    onSuccess: (data) => {
+      setOpenModalDelete(false);
+      setOpen(true);
+      setStatus(true);
+      setMsg(data.message);
+      refetch()
+    },
+    onError: (error) => {
+      setOpenModalDelete(false);
+      setOpen(true);
+      setStatus(false);
+      setMsg(error.response.data.message);
+    },
+  });
+  // const [isSearch, setIsSearch] = useState();
+  // const handleSearchTemplate = useMutation({
+  //   mutationFn: async (jenisSurat) => {
+  //     const dataSearch = await searchTemplate(jenisSurat);
+  //     return dataSearch.data.data;
+  //   },
+  // });
+
+  // let searchTimeout;
+  // const search = (e) => {
+  //   const query = e.target.value;
+  //   if (query.length > 3) {
+  //     setIsSearch(true);
+  //     if (searchTimeout) {
+  //       clearTimeout(searchTimeout);
+  //     }
+  //     searchTimeout = setTimeout(() => {
+  //       handleSearchTemplate.mutate(query);
+  //     }, 2000);
+  //   } else {
+  //     setIsSearch(false);
+  //   }
+  // };
   if (isLoading) {
     return <TableSkeleton />;
   }
@@ -79,11 +140,25 @@ export default function Surat() {
         title="Buat Surat"
         handleSubmit={handleCreateSurat}
       />
+      <ModalDeleteSurat
+        open={openModalDelete}
+        handleOpen={handleOpenModalDelete}
+        size="sm"
+        data={deleteConfirmData}
+        handleDelete={handleDeleteSurat}
+      />
       <PreviewSurat
         handleOpen={handleOpenPreview}
         open={isOpenPreview}
         title={"Preview Surat"}
         handleGetDetailSurat={handleGetDetailSurat}
+      />
+      <ModalConfirmTTD
+        open={openModalConfrimTTD}
+        handleOpen={handleOpenModalConfirmTTD}
+        size="lg"
+        title="Konfirmasi Tanda Tangan"
+        idSurat={currentIdSurat}
       />
       <Card className="h-full w-full">
         <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -107,32 +182,50 @@ export default function Surat() {
               />
             </div>
           </div>
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+          <div className="flex flex-col items-start justify-center gap-4 w-full">
             <div className="w-full md:w-72">
-              <TextInput
-                label="Search"
-                icon={<MagnifyingGlassIcon className="h-5 w-5" />}
-              />
+            {/* <TextInput
+              label="Search"
+              icon={
+                handleSearchTemplate.isLoading ? (
+                  <Spinner />
+                ) : (
+                  <MagnifyingGlassIcon className="h-5 w-5" />
+                )
+              }
+              onChange={search}
+            /> */}
+            </div>
+            <div>
+              <div className="text-black text-lg font-semibold">
+                Keterangan
+              </div>
+              <div className="flex gap-2 items-center">
+                <div className="w-3 h-3 rounded-full bg-green-600"/><div>Jika Line Sudah Berwarna Hijau Artinya Surat Sudah Bertanda Tangan</div>
+              </div>
             </div>
           </div>
         </CardHeader>
         <CardBody className="overflow-auto px-0">
           <Suspense fallback={<TableSkeleton />}>
             <DataSurat
-              data={data.pages[0].data.data}
+              dataSurat={data.pages}
               handleOpenPreview={handleOpenPreview}
+              handleOpenDelete={handleOpenModalDelete}
+              handleOpenModalConfirmTTD={handleOpenModalConfirmTTD}
             />
           </Suspense>
         </CardBody>
         <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-          {hasNextPage && (
-            <ButtonCustom
-              text={isFetchingNextPage ? <Spinner /> : "Load More"}
-              onClick={fetchNextPage}
-              disabled={isFetchingNextPage}
-            />
-          )}
-        </CardFooter>
+        {hasNextPage && (
+          <ButtonCustom
+            text={isFetchingNextPage ? <Spinner /> : "Load More"}
+            onClick={fetchNextPage}
+            disabled={isFetchingNextPage}
+          />
+        )}
+        
+      </CardFooter>
       </Card>
     </>
   );

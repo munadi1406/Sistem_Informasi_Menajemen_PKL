@@ -15,10 +15,11 @@ const TABLE_HEAD = [
 ];
 
 export default function DataSurat({
-  data,
+  dataSurat,
   handleOpenPreview,
   handleOpenDelete,
   handleOpenEdit,
+  handleOpenModalConfirmTTD
 }) {
   const role = useDataUser((state) => state.role);
 
@@ -46,107 +47,115 @@ export default function DataSurat({
         </tr>
       </thead>
       <tbody>
-        {data.data.map(
-          ({ id_surat, user, perihal, template, createdAt, updatedAt }, i) => {
-            const isLast = i === data.length - 1;
-            const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
-            return (
-              <tr key={i}>
-                <td className={classes}>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                  >
-                    {user.username}
-                  </Typography>
-                </td>
-                <td className={classes}>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                  >
-                    {template.jenis_surat}
-                  </Typography>
-                </td>
-                <td className={classes}>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                  >
-                    {perihal}
-                  </Typography>
-                </td>
-                <td className={classes}>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                  >
-                    {new Date(createdAt).toLocaleString()}
-                  </Typography>
-                </td>
-                <td className={classes}>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                  >
-                    {new Date(updatedAt).toLocaleString()}
-                  </Typography>
-                </td>
-                <td className={classes}>
-                  {role === 1 && (
-                    <Tooltip content="Tanda Tangani Surat">
-                      <IconButton
-                        variant="text"
-                        onClick={() => handleOpenEdit(id_surat)}
-                      >
-                        <FaFileSignature className="h-4 w-4" />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                  <Tooltip content="Edit Surat">
-                    <IconButton
-                      variant="text"
-                      onClick={() => handleOpenEdit(id_surat)}
+        {dataSurat.map(({ data }) => (
+          data.data.data.map(
+            ({ id_surat, user, perihal, template, createdAt, updatedAt, tandaTangan }, i) => {
+              const isLast = i === data.length - 1;
+              const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+              return (
+                <tr key={i} className={tandaTangan.length > 0 && 'bg-green-700/30 '}>
+                  <td className={classes}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
                     >
-                      <FaPencilAlt className="h-4 w-4" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip content="Lihat Surat">
-                    <IconButton
-                      variant="text"
-                      onClick={() => handleOpenPreview(id_surat)}
+                      {user.username}
+                    </Typography>
+                  </td>
+                  <td className={classes}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
                     >
-                      <FaEye className="h-4 w-4" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip content="Hapus Surat">
-                    <IconButton
-                      variant="text"
-                      onClick={() => handleOpenDelete(id_surat)}
+                      {template.jenis_surat}
+                    </Typography>
+                  </td>
+                  <td className={classes}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
                     >
-                      <FaTrash className="h-4 w-4" />
-                    </IconButton>
-                  </Tooltip>
-                </td>
-              </tr>
-            );
-          },
-        )}
+                      {perihal}
+                    </Typography>
+                  </td>
+                  <td className={classes}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {new Date(createdAt).toLocaleString()}
+                    </Typography>
+                  </td>
+                  <td className={classes}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {new Date(updatedAt).toLocaleString()}
+                    </Typography>
+                  </td>
+                  <td className={classes}>
+                    <div className="bg-white rounded-md text-white">
+                      {role === 1 && tandaTangan <= 0 && (
+                        <Tooltip content="Tanda Tangani Surat">
+                          <IconButton
+                            variant="text"
+                            className="text-green-600"
+                            onClick={() => handleOpenModalConfirmTTD(id_surat)}
+                          >
+                            <FaFileSignature className="h-4 w-4" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      <Tooltip content="Edit Surat">
+                        <IconButton
+                          variant="text"
+                          onClick={() => handleOpenEdit(id_surat)}
+                        >
+                          <FaPencilAlt className="h-4 w-4" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip content="Lihat Surat">
+                        <IconButton
+                          variant="text"
+                          className="text-deep-purple-600"
+                          onClick={() => handleOpenPreview(id_surat)}
+                        >
+                          <FaEye className="h-4 w-4" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip content="Hapus Surat">
+                        <IconButton
+                          variant="text"
+                          className="text-red-600"
+                          onClick={() => handleOpenDelete(id_surat, { perihal, createdAt })}
+                        >
+                          <FaTrash className="h-4 w-4" />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
+                  </td>
+                </tr>
+              );
+            },
+          )
+        ))}
       </tbody>
     </table>
   );
 }
 DataSurat.propTypes = {
-  data: PropTypes.array,
+  dataSurat: PropTypes.array,
   handleOpenPreview: PropTypes.func.isRequired,
   handleOpenDelete: PropTypes.func.isRequired,
   handleOpenEdit: PropTypes.func.isRequired,
+  handleOpenModalConfirmTTD: PropTypes.func.isRequired,
 };
 DataSurat.defaultProps = {
-  data: [],
+  dataSurat: [],
 };

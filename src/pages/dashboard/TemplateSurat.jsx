@@ -61,7 +61,7 @@ export default function TemplateSurat() {
     setErrorMsg("");
   };
 
-  const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, data } =
+  const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, data,refetch } =
     useInfiniteQuery(`listTemplate`, {
       queryFn: async ({ pageParam }) => {
         const data = await getListTemplate(pageParam || 0);
@@ -153,6 +153,7 @@ export default function TemplateSurat() {
       setOpen(true);
       setStatus(true);
       setMsg(data.message);
+      refetch()
     },
     onError: (error) => {
         setOpenModalDelete(false);
@@ -252,12 +253,12 @@ export default function TemplateSurat() {
       <CardBody className="overflow-auto px-0">
         <Suspense fallback={<TableSkeleton />}>
           <DataTemplateSurat
-            data={
+            dataTemplateSurat={
               isSearch
                 ? handleSearchTemplate.data
                   ? handleSearchTemplate.data
                   : []
-                : data.pages[0].data.data
+                : data.pages
             }
             handleOpenPreview={handleOpenPreview}
             handleOpenDelete={handleOpenModalDelete}
@@ -266,6 +267,7 @@ export default function TemplateSurat() {
         </Suspense>
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
+      
         {hasNextPage && (
           <ButtonCustom
             text={isFetchingNextPage ? <Spinner /> : "Load More"}

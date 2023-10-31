@@ -1,10 +1,9 @@
 import { Routes, Route } from "react-router-dom";
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense,useEffect } from 'react'
 const Sidenav = lazy(() => import('../widgets/layout/sidenav'));
 const DashboardNavbar = lazy(() => import('../widgets/layout/dashboard-navbar'));
 const Footer = lazy(() => import('../widgets/layout/footer'));
 import { useMaterialTailwindController } from "@/context";
-import { useEffect } from "react";
 import JwtDecodedToken from "../utils/jwtDecode";
 import { useDataUser } from "../store/store";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +11,9 @@ import SideNavSkeleton from "../components/skeleton/SideNavSkeleton";
 import NavbarSkeleton from "../components/skeleton/NavbarSkeleton";
 import { AlertCustom } from "../components/AlertCustom";
 import FooterSkeleton from "../components/skeleton/FooterSkeleton";
+const Log =lazy(()=>import( "../pages/dashboard/Log"));
+const KartuPelajar =lazy(()=>import( "../pages/dashboard/KartuPelajar"));
+const Sertifikat = lazy(()=>import( "../pages/dashboard/Sertifikat"));
 const Surat = lazy(()=>import( "../pages/dashboard/Surat"));
 const TemplateSurat = lazy(()=>import( "../pages/dashboard/TemplateSurat"));
 const Kepsek = lazy(()=>import( "../pages/dashboard/Kepsek"));
@@ -75,6 +77,9 @@ export function Dashboard() {
               <Route path="/users" element={<Users />} />
               <Route path="/kepsek" element={<Kepsek />} />
               <Route path="/surat" element={<Surat />} />
+              <Route path="/sertifikat" element={<Sertifikat />} />
+              <Route path="/kartu-pelajar" element={<KartuPelajar />} />
+              <Route path="/log" element={<Log />} />
             </Routes>
           </Suspense>
         </div>

@@ -1,25 +1,24 @@
-import { AccordionBody, Typography } from '@material-tailwind/react'
-import { Accordion, AccordionHeader } from '@material-tailwind/react'
-import { List, ListItem, ListItemPrefix } from '@material-tailwind/react'
-import { useState } from 'react'
-import { FaArrowRight, FaDatabase, } from 'react-icons/fa'
-import { AiOutlineCaretDown } from 'react-icons/ai'
-import { FiHome, FiUsers, FiActivity } from 'react-icons/fi'
-import { NavLink } from 'react-router-dom'
-import { CiMail } from 'react-icons/ci'
-import { PiCertificateLight } from 'react-icons/pi'
-import { useDataUser } from '../store/store'
-
+import { AccordionBody, Typography } from "@material-tailwind/react";
+import { Accordion, AccordionHeader } from "@material-tailwind/react";
+import { List, ListItem, ListItemPrefix } from "@material-tailwind/react";
+import { useState } from "react";
+import { FaArrowRight, FaDatabase } from "react-icons/fa";
+import { AiOutlineCaretDown } from "react-icons/ai";
+import { FiHome, FiUsers, FiActivity } from "react-icons/fi";
+import { NavLink } from "react-router-dom";
+import { CiMail } from "react-icons/ci";
+import { PiCertificateLight } from "react-icons/pi";
+import { useDataUser } from "../store/store";
 
 export default function SideNavMenuList() {
   const [open, setOpen] = useState(0);
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
   };
-  const idUsers = useDataUser((state) => state.role)
+  const idUsers = useDataUser((state) => state.role);
   return (
     <List className="h-max overflow-scroll">
-      <NavLink to={'/dashboard'}>
+      <NavLink to={"/dashboard"}>
         <ListItem>
           <ListItemPrefix>
             <FiHome className="h-5 w-5" />
@@ -32,12 +31,17 @@ export default function SideNavMenuList() {
         icon={
           <AiOutlineCaretDown
             strokeWidth={2.5}
-            className={`mx-auto h-4 w-4 transition-transform ${open === 2 ? "rotate-180" : ""}`}
+            className={`mx-auto h-4 w-4 transition-transform ${
+              open === 2 ? "rotate-180" : ""
+            }`}
           />
         }
       >
         <ListItem className="p-0" selected={open === 2}>
-          <AccordionHeader onClick={() => handleOpen(2)} className="border-b-0 p-3">
+          <AccordionHeader
+            onClick={() => handleOpen(2)}
+            className="border-b-0 p-3"
+          >
             <ListItemPrefix>
               <FaDatabase className="h-5 w-5" />
             </ListItemPrefix>
@@ -48,7 +52,7 @@ export default function SideNavMenuList() {
         </ListItem>
         <AccordionBody className="py-1">
           <List className="p-0">
-            <NavLink to={'./templatesurat'}>
+            <NavLink to={"./templatesurat"}>
               <ListItem>
                 <ListItemPrefix>
                   <FaArrowRight strokeWidth={3} className="h-3 w-5" />
@@ -56,7 +60,7 @@ export default function SideNavMenuList() {
                 Template Surat
               </ListItem>
             </NavLink>
-            <NavLink to={'./templatesertifikat'}>
+            <NavLink to={"./templatesertifikat"}>
               <ListItem>
                 <ListItemPrefix>
                   <FaArrowRight strokeWidth={3} className="h-3 w-5" />
@@ -64,7 +68,7 @@ export default function SideNavMenuList() {
                 Template Sertifikat
               </ListItem>
             </NavLink>
-            <NavLink to={'./Kepsek'}>
+            <NavLink to={"./Kepsek"}>
               <ListItem>
                 <ListItemPrefix>
                   <FaArrowRight strokeWidth={3} className="h-3 w-5" />
@@ -77,7 +81,7 @@ export default function SideNavMenuList() {
       </Accordion>
       <hr className="my-2 border-blue-gray-50" />
       {idUsers !== 3 && (
-        <NavLink to={'./users'}>
+        <NavLink to={"./users"}>
           <ListItem>
             <ListItemPrefix>
               <FiUsers className="h-5 w-5" />
@@ -86,28 +90,42 @@ export default function SideNavMenuList() {
           </ListItem>
         </NavLink>
       )}
-      <NavLink to={'./surat'}>
-      <ListItem>
-        <ListItemPrefix>
-          <CiMail className="h-5 w-5" />
-        </ListItemPrefix>
-        Surat
-      </ListItem>
+      <NavLink to={"./surat"}>
+        <ListItem>
+          <ListItemPrefix>
+            <CiMail className="h-5 w-5" />
+          </ListItemPrefix>
+          Surat
+        </ListItem>
       </NavLink>
-      <ListItem>
-        <ListItemPrefix>
-          <PiCertificateLight className="h-5 w-5" />
-        </ListItemPrefix>
-        Sertifikat
-      </ListItem>
+      <NavLink to={"./kartu-pelajar"}>
+        <ListItem>
+          <ListItemPrefix>
+            <PiCertificateLight className="h-5 w-5" />
+          </ListItemPrefix>
+          Kartu Pelajar
+        </ListItem>
+      </NavLink>
+      <NavLink to={"./sertifikat"}>
+        <ListItem>
+          <ListItemPrefix>
+            <PiCertificateLight className="h-5 w-5" />
+          </ListItemPrefix>
+          Sertifikat
+        </ListItem>
+      </NavLink>
       {idUsers === 0 || idUsers === 1 ? (
-      <ListItem>
-        <ListItemPrefix>
-          <FiActivity className="h-5 w-5" />
-        </ListItemPrefix>
-        Log
-      </ListItem>
-      ):(<></>)}
+         <NavLink to={"./log"}>
+        <ListItem>
+          <ListItemPrefix>
+            <FiActivity className="h-5 w-5" />
+          </ListItemPrefix>
+          Log
+        </ListItem>
+          </NavLink>
+      ) : (
+        <></>
+      )}
     </List>
-  )
+  );
 }

@@ -20,6 +20,10 @@ export const deleteSurat = async(idSurat)=>{
     const data = await axiosJwt.delete(`${endpoint}/surat/${idSurat}`)
     return data
 }
+export const editSurat= async(payload)=>{
+    const data= await axiosJwt.put(`${endpoint}/surat`,payload)
+    return data
+}
 
 // export const searchSurat = async(query)=>{
 //     const data = await axiosJwt.delete(`${endpoint}/surat/${0}query?=`)

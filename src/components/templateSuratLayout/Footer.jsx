@@ -1,5 +1,6 @@
 import { useQuery } from "react-query";
 import { getDetailKepsek } from "../../api/kepsek";
+import QrCode from "../QrCode";
 
 export default function Footer() {
     const { data, isLoading } = useQuery("kepalaSekolah", {
@@ -40,6 +41,7 @@ export default function Footer() {
                     </div>
                     <div>Kepala Sekolah</div>
                 </div>
+                <QrCode/>
                 <div>
                     <p>{data.data.user.username}</p>
                     <p>Pembina Tingkat I</p>

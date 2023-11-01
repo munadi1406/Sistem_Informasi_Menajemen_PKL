@@ -36,7 +36,7 @@ const Form = ({ handleSubmit, isEdit, dataSurat }) => {
 
   const handleSubmitCreate = (e) => {
     e.preventDefault();
-   
+
     const payload = {
       perihal,
       idTemplateSurat: templateSurat,
@@ -51,7 +51,8 @@ const Form = ({ handleSubmit, isEdit, dataSurat }) => {
             }),
       },
     };
-    console.log({isiIfTipeTable})
+    // console.log({ isiData });
+    // console.log({ isiIfTipeTable });
     // console.log(payload);
     handleSubmit.mutate(payload);
   };
@@ -74,25 +75,32 @@ const Form = ({ handleSubmit, isEdit, dataSurat }) => {
       // console.log(
       //   dataSurat?.template ? JSON.parse(dataSurat.template.variable) : "",
       // );
-      const isiArrayAttributes = dataSurat?.isi_surat ?  Object.keys(JSON.parse(dataSurat?.isi_surat)).filter(key => {
-        console.log(key)
-        const test =  key.includes('isi')
-        console.log({test})
-        return key.includes('isi') && Array.isArray(JSON.parse(dataSurat.isi_surat)[key]);
-      }) : {};
-      
+      let isiVariable;
+      const isiArrayAttributes = dataSurat?.isi_surat
+        ? Object.keys(JSON.parse(dataSurat.isi_surat)).filter((key) => {
+            // console.log(key);
+            const test = key.includes("isi");
+            // console.log({ test });
+            return (
+              key.includes("isi") &&
+              Array.isArray(JSON.parse(dataSurat.isi_surat)[key])
+            );
+          })
+        : [];
 
-      if(isiArrayAttributes){
-        console.log(typeof isiArrayAttributes)
-        console.log({datas : isiArrayAttributes[0]})
-        const isiVariable = isiArrayAttributes[0]
-        console.log({isiVariable})
-        setJumlahOrang(JSON.parse(dataSurat?.isi_surat)[isiVariable].length)
-        console.log(JSON.parse(dataSurat?.isi_surat)[isiVariable].length)
+      if (isiArrayAttributes.length > 0) {
+        // console.log(typeof isiArrayAttributes[0]);
+        // console.log({ datas: isiArrayAttributes[0] });
+        isiVariable = isiArrayAttributes[0];
+        // console.log({ isiVariable });
+
+        const isiSurat = JSON.parse(dataSurat.isi_surat);
+        if (isiSurat && isiSurat[isiVariable]) {
+          setJumlahOrang(isiSurat[isiVariable].length);
+          // console.log(isiSurat[isiVariable].length);
+        }
       }
-     
-      // console.log(dataSurat?.isi_surat);
-      // console.log(dataSurat)
+
       setTemplateSurat(dataSurat?.id_template_surat);
       setPerihal(dataSurat?.perihal);
       setVariabelData(
@@ -100,7 +108,22 @@ const Form = ({ handleSubmit, isEdit, dataSurat }) => {
       );
       setCurrentTemplate(dataSurat?.template);
       setIsiSurat(dataSurat?.isi_surat ? JSON.parse(dataSurat.isi_surat) : "");
-      setIsiIfTipeTable(dataSurat?.isi_surat ? JSON.parse(dataSurat?.isi_surat).isi : '')
+      setIsiIfTipeTable(
+        dataSurat?.isi_surat ? JSON.parse(dataSurat?.isi_surat).isi : "",
+      );
+      setIsiData(
+        dataSurat?.isi_surat && JSON.parse(dataSurat?.isi_surat)[isiVariable],
+      );
+      const outputObject = {};
+      const dataSuratJson =
+        dataSurat?.isi_surat && JSON.parse(dataSurat?.isi_surat);
+      for (const key in dataSuratJson) {
+        if (key !== isiVariable && key !== "isi") {
+          outputObject[key] = dataSuratJson[key];
+        }
+      }
+      // console.log({outputObject});
+      setOtherVariable(outputObject);
     }
   }, [isEdit, dataSurat]);
 
@@ -153,7 +176,7 @@ const Form = ({ handleSubmit, isEdit, dataSurat }) => {
                   <TextInput
                     label={e}
                     key={i}
-                    defaultValue={variabelData[e] && isEdit  ? isiSurat[e] : ""}
+                    defaultValue={variabelData[e] && isEdit ? isiSurat[e] : ""}
                     required
                     onChange={(event) =>
                       setOtherVariable((prev) => ({
@@ -162,7 +185,6 @@ const Form = ({ handleSubmit, isEdit, dataSurat }) => {
                       }))
                     }
                   />
-                 
                 </>
               ) : (
                 <>
@@ -196,8 +218,13 @@ const Form = ({ handleSubmit, isEdit, dataSurat }) => {
                                         return updatedData;
                                       });
                                     }}
-                                    onLoad={()=>console.log("running")}
-                                    defaultValue={variabelData[e] && isEdit ? isiSurat[e][index][variabelIsi] : ''}
+                                    defaultValue={
+                                      variabelData[e] && isEdit
+                                        ? isiSurat[e][index]
+                                          ? isiSurat[e][index][variabelIsi]
+                                          : ""
+                                        : ""
+                                    }
                                   />
                                 </>
                               ),
@@ -207,12 +234,12 @@ const Form = ({ handleSubmit, isEdit, dataSurat }) => {
                     </>
                   ) : (
                     <>
-                    <TextInput
-                      label={"Isi"}
-                      required
-                      onChange={(e) => setIsiIfTipeTable(e.target.value)}
-                      defaultValue={isiIfTipeTable}
-                    />
+                      <TextInput
+                        label={"Isi"}
+                        required
+                        onChange={(e) => setIsiIfTipeTable(e.target.value)}
+                        defaultValue={isiIfTipeTable}
+                      />
                     </>
                   )}
                 </>

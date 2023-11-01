@@ -155,7 +155,7 @@ export default function Surat() {
       return isCreate.data;
     },
     onSuccess: (data) => {
-      console.log(data)
+      // console.log(data)
       setOpenModalEdit(false);
       setOpen(true);
       setStatus(true);
@@ -163,7 +163,7 @@ export default function Surat() {
     },
     onError: (error) => {
       // setErrorMsg(error.response.data.message);
-      console.log(error)
+      // console.log(error)
     },
   });
   if (isLoading) {

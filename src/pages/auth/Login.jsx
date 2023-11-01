@@ -34,16 +34,16 @@ export default function Login() {
         }
     })
     return (
-        <div className='h-screen w-screen lg:grid lg:grid-cols-12 overflow-clip flex justify-center items-center'>
+        <div className='h-screen w-screen lg:grid lg:grid-cols-2 overflow-clip flex justify-center items-center'>
             <Dialog open={open} handler={handleOpen} >
                 <DialogHeader>Register</DialogHeader>
                 <DialogBody>
-                <Suspense fallback={<div className='w-full h-56 bg-gray-600 animate-pulse'/>}>
+                <Suspense fallback={<div className='w-full h-56 bg-gray-600 animate-pulse rounded-md'/>}>
                     <Register />
                 </Suspense>
                 </DialogBody>
             </Dialog>
-            <div className='col-span-8 relative lg:block hidden'>
+            <div className='relative lg:block hidden'>
                 <img src={smaImage} className='h-screen object-cover relative z-0' />
                 <div className='bg-black/50 top-0 left-0 absolute z-10 w-full h-full'></div>
                 <div className='absolute top-0 left-0 z-20 text-white h-full w-full p-2 flex justify-start items-center'>
@@ -57,7 +57,7 @@ export default function Login() {
                     </div>
                 </div>
             </div>
-            <div className='lg:w-full lg:h-full col-span-4 flex flex-col justify-center items-center h-max lg:rounded-none lg:shadow-none rounded-md shadow-xl'>
+            <div className='lg:w-full lg:h-full flex flex-col justify-center items-center h-max lg:rounded-none lg:shadow-none rounded-md shadow-xl'>
                 <div className='w-full  flex flex-col justify-center items-center gap-2 lg:p-2 p-4'>
                     <img src={logoSma1} className='w-32' />
                     <h1 className='font-bold text-3xl text-center'>

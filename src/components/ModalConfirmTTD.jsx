@@ -17,19 +17,19 @@ const ModalConfirmTTD = ({ idSurat,handleOpen }) => {
   const { mutate, isLoading } = useMutation({
     mutationFn: async (e) => {
       e.preventDefault()
-      console.log(idSurat)
+      // console.log(idSurat)
       const data = await tandaTangan({ idSurat, password })
       return data.data
     },
     onSuccess:(data)=>{
-      console.log(data)
+      // console.log(data)
       handleOpen(null)
       setOpen(true);
       setStatus(true);
       setMsg(data.message);
     },
     onError:(error)=>{
-      console.log(error)
+      // console.log(error)
       setErrorMsg(error.response.data.message);
     }
 

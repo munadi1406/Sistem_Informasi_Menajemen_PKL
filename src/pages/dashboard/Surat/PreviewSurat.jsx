@@ -106,7 +106,6 @@ const PreviewSurat = ({ handleGetDetailSurat }) => {
 
   return (
     <>
-      {console.log(handleGetDetailSurat.data)}
       <Index isi={isiTemplate} isSignature={true} data={handleGetDetailSurat.data}/>
     </>
   );

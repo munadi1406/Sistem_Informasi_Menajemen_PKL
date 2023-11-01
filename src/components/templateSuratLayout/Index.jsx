@@ -42,7 +42,7 @@ export default function Index({ isi, data }) {
     });
     li.forEach((e) => {
       e.classList.add("break-words");
-    });
+    }); 
 
     ol.forEach((e) => {
       e.classList.add("list-decimal", "ml-5");

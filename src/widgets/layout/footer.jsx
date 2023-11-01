@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer className="py-2 w-full">
     <div className="text-center">
-      &copy; {year} <span className="font-bold">SMAN 1 Karang Intan </span>Develop By <a href="google.com" className="font-bold">Mun</a>
+      &copy; {year} <span className="font-bold">SMAN 1 Karang Intan </span>Develop By <a href="mailto:munadifathullah123@gmail.com" className="font-bold" target={"_blank"} rel={"noreferrer"}>Mun</a>
     </div>
     </footer>
   );

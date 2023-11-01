@@ -9,6 +9,7 @@ import { NavLink } from "react-router-dom";
 import { CiMail } from "react-icons/ci";
 import { PiCertificateLight } from "react-icons/pi";
 import { useDataUser } from "../store/store";
+import {TiDocumentText} from 'react-icons/ti'
 
 export default function SideNavMenuList() {
   const [open, setOpen] = useState(0);
@@ -126,6 +127,14 @@ export default function SideNavMenuList() {
       ) : (
         <></>
       )}
+       <NavLink to={"./dokumentasi"}>
+        <ListItem>
+          <ListItemPrefix>
+            <TiDocumentText className="h-5 w-5" />
+          </ListItemPrefix>
+          Dokumentasi
+        </ListItem>
+      </NavLink>
     </List>
   );
 }

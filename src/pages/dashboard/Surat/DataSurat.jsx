@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { useDataUser } from "../../../store/store";
 
 const TABLE_HEAD = [
+  "Nomor Surat",
   "Pembuat Surat",
   "Jenis Surat",
   "Perihal",
@@ -54,6 +55,15 @@ export default function DataSurat({
               const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
               return (
                 <tr key={i} className={tandaTangan.length > 0 && 'bg-green-700/30 '}>
+                  <td className={classes}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {id_surat}
+                    </Typography>
+                  </td>
                   <td className={classes}>
                     <Typography
                       variant="small"

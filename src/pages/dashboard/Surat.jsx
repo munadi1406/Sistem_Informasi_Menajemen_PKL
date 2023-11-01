@@ -83,6 +83,7 @@ export default function Surat() {
       setOpenCreateForm(false);
       setOpen(true);
       setStatus(true);
+      refetch()
       setMsg(data.message);
     },
     onError: (error) => {
@@ -145,7 +146,6 @@ export default function Surat() {
   //   }
   // };
 
-
   const handleEditSurat = useMutation({
     mutationFn: async (e) => {
       const isCreate = await editSurat({
@@ -163,7 +163,7 @@ export default function Surat() {
     },
     onError: (error) => {
       // setErrorMsg(error.response.data.message);
-      // console.log(error)
+      console.log(error);
     },
   });
   if (isLoading) {
@@ -224,17 +224,7 @@ export default function Surat() {
           </div>
           <div className="flex flex-col items-start justify-center gap-4 w-full">
             <div className="w-full md:w-72">
-              {/* <TextInput
-              label="Search"
-              icon={
-                handleSearchTemplate.isLoading ? (
-                  <Spinner />
-                ) : (
-                  <MagnifyingGlassIcon className="h-5 w-5" />
-                )
-              }
-              onChange={search}
-            /> */}
+              <TextInput label="Search" />
             </div>
             <div>
               <div className="text-black text-lg font-semibold">Keterangan</div>

@@ -13,3 +13,9 @@ export const storeDetailKepsek = async (payload) => {
   });
   return data;
 };
+
+
+export const getKepsekSignature = async (imageName)=>{
+  const data = await axiosJwt.get(`${endpoint}/kepsek/${imageName}`)
+  return data
+}

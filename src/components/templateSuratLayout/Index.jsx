@@ -4,7 +4,7 @@ import Footer from "./Footer";
 import PropTypes from "prop-types";
 import ButtonCustom from "../ButtonCustom";
 import "./content.css";
-import ReactToPrint, { useReactToPrint } from "react-to-print";
+import  { useReactToPrint } from "react-to-print";
 
 export default function Index({ isi, data }) {
   const containerRef = useRef();
@@ -68,7 +68,6 @@ export default function Index({ isi, data }) {
   }, [isi]);
   const [isPrint, setIsPrint] = useState(false);
   useEffect(() => {
-    console.log("Ref berubah:", targetRef.current);
     if (isPrint) {
       handlePrint();
     }

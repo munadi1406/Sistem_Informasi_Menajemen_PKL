@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import PropTypes from "prop-types";
 import ButtonCustom from "../ButtonCustom";
 import "./content.css";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 export default function Index({ isi, data }) {
   const containerRef = useRef();
@@ -42,7 +42,7 @@ export default function Index({ isi, data }) {
     });
     li.forEach((e) => {
       e.classList.add("break-words");
-    }); 
+    });
 
     ol.forEach((e) => {
       e.classList.add("list-decimal", "ml-5");
@@ -66,6 +66,19 @@ export default function Index({ isi, data }) {
       e.classList.add("text-lg");
     });
   }, [isi]);
+  const [isPrint, setIsPrint] = useState(false);
+  useEffect(() => {
+    console.log("Ref berubah:", targetRef.current);
+    if (isPrint) {
+      handlePrint();
+    }
+  }, [targetRef, isPrint]);
+
+  const handlePrint = useReactToPrint({
+    content: () => targetRef.current,
+    onAfterPrint: () => setIsPrint(false),
+  });
+
   return (
     <>
       <div className="text-black w-[793px] m-auto" id="pdf">
@@ -75,32 +88,37 @@ export default function Index({ isi, data }) {
           <Footer
             isSignature={data?.tandaTangan[0]}
             signatureType={typeSignature}
+            dataSurat={data}
           />
         </div>
       </div>
       {isi && (
         <div className="flex w-full gap-2 ">
-          <ReactToPrint
-            trigger={() => {
-              return <ButtonCustom text={"Print"} />;
+          <ButtonCustom
+            onClick={() => {
+              setIsPrint(true);
+              setTypeSignature("");
             }}
-            onBeforePrint={() => setTypeSignature("")}
-            content={() => targetRef.current}
+            text={"Print"}
           />
-          <ReactToPrint
-            trigger={() => {
-              return <ButtonCustom text={"Qr Code"} />;
-            }}
-            onBeforePrint={() => setTypeSignature("qrCode")}
-            content={() => targetRef.current}
-          />
-          <ReactToPrint
-            trigger={() => {
-              return <ButtonCustom text={"Tanda Tangan"} />;
-            }}
-            onBeforePrint={() => setTypeSignature("tandaTangan")}
-            content={() => targetRef.current}
-          />
+          {data?.tandaTangan[0] && (
+            <>
+              <ButtonCustom
+                onClick={() => {
+                  setIsPrint(true);
+                  setTypeSignature("qrCode");
+                }}
+                text={"Qr Code"}
+              />
+              <ButtonCustom
+                onClick={() => {
+                  setIsPrint(true);
+                  setTypeSignature("tandaTangan");
+                }}
+                text={"Tanda Tangan"}
+              />
+            </>
+          )}
         </div>
       )}
     </>

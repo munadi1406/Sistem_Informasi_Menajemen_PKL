@@ -6,12 +6,7 @@ export default function QrCode({value}) {
   return (
     <QRCodeSVG
       value={value}
-      imageSettings={{
-        src: Logo,
-        width: 24,
-        height: 24,
-        excavate: true,
-      }}
+      
       size="100"
     />
   );

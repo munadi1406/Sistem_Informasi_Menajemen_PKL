@@ -7,12 +7,15 @@ import {
   editSurat,
   getDetailSurat,
   getListSurats,
+  searchSurat,
 } from "../../api/surat";
 import {
   Card,
   CardBody,
   CardFooter,
   CardHeader,
+  Option,
+  Select,
 } from "@material-tailwind/react";
 import TextInput from "../../components/TextInput";
 import ButtonCustom from "../../components/ButtonCustom";
@@ -83,7 +86,7 @@ export default function Surat() {
       setOpenCreateForm(false);
       setOpen(true);
       setStatus(true);
-      refetch()
+      refetch();
       setMsg(data.message);
     },
     onError: (error) => {
@@ -122,29 +125,33 @@ export default function Surat() {
       setMsg(error.response.data.message);
     },
   });
-  // const [isSearch, setIsSearch] = useState();
-  // const handleSearchTemplate = useMutation({
-  //   mutationFn: async (jenisSurat) => {
-  //     const dataSearch = await searchTemplate(jenisSurat);
-  //     return dataSearch.data.data;
-  //   },
-  // });
+  const [isSearch, setIsSearch] = useState();
+  const [query,setQuery] = useState("");
+  const handleSearchSurat = useInfiniteQuery(`listSearch-${query}`, {
+    queryFn: async ({ pageParam }) => {
+      const data = await searchSurat(pageParam || 0,query);
+      return data.data;
+    },
+    getNextPageParam: (lastPage) => lastPage.data.data.lastIdSurat,
+    staleTime: 5000,
+    enabled:!!isSearch,
+  });
 
-  // let searchTimeout;
-  // const search = (e) => {
-  //   const query = e.target.value;
-  //   if (query.length > 3) {
-  //     setIsSearch(true);
-  //     if (searchTimeout) {
-  //       clearTimeout(searchTimeout);
-  //     }
-  //     searchTimeout = setTimeout(() => {
-  //       handleSearchTemplate.mutate(query);
-  //     }, 2000);
-  //   } else {
-  //     setIsSearch(false);
-  //   }
-  // };
+  let searchTimeout;
+  const search = (e) => {
+    const query = e.target.value;
+    if (query.length > 3) {
+      setIsSearch(true);
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+      searchTimeout = setTimeout(() => {
+        setQuery(query)
+      }, 2000);
+    } else {
+      setIsSearch(false);
+    }
+  };
 
   const handleEditSurat = useMutation({
     mutationFn: async (e) => {
@@ -224,7 +231,17 @@ export default function Surat() {
           </div>
           <div className="flex flex-col items-start justify-center gap-4 w-full">
             <div className="w-full md:w-72">
-              <TextInput label="Search" />
+              <TextInput
+                label="Search"
+                icon={
+                  handleSearchSurat.isLoading ? (
+                    <Spinner />
+                  ) : (
+                    <MagnifyingGlassIcon className="h-5 w-5" />
+                  )
+                }
+                onChange={search}
+              />
             </div>
             <div>
               <div className="text-black text-lg font-semibold">Keterangan</div>
@@ -241,7 +258,7 @@ export default function Surat() {
         <CardBody className="overflow-auto px-0">
           <Suspense fallback={<TableSkeleton />}>
             <DataSurat
-              dataSurat={data.pages}
+              dataSurat={isSearch ? handleSearchSurat.data ? handleSearchSurat.data.pages : data.pages: data.pages}
               handleOpenPreview={handleOpenPreview}
               handleOpenDelete={handleOpenModalDelete}
               handleOpenModalConfirmTTD={handleOpenModalConfirmTTD}

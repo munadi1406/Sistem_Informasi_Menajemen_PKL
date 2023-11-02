@@ -7,9 +7,8 @@ export const useToken = create((set) => ({
   setRefreshToken: (rt) => set({ refreshToken: rt }),
 }));
 
-
 export const useDataUser = create((set) => ({
-  idUsers: '',
+  idUsers: "",
   setIdUsers: (id) => set({ idUsers: id }),
   username: "",
   setUsername: (u) => set({ username: u }),
@@ -17,12 +16,16 @@ export const useDataUser = create((set) => ({
   setRole: (r) => set({ role: r }),
 }));
 
-
 export const useAlertNotification = create((set) => ({
   open: false,
   setOpen: (isOpen) => set({ open: isOpen }),
   status: false,
   setStatus: (status) => set({ status }),
   msg: "",
-  setMsg: (msg) => set({ msg })
-}))
+  setMsg: (msg) => set({ msg }),
+}));
+
+export const useKepsekImage = create((set) => ({
+  imageL: "",
+  setImage: (image) => set({ image }),
+}));

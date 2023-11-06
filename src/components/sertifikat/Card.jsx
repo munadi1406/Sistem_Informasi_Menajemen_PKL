@@ -106,8 +106,8 @@ export default function Card({
                 Berlaku Selama Siswa
               </div>
             </div>
-            <div className="  flex justify-between items-end flex-col pr-6">
-              <div className=" h-[100px] relative flex justify-between items-end flex-col">
+            <div className="  flex justify-between items-end flex-col pr-3">
+              <div className=" h-[100px] relative flex justify-between items-center flex-col">
                 <div
                   className={`text-center ${textColorBody}  text-md font-bold font-['Nunito Sans'] z-10 relative`}
                 >

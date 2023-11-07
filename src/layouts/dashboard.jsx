@@ -11,6 +11,7 @@ import SideNavSkeleton from "../components/skeleton/SideNavSkeleton";
 import NavbarSkeleton from "../components/skeleton/NavbarSkeleton";
 import { AlertCustom } from "../components/AlertCustom";
 import FooterSkeleton from "../components/skeleton/FooterSkeleton";
+const  Siswa =lazy(()=>import ("../pages/dashboard/Siswa"));
 const Log =lazy(()=>import( "../pages/dashboard/Log"));
 const KartuPelajar =lazy(()=>import( "../pages/dashboard/KartuPelajar"));
 const Sertifikat = lazy(()=>import( "../pages/dashboard/Sertifikat"));
@@ -75,6 +76,7 @@ export function Dashboard() {
               <Route path="/templateSertifikat" element={<TemplateSertifikat />} />
               <Route path="/templateSurat" element={<TemplateSurat />} />
               <Route path="/users" element={<Users />} />
+              <Route path="/siswa" element={<Siswa />} />
               <Route path="/kepsek" element={<Kepsek />} />
               <Route path="/surat" element={<Surat />} />
               <Route path="/sertifikat" element={<Sertifikat />} />

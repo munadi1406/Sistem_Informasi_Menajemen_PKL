@@ -10,6 +10,7 @@ import { CiMail } from "react-icons/ci";
 import { PiCertificateLight } from "react-icons/pi";
 import { useDataUser } from "../store/store";
 import {TiDocumentText} from 'react-icons/ti'
+import {AiFillIdcard} from 'react-icons/ai'
 
 export default function SideNavMenuList() {
   const [open, setOpen] = useState(0);
@@ -69,6 +70,14 @@ export default function SideNavMenuList() {
                 Template Sertifikat
               </ListItem>
             </NavLink>
+            <NavLink to={"./siswa"}>
+              <ListItem>
+                <ListItemPrefix>
+                  <FaArrowRight strokeWidth={3} className="h-3 w-5" />
+                </ListItemPrefix>
+                Data Siswa
+              </ListItem>
+            </NavLink>
             <NavLink to={"./Kepsek"}>
               <ListItem>
                 <ListItemPrefix>
@@ -102,7 +111,7 @@ export default function SideNavMenuList() {
       <NavLink to={"./kartu-pelajar"}>
         <ListItem>
           <ListItemPrefix>
-            <PiCertificateLight className="h-5 w-5" />
+            <AiFillIdcard className="h-5 w-5" />
           </ListItemPrefix>
           Kartu Pelajar
         </ListItem>

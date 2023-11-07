@@ -3,6 +3,8 @@ import TextInput from "../../components/TextInput";
 const Card = lazy(() => import("../../components/sertifikat/Card"));
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
+import { useQuery } from "react-query";
+import { getListSiswa } from "../../api/siswa";
 const animatedComponents = makeAnimated();
 export default function KartuPelajar() {
   const [headerColor, setHeaderColor] = useState("#2F42A0");
@@ -23,6 +25,25 @@ export default function KartuPelajar() {
       setter(true);
     }
   };
+
+const {
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    data,
+    refetch,
+  } = useQuery(`listSiswa`, {
+    queryFn: async ({ pageParam }) => {
+      const data = await getListSiswa(pageParam || 0);
+      return data.data;
+    },
+    onSuccess:(data)=>{
+      console.log(data)
+    }
+  });
+
+
   const options = [
     {
       namaLengkap: "Jamaludin",

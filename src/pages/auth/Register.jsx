@@ -48,6 +48,7 @@ export default function Register() {
                 <TextInput label='Email' type='email' required onChange={((e) => setEmail(e.target.value))} />
                 <TextInput label='Password' type={isShowPassword ? 'text' : 'password'} required onChange={((e) => setPassword(e.target.value))} />
                 <TextInput label='Konfirmasi Password' type={isShowPassword ? 'text' : 'password'} required onChange={((e) => setConfirmPassword(e.target.value))} />
+                <p className="text-sm text-blue-gray">Password Minimal 6 Karakter Terdiri Dari Huruf besar , kecil angka dan karakter khusus </p>
                 <div>
                     <Checkbox label="Show Password ?" color='blue' onChange={handleIsShowPassword} />
                 </div>

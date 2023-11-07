@@ -3,7 +3,6 @@
 import ButtonCustom from "../../../components/ButtonCustom";
 import WithContainerModal from "../../../utils/WithContainerModal";
 import { useState, lazy, Suspense, useEffect } from "react";
-
 import Loader from "../../../components/Loader";
 import { useAlertNotification } from "../../../store/store";
 import TextInput from "../../../components/TextInput";
@@ -12,6 +11,7 @@ import { Radio } from "@material-tailwind/react";
 import { useMutation } from "react-query";
 import { storeDataSiswa } from "../../../api/siswa";
 const FileDropZone = lazy(() => import("../../../components/FileDropZone"));
+import PropTypes from "prop-types";
 
 const Form = ({ handleOpen }) => {
   const [file, setFile] = useState([]);
@@ -112,5 +112,9 @@ const Form = ({ handleOpen }) => {
       </form>
     </div>
   );
+};
+
+Form.propTypes = {
+  handleOpen: PropTypes.func,
 };
 export default WithContainerModal(Form);

@@ -44,9 +44,7 @@ export default function Card({
         >
           <img src={LogoSekolah} width={104} height={108} className="" />
           <div>
-            <div
-              className={`${textColor} text-[32px] font-bold font-['Nunito Sans']`}
-            >
+            <div className={`${textColor} text-[32px] font-bold font-serif`}>
               SMAN 1 KARANG INTAN
             </div>
             <div
@@ -58,8 +56,8 @@ export default function Card({
           </div>
         </div>
         <div className="px-3">
-          <div className="w-full  grid grid-cols-2 py-4">
-            <div className="px-3 ">
+          <div className="w-full  grid grid-cols-3 pl-3 py-4">
+            <div className="px-3 col-span-2 ">
               <div
                 className={`text-start ${textColorBody}  text-[32px] font-bold font-['Nunito Sans']`}
               >
@@ -73,11 +71,6 @@ export default function Card({
               <div
                 className={`text-start ${textColorBody}  text-xl font-bold font-['Nunito Sans']`}
               >
-                {cardData.agama}
-              </div>
-              <div
-                className={`text-start ${textColorBody}  text-xl font-bold font-['Nunito Sans']`}
-              >
                 {cardData.ttl}
               </div>
               <div
@@ -85,8 +78,14 @@ export default function Card({
               >
                 {cardData.jenisKelamin}
               </div>
+              <div
+                className={`text-start ${textColorBody}  text-xl font-bold font-['Nunito Sans']`}
+              >
+                {cardData.alamat}
+              </div>
+             
             </div>
-            <div className="flex justify-end items-center px-3">
+            <div className="flex col-span-1 justify-end items-center px-3">
               <img
                 className="w-[138px] h-[138px] rounded-full"
                 src="https://via.placeholder.com/138x138"
@@ -95,21 +94,23 @@ export default function Card({
           </div>
           <div className="px-2  grid grid-cols-2">
             <div className="">
-              <BarcodeComponent
-                value={"Testing"}
-                isLight={isLightBody}
-                color={bodyColor}
-              />
-              <div
-                className={`text-start ${textColorBody}  text-[15px] font-bold font-['Nunito Sans']  px-2`}
-              >
-                Berlaku Selama Siswa
+              <div className="bg-white rounded-md p-2 ">
+                <BarcodeComponent value={"Testing"} />
+                <div
+                  className={`text-start text-black  text-[15px] font-bold font-['Nunito Sans']  px-2`}
+                >
+                  Berlaku Selama Siswa
+                </div>
               </div>
             </div>
-            <div className="  flex justify-between items-end flex-col pr-3">
-              <div className=" h-[100px] relative flex justify-between items-center flex-col">
+            <div className="flex justify-between items-end flex-col pr-3">
+              <div
+                className={`h-[100px] p-2 ${
+                  isLight ? "bg-transparent" : "bg-white rounded-md"
+                } relative flex justify-between items-center flex-col`}
+              >
                 <div
-                  className={`text-center ${textColorBody}  text-md font-bold font-['Nunito Sans'] z-10 relative`}
+                  className={`text-center text-black  text-md font-bold font-['Nunito Sans'] z-10 relative`}
                 >
                   Kepala Sekolah
                 </div>
@@ -120,7 +121,7 @@ export default function Card({
                   className="absolute top-[50%] left-[50%] translate-x-[-50%] z-0 translate-y-[-50%]"
                 />
                 <div
-                  className={`text-center ${textColorBody} text-md font-bold font-['Nunito Sans'] z-10 relative`}
+                  className={`text-center text-black text-md font-bold font-['Nunito Sans'] z-10 relative`}
                 >
                   {data.data.user.username}
                 </div>

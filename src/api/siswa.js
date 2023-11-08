@@ -10,7 +10,7 @@ export const storeDataSiswaWithXlsx = async (payload) => {
   return data;
 };
 export const storeDataSiswa = async (payload) => {
-  console.log(payload)
+  console.log(payload);
   const data = await axiosJwt.post(`${endpoint}/siswa`, payload, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -19,7 +19,14 @@ export const storeDataSiswa = async (payload) => {
   return data;
 };
 
-export const getListSiswa = async (lastNis) => {
-  const data = await axiosJwt.get(`${endpoint}/siswa/list/${lastNis}`);
+export const getListSiswa = async (lastNis,query) => {
+  const data = await axiosJwt.get(`${endpoint}/siswa/list/${lastNis}${query}`);
+  return data;
+};
+
+export const searchSurat = async (lastIdSurat, query) => {
+  const data = await axiosJwt.get(
+    `${endpoint}/siswa/list/${lastIdSurat}${query}`,
+  );
   return data;
 };

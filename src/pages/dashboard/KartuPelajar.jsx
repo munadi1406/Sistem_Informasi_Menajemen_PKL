@@ -32,7 +32,7 @@ export default function KartuPelajar() {
     isLoading,
     data,
     refetch,
-  } = useQuery(`listSiswa`, {
+  } = useQuery(`listSiswaKartuPelajar`, {
     queryFn: async ({ pageParam }) => {
       const data = await getListSiswa(pageParam || 0 ,isSearch ? `?search=${valueSearch}` : '');
       return data.data.data;

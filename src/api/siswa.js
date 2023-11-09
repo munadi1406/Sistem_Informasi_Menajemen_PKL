@@ -19,14 +19,19 @@ export const storeDataSiswa = async (payload) => {
   return data;
 };
 
-export const getListSiswa = async (lastNis,query) => {
+export const getListSiswa = async (lastNis, query) => {
   const data = await axiosJwt.get(`${endpoint}/siswa/list/${lastNis}${query}`);
   return data;
 };
 
-export const searchSurat = async (lastIdSurat, query) => {
+export const searchSiswa = async (lastIdSurat, query) => {
   const data = await axiosJwt.get(
-    `${endpoint}/siswa/list/${lastIdSurat}${query}`,
+    `${endpoint}/siswa/list/${lastIdSurat}?search=${query}`,
   );
+  return data;
+};
+
+export const deleteSiswa = async (nis) => {
+  const data = await axiosJwt.delete(`${endpoint}/siswa/${nis}`);
   return data;
 };

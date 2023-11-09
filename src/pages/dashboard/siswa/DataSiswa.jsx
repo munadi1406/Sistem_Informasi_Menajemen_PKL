@@ -8,7 +8,6 @@ import {
   Avatar,
 } from "@material-tailwind/react";
 import PropTypes from "prop-types";
-import { useDataUser } from "../../../store/store";
 
 const TABLE_HEAD = [
   "Siswa",
@@ -22,13 +21,10 @@ const TABLE_HEAD = [
 
 export default function DataSiswa({
   dataSurat,
-  handleOpenPreview,
+  handleOpenDetail,
   handleOpenDelete,
   handleOpenEdit,
-  handleOpenModalConfirmTTD,
 }) {
-  const role = useDataUser((state) => state.role);
-
   return (
     <table className="mt-4 w-full min-w-max table-auto text-left">
       <thead>
@@ -75,31 +71,31 @@ export default function DataSiswa({
               return (
                 <tr key={i}>
                   <td className={classes}>
-                  <div className="flex items-center gap-3">
-                    <Avatar
-                      src={
-                        "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg"
-                      }
-                      alt={"name"}
-                      size="sm"
-                    />
-                    <div className="flex flex-col">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {nama_lengkap}
-                      </Typography>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal opacity-70"
-                      >
-                        {nis}
-                      </Typography>
+                    <div className="flex items-center gap-3">
+                      <Avatar
+                        src={
+                          "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg"
+                        }
+                        alt={"name"}
+                        size="sm"
+                      />
+                      <div className="flex flex-col">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {nama_lengkap}
+                        </Typography>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal opacity-70"
+                        >
+                          {nis}
+                        </Typography>
+                      </div>
                     </div>
-                  </div>
                   </td>
                   <td className={classes}>
                     <Typography
@@ -148,7 +144,7 @@ export default function DataSiswa({
                   </td>
                   <td className={classes}>
                     <div className="bg-white rounded-md text-white">
-                      <Tooltip content="Edit Surat">
+                      <Tooltip content="Edit Data Siswa">
                         <IconButton
                           variant="text"
                           onClick={() => handleOpenEdit(nis)}
@@ -156,21 +152,31 @@ export default function DataSiswa({
                           <FaPencilAlt className="h-4 w-4" />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip content="Lihat Surat">
+                      <Tooltip content="Detail Data Siswa">
                         <IconButton
                           variant="text"
                           className="text-deep-purple-600"
-                          onClick={() => handleOpenPreview(nis)}
+                          onClick={() =>
+                            handleOpenDetail({
+                              nis,
+                              nama_lengkap,
+                              ttl,
+                              jenis_kelamin,
+                              alamat,
+                              createdAt,
+                              updatedAt,
+                            })
+                          }
                         >
                           <FaEye className="h-4 w-4" />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip content="Hapus Surat">
+                      <Tooltip content="Hapus Data Siswa">
                         <IconButton
                           variant="text"
                           className="text-red-600"
                           onClick={() =>
-                            handleOpenDelete(nis, { ttl, createdAt })
+                            handleOpenDelete(nis, { namaLengkap: nama_lengkap })
                           }
                         >
                           <FaTrash className="h-4 w-4" />
@@ -189,7 +195,7 @@ export default function DataSiswa({
 }
 DataSiswa.propTypes = {
   dataSurat: PropTypes.array,
-  handleOpenPreview: PropTypes.func.isRequired,
+  handleOpenDetail: PropTypes.func.isRequired,
   handleOpenDelete: PropTypes.func.isRequired,
   handleOpenEdit: PropTypes.func.isRequired,
   handleOpenModalConfirmTTD: PropTypes.func.isRequired,

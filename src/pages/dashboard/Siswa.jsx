@@ -1,14 +1,7 @@
 import { lazy, Suspense } from "react";
 import TableSkeleton from "../../components/skeleton/TableSkeleton";
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
-import {
-  createSurat,
-  deleteSurat,
-  editSurat,
-  getDetailSurat,
-  getListSurats,
-  searchSurat,
-} from "../../api/surat";
+import { createSurat, editSurat, getDetailSurat } from "../../api/surat";
 import {
   Card,
   CardBody,
@@ -24,42 +17,42 @@ import { Spinner } from "@material-tailwind/react";
 import { useState } from "react";
 import Form from "./siswa/Form";
 import { useAlertNotification } from "../../store/store";
-import PreviewSurat from "./Surat/PreviewSurat";
-import ModalDeleteSurat from "../../components/ModalDeleteSurat";
-import ModalConfirmTTD from "../../components/ModalConfirmTTD";
-import { getListSiswa } from "../../api/siswa";
-const  ExportFromXlsx = lazy(()=>import ("./siswa/ExportFromXlsx"));
+import DetailSiswa from "./siswa/DetailSiswa";
+import ModalDeleteSiswa from "../../components/ModalDeleteSiswa";
+import { deleteSiswa, getListSiswa, searchSiswa } from "../../api/siswa";
+const ExportFromXlsx = lazy(() => import("./siswa/ExportFromXlsx"));
 const DataSiswa = lazy(() => import("./siswa/DataSiswa"));
 
 export default function Siswa() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
-  const [isOpenPreview, setIsOpenPreview] = useState(false);
+  const [isOpenDetailSiswa, setIsOpenDetailSiswa] = useState(false);
   const [openModalDelete, setOpenModalDelete] = useState(false);
-  const [currentIdSurat, setCurrentIdSurat] = useState(0);
+  const [currentNis, setCurrentNis] = useState(0);
   const [deleteConfirmData, setDeleteConfirmData] = useState({});
   const [openModalConfrimTTD, setOpenModalConfirmTTD] = useState(false);
   const [openModalEdit, setOpenModalEdit] = useState(false);
-  const [openModalExport,setOpenModalExport] = useState(false)
-  const handleOpenModalExport = ()=> {
-    setOpenModalExport(!openModalExport)
-  }
+  const [openModalExport, setOpenModalExport] = useState(false);
+  const [detailSiswaData, setDetailSiswaData] = useState({});
+
+  const handleOpenModalExport = () => {
+    setOpenModalExport(!openModalExport);
+  };
   const handleOpenModalConfirmTTD = (idSurat) => {
     setOpenModalConfirmTTD(!openModalConfrimTTD);
-    setCurrentIdSurat(idSurat);
+    setCurrentNis(idSurat);
   };
   const handleOpenModalEdit = (currentId) => {
-    setCurrentIdSurat(currentId);
+    setCurrentNis(currentId);
     setOpenModalEdit(!openModalEdit);
   };
 
-  const handleOpenPreview = (idSurat) => {
-    setIsOpenPreview(!isOpenPreview);
-    if (!idSurat) return;
-    setCurrentIdSurat(idSurat);
+  const handleOpenDetail = (data) => {
+    setIsOpenDetailSiswa(!isOpenDetailSiswa);
+    setDetailSiswaData(data);
   };
   const handleOpenModalDelete = (currentId, data) => {
     setDeleteConfirmData(data);
-    setCurrentIdSurat(currentId);
+    setCurrentNis(currentId);
     setOpenModalDelete(!openModalDelete);
   };
   const handleOpenForm = () => setOpenCreateForm(!openCreateForm);
@@ -73,7 +66,7 @@ export default function Siswa() {
     refetch,
   } = useInfiniteQuery(`listSiswa`, {
     queryFn: async ({ pageParam }) => {
-      const data = await getListSiswa(pageParam || 0);
+      const data = await getListSiswa(pageParam || 0, "");
       return data.data;
     },
     getNextPageParam: (lastPage) => lastPage.data.data.lastNis,
@@ -100,18 +93,18 @@ export default function Siswa() {
     },
   });
 
-  const handleGetDetailSurat = useQuery(`detailSurat-${currentIdSurat}`, {
+  const handleGetDetailSurat = useQuery(`detailSurat-${currentNis}`, {
     queryFn: async () => {
-      const datas = await getDetailSurat(currentIdSurat);
+      const datas = await getDetailSurat(currentNis);
       return datas.data.data;
     },
     staleTime: 10000,
-    enabled: !!isOpenPreview || !!openModalEdit,
+    enabled: !!isOpenDetailSiswa || !!openModalEdit,
   });
 
-  const handleDeleteSurat = useMutation({
+  const handleDeleteSiswa = useMutation({
     mutationFn: async () => {
-      const data = await deleteSurat(currentIdSurat);
+      const data = await deleteSiswa(currentNis);
       return data.data;
     },
     onSuccess: (data) => {
@@ -120,6 +113,7 @@ export default function Siswa() {
       setStatus(true);
       setMsg(data.message);
       refetch();
+      handleSearchSiswa.refetch();
     },
     onError: (error) => {
       setOpenModalDelete(false);
@@ -130,12 +124,12 @@ export default function Siswa() {
   });
   const [isSearch, setIsSearch] = useState();
   const [query, setQuery] = useState("");
-  const handleSearchSurat = useInfiniteQuery(`listSearch-${query}`, {
+  const handleSearchSiswa = useInfiniteQuery(`siswaSearch-${query}`, {
     queryFn: async ({ pageParam }) => {
-      const data = await searchSurat(pageParam || 0, query);
+      const data = await searchSiswa(pageParam || 0, query);
       return data.data;
     },
-    getNextPageParam: (lastPage) => lastPage.data.data.lastIdSurat,
+    getNextPageParam: (lastPage) => lastPage.data.data.lastNis,
     staleTime: 5000,
     enabled: !!isSearch,
   });
@@ -159,7 +153,7 @@ export default function Siswa() {
   const handleEditSurat = useMutation({
     mutationFn: async (e) => {
       const isCreate = await editSurat({
-        idSurat: currentIdSurat,
+        idSurat: currentNis,
         ...e,
       });
       return isCreate.data;
@@ -190,27 +184,25 @@ export default function Siswa() {
         isEdit={openModalEdit}
         dataSurat={handleGetDetailSurat.data}
       />
-      <ModalDeleteSurat
+      <ModalDeleteSiswa
         open={openModalDelete}
         handleOpen={handleOpenModalDelete}
         size="sm"
         data={deleteConfirmData}
-        handleDelete={handleDeleteSurat}
+        handleDelete={handleDeleteSiswa}
       />
-      <PreviewSurat
-        handleOpen={handleOpenPreview}
-        open={isOpenPreview}
-        title={"Preview Surat"}
-        handleGetDetailSurat={handleGetDetailSurat}
+      <DetailSiswa
+        handleOpen={handleOpenDetail}
+        open={isOpenDetailSiswa}
+        title={"Detail Siswa"}
+        data={detailSiswaData}
       />
-      <ModalConfirmTTD
-        open={openModalConfrimTTD}
-        handleOpen={handleOpenModalConfirmTTD}
-        size="lg"
-        title="Konfirmasi Tanda Tangan"
-        idSurat={currentIdSurat}
+
+      <ExportFromXlsx
+        open={openModalExport}
+        handleOpen={handleOpenModalExport}
+        title={"Export Data Siswa"}
       />
-      <ExportFromXlsx open={openModalExport} handleOpen={handleOpenModalExport} title={"Export Data Siswa"}/>
       <Card className="h-full w-full">
         <CardHeader floated={false} shadow={false} className="rounded-none">
           <div className="mb-8 flex items-center justify-between gap-8">
@@ -249,7 +241,7 @@ export default function Siswa() {
               <TextInput
                 label="Search"
                 icon={
-                  handleSearchSurat.isLoading ? (
+                  handleSearchSiswa.isLoading ? (
                     <Spinner />
                   ) : (
                     <MagnifyingGlassIcon className="h-5 w-5" />
@@ -258,7 +250,6 @@ export default function Siswa() {
                 onChange={search}
               />
             </div>
-            
           </div>
         </CardHeader>
         <CardBody className="overflow-auto px-0">
@@ -266,12 +257,12 @@ export default function Siswa() {
             <DataSiswa
               dataSurat={
                 isSearch
-                  ? handleSearchSurat.data
-                    ? handleSearchSurat.data.pages
+                  ? handleSearchSiswa.data
+                    ? handleSearchSiswa.data.pages
                     : data.pages
                   : data.pages
               }
-              handleOpenPreview={handleOpenPreview}
+              handleOpenDetail={handleOpenDetail}
               handleOpenDelete={handleOpenModalDelete}
               handleOpenModalConfirmTTD={handleOpenModalConfirmTTD}
               handleOpenEdit={handleOpenModalEdit}
@@ -281,9 +272,21 @@ export default function Siswa() {
         <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
           {hasNextPage && (
             <ButtonCustom
-              text={isFetchingNextPage ? <Spinner /> : "Load More"}
-              onClick={fetchNextPage}
-              disabled={isFetchingNextPage}
+              text={
+                isFetchingNextPage || handleSearchSiswa.isFetchingNextPage ? (
+                  <Spinner />
+                ) : (
+                  "Load More"
+                )
+              }
+              onClick={
+                isSearch ? handleSearchSiswa.fetchNextPage : fetchNextPage
+              }
+              disabled={
+                isSearch
+                  ? handleSearchSiswa.isFetchingNextPage
+                  : isFetchingNextPage
+              }
             />
           )}
         </CardFooter>

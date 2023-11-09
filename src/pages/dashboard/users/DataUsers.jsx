@@ -73,10 +73,10 @@ export default function DataUsers({
             />
           </div>
         </div>
-      </CardHeader>
+      </CardHeader> 
 
-      <CardBody className="px-0 ">
-        <table className="w-full table-auto">
+      <CardBody className="overflow-auto px-0">
+        <table className="mt-4 w-full min-w-max table-auto text-left">
           <thead>
             <tr>
               {TABLE_HEAD.map((head) => (
@@ -117,7 +117,7 @@ export default function DataUsers({
                 return (
                   <tr key={username}>
                     <td className={classes}>
-                      <div className="flex items-center gap-3">
+                      
                         <Typography
                           variant="small"
                           color="blue-gray"
@@ -125,7 +125,7 @@ export default function DataUsers({
                         >
                           {username}
                         </Typography>
-                      </div>
+                      
                     </td>
                     <td className={classes}>
                       <Typography

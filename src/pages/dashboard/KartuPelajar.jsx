@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import TextInput from "../../components/TextInput";
 const Card = lazy(() => import("../../components/kartuPelajar/Card"));
 import Select from "react-select";
@@ -6,15 +6,19 @@ import makeAnimated from "react-select/animated";
 import { useQuery } from "react-query";
 import { getListSiswa } from "../../api/siswa";
 import Loader from "../../components/Loader";
+import { useReactToPrint } from "react-to-print";
+import ButtonCustom from "../../components/ButtonCustom";
+import { AiOutlinePrinter } from "react-icons/ai";
 const animatedComponents = makeAnimated();
+
 export default function KartuPelajar() {
   const [headerColor, setHeaderColor] = useState("#2F42A0");
   const [bodyColor, setBodyColor] = useState("#FFFFFF");
   const [isLight, setIsLight] = useState(false);
   const [isLightBody, setIsLightBody] = useState(true);
   const [valueCard, setValueCard] = useState([]);
-  const [isSearch,setIsSearch] = useState(false)
-  const [valueSearch,setValueSearch] = useState("")
+  const [isSearch, setIsSearch] = useState(false);
+  const [valueSearch, setValueSearch] = useState("");
   const hexConversion = (color, setter) => {
     let colors = color.replace(/^#/, "");
     const r = parseInt(colors.substring(0, 2), 16);
@@ -28,40 +32,46 @@ export default function KartuPelajar() {
     }
   };
 
-  const {
-    isLoading,
-    data,
-    refetch,
-  } = useQuery(`listSiswaKartuPelajar`, {
+  const { isLoading, data, refetch } = useQuery(`listSiswaKartuPelajar`, {
     queryFn: async ({ pageParam }) => {
-      const data = await getListSiswa(pageParam || 0 ,isSearch ? `?search=${valueSearch}` : '');
+      const data = await getListSiswa(
+        pageParam || 0,
+        isSearch ? `?search=${valueSearch}` : "",
+      );
       return data.data.data;
     },
-
   });
   let searchTimeOut;
-  const handleSearch = (e)=>{
-      refetch()
+  const handleSearch = (e) => {
+    refetch();
     if (e.length > 3) {
       setIsSearch(true);
       if (searchTimeOut) {
         clearTimeout(searchTimeOut);
       }
       searchTimeOut = setTimeout(() => {
-        setValueSearch(e)
+        setValueSearch(e);
       }, 2000);
-    }else{
-      setIsSearch(false)
-      setValueSearch("")
+    } else {
+      setIsSearch(false);
+      setValueSearch("");
     }
-  }
+  };
 
-  useEffect(()=>{
-    refetch()
-  },[valueSearch])
+  useEffect(() => {
+    refetch();
+  }, [valueSearch]);
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   if (isLoading) {
-    return <><Loader/></>;
+    return (
+      <>
+        <Loader />
+      </>
+    );
   }
   const options = data.data.data.map((item) => ({
     namaLengkap: item.nis,
@@ -107,17 +117,30 @@ export default function KartuPelajar() {
         components={animatedComponents}
         onInputChange={handleSearch}
       />
+      <ButtonCustom
+        className="flex items-center gap-3 w-max"
+        size="sm"
+        text={
+          <>
+            <AiOutlinePrinter className="h-4 w-4" /> Print
+          </>
+        }
+        color="blue"
+        onClick={handlePrint}
+      />
       <Suspense fallback={<>Loading...</>}>
-        {valueCard.map((e, i) => (
-          <Card
-            headerColor={headerColor}
-            isLight={isLight}
-            isLightBody={isLightBody}
-            key={i}
-            cardData={e}
-            bodyColor={bodyColor}
-          />
-        ))}
+        <div className="m-2 " ref={componentRef}>
+          {valueCard.map((e, i) => (
+            <Card
+              headerColor={headerColor}
+              isLight={isLight}
+              isLightBody={isLightBody}
+              key={i}
+              cardData={e}
+              bodyColor={bodyColor}
+            />
+          ))}
+        </div>
       </Suspense>
     </>
   );

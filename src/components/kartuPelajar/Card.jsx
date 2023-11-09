@@ -33,95 +33,94 @@ export default function Card({
   }
 
   return (
-    <>
+    <div className="flex gap-2 ">
       <div
-        className="w-[695px] h-[438px] relative rounded-[20px] overflow-clip "
+        className="w-[325.08px] h-[204.12px] relative rounded-lg overflow-clip border-2"
         style={{ backgroundColor: `${bodyColor}` }}
       >
         <div
-          className={`flex justify-start items-center`}
+          className={`flex justify-start items-center pl-2`}
           style={{ backgroundColor: `${headerColor}` }}
         >
-          <img src={LogoSekolah} width={104} height={108} className="" />
+          <img src={LogoSekolah} width={47} height={49} className="" />
           <div>
-            <div className={`${textColor} text-[32px] font-bold font-serif`}>
+            <div className={`${textColor} text-[13px] font-bold font-serif`}>
               SMAN 1 KARANG INTAN
             </div>
             <div
-              className={`${textColor} text-sm font-normal font-['Nunito Sans']`}
+              className={`${textColor} text-[8px] font-normal font-['Nunito Sans']`}
             >
               JL. P.M. NOOR KM. 47, Mandi Angin Barat, <br />
               Kec. Karang Intan, Kab. Banjar Prov. Kalimantan Selatan
             </div>
           </div>
         </div>
-        <div className="px-3">
-          <div className="w-full  grid grid-cols-3 pl-3 py-4">
-            <div className="px-3 col-span-2 ">
+        <div className="pl-2">
+          <div className="w-full  grid grid-cols-3 pl-2 py-2">
+            <div className=" col-span-2 ">
               <div
-                className={`text-start ${textColorBody}  text-[32px] font-bold font-['Nunito Sans']`}
+                className={`text-start ${textColorBody} capitalize text-[12px] font-bold font-['Nunito Sans']`}
               >
                 {cardData.value}
               </div>
               <div
-                className={`text-start ${textColorBody}  text-xl font-bold font-['Nunito Sans']`}
+                className={`text-start ${textColorBody} text-[8px] font-bold font-['Nunito Sans']`}
               >
                 {cardData.nisn}
               </div>
               <div
-                className={`text-start ${textColorBody}  text-xl font-bold font-['Nunito Sans']`}
+                className={`text-start ${textColorBody} capitalize text-[8px] font-bold font-['Nunito Sans']`}
               >
                 {cardData.ttl}
               </div>
               <div
-                className={`text-start ${textColorBody}  text-xl font-bold font-['Nunito Sans']`}
+                className={`text-start ${textColorBody} capitalize text-[8px] font-bold font-['Nunito Sans']`}
               >
                 {cardData.jenisKelamin}
               </div>
               <div
-                className={`text-start ${textColorBody}  text-xl font-bold font-['Nunito Sans']`}
+                className={`text-start ${textColorBody} text-[8px] font-bold font-['Nunito Sans']`}
               >
                 {cardData.alamat}
               </div>
-             
             </div>
-            <div className="flex col-span-1 justify-end items-center px-3">
+            <div className="flex col-span-1 justify-end items-center px-3 ">
               <img
-                className="w-[138px] h-[138px] rounded-full"
+                className="w-[55px] h-[55px] rounded-full"
                 src="https://via.placeholder.com/138x138"
               />
             </div>
           </div>
-          <div className="px-2  grid grid-cols-2">
-            <div className="">
-              <div className="bg-white rounded-md p-2 ">
-                <BarcodeComponent value={"Testing"} />
+          <div className="grid grid-cols-2">
+            <div className="ml-2 w-full h-full">
+              <div className="bg-white h-[60px] p-2 flex flex-col overflow-clip justify-end h-full items-start w-max rounded-sm  relative">
+                <div className="absolute top-4 left-0 z-0">
+                  <BarcodeComponent value={"Testing"} />
+                </div>
                 <div
-                  className={`text-start text-black  text-[15px] font-bold font-['Nunito Sans']  px-2`}
+                  className={`text-start text-black  text-[7px] font-bold font-['Nunito Sans'] relative z-10`}
                 >
-                  Berlaku Selama Siswa
+                  Berlaku Selama Menjadi Siswa
                 </div>
               </div>
             </div>
             <div className="flex justify-between items-end flex-col pr-3">
               <div
-                className={`h-[100px] p-2 ${
-                  isLight ? "bg-transparent" : "bg-white rounded-md"
-                } relative flex justify-between items-center flex-col`}
+                className={`h-[60px] p-2 bg-white rounded-sm relative flex justify-between items-center flex-col`}
               >
                 <div
-                  className={`text-center text-black  text-md font-bold font-['Nunito Sans'] z-10 relative`}
+                  className={`text-center text-black  text-[8px] font-bold font-['Nunito Sans'] z-10 relative`}
                 >
                   Kepala Sekolah
                 </div>
                 <img
                   src={`${endpoint}/kepsek/${data.data.tanda_tangan}`}
                   alt="Kepsek Signature"
-                  width={100}
+                  width={40}
                   className="absolute top-[50%] left-[50%] translate-x-[-50%] z-0 translate-y-[-50%]"
                 />
                 <div
-                  className={`text-center text-black text-md font-bold font-['Nunito Sans'] z-10 relative`}
+                  className={`text-center text-black text-[8px] font-bold font-['Nunito Sans'] z-10 relative`}
                 >
                   {data.data.user.username}
                 </div>
@@ -130,7 +129,38 @@ export default function Card({
           </div>
         </div>
       </div>
-    </>
+      <div className="w-[325.08px] h-[204.12px] relative  rounded-lg overflow-clip border-2" style={{ backgroundColor: `${bodyColor}` }}>
+        <img
+          className={`w-[202px] h-[210px] left-[62px] top-[-21px] absolute opacity-30`}
+          src={LogoSekolah}
+        />
+        <div className={`w-full ${textColorBody} text-[9.4px] font-bold font-['Nunito Sans']`}>
+          <ul className="list-decimal pl-6 py-3">
+            <li>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
+              molestiae esse, ut, ad quod nostrum unde optio nihil nesciunt
+            </li>
+            <li>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
+              molestiae esse,
+            </li>
+            <li>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
+              molestiae esse, ut, ad quod nostrum unde optio nihil nesciunt
+              harum ipsa, veniam voluptas natus facere ex officiis quasi velit
+              totam.
+            </li>
+            <li>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
+              molestiae esse, ut, ad quod nostrum unde optio nihil nesciunt
+              harum ipsa, veniam voluptas natus facere ex officiis quasi velit
+              totam.
+            </li>
+          </ul>
+        </div>
+        <div className="w-[325px] h-[23px] left-0 top-[181px] absolute " style={{ backgroundColor: `${headerColor}` }}/>
+      </div>
+    </div>
   );
 }
 Card.propTypes = {

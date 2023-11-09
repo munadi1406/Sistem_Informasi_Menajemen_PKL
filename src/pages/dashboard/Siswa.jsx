@@ -22,6 +22,7 @@ import ModalDeleteSiswa from "../../components/ModalDeleteSiswa";
 import { deleteSiswa, getListSiswa, searchSiswa } from "../../api/siswa";
 const ExportFromXlsx = lazy(() => import("./siswa/ExportFromXlsx"));
 const DataSiswa = lazy(() => import("./siswa/DataSiswa"));
+import {BiImport} from 'react-icons/bi'
 
 export default function Siswa() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
@@ -228,7 +229,7 @@ export default function Siswa() {
                 size="sm"
                 text={
                   <>
-                    <FaPlusCircle className="h-4 w-4" /> Export Dari Excel
+                    <BiImport className="h-4 w-4" /> Import Dari Excel
                   </>
                 }
                 color="blue"

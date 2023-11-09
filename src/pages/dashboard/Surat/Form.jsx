@@ -78,9 +78,7 @@ const Form = ({ handleSubmit, isEdit, dataSurat }) => {
       let isiVariable;
       const isiArrayAttributes = dataSurat?.isi_surat
         ? Object.keys(JSON.parse(dataSurat.isi_surat)).filter((key) => {
-            // console.log(key);
-            const test = key.includes("isi");
-            // console.log({ test });
+           
             return (
               key.includes("isi") &&
               Array.isArray(JSON.parse(dataSurat.isi_surat)[key])
@@ -261,6 +259,6 @@ const Form = ({ handleSubmit, isEdit, dataSurat }) => {
 Form.propTypes = {
   handleSubmit: PropTypes.object.isRequired,
   isEdit: PropTypes.bool.isRequired,
-  dataSurat: PropTypes.object.isRequired,
+  dataSurat: PropTypes.object,
 };
 export default WithContainerModal(Form);

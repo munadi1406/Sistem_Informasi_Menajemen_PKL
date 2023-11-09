@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 export default function BarcodeComponent({value}){
     return(
-        <Barcode value={value} fontSize={10} displayValue={false} height={40} width={2}  />
+        <Barcode value={value}  displayValue={false} height={15} width={0.5}  />
     )
 }
 BarcodeComponent.propTypes={

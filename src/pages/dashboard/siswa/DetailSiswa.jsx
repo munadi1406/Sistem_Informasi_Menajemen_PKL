@@ -1,7 +1,6 @@
 import WithContainerModal from "../../../utils/WithContainerModal";
 
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
 
 const DetailSiswa = ({ data }) => {
   return (

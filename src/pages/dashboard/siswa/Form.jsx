@@ -9,11 +9,11 @@ import TextInput from "../../../components/TextInput";
 import TextAreaCustom from "../../../components/TextAreaCustom";
 import { Radio } from "@material-tailwind/react";
 import { useMutation } from "react-query";
-import { storeDataSiswa } from "../../../api/siswa";
+import { storeDataSiswa, updateSiswa } from "../../../api/siswa";
 const FileDropZone = lazy(() => import("../../../components/FileDropZone"));
 import PropTypes from "prop-types";
 
-const Form = ({ handleOpen }) => {
+const Form = ({ handleOpen, isEdit, dataSiswa, currentNis,refetch }) => {
   const [file, setFile] = useState([]);
   const [errorMsg, setErrorMsg] = useState("");
   const { setOpen, setStatus, setMsg } = useAlertNotification((state) => state);
@@ -30,8 +30,26 @@ const Form = ({ handleOpen }) => {
   };
 
   useEffect(() => {
-    console.log(payload);
-  }, [payload]);
+    
+    if (isEdit) {
+      setPayload({
+        nis: dataSiswa?.nis,
+        alamat: dataSiswa?.alamat,
+        namaLengkap: dataSiswa?.nama_lengkap,
+        jenisKelamin: dataSiswa?.jenis_kelamin,
+      });
+
+      const ttl = dataSiswa?.ttl;
+
+      const split = ttl && ttl.split(",");
+      if (split) {
+        setTempatLahir(split[0]);
+        setTanggalLahir(split[1].trim());
+      }
+    }
+  }, [dataSiswa]);
+
+ 
 
   const { mutate, isLoading } = useMutation({
     mutationFn: async (e) => {
@@ -48,6 +66,30 @@ const Form = ({ handleOpen }) => {
       setOpen(true);
       setStatus(true);
       setMsg(data.message);
+      refetch()
+    },
+    onError: (error) => {
+      setErrorMsg(error.response.data.message);
+    },
+  });
+
+  const handleEditSiswa = useMutation({
+    mutationFn: async (e) => {
+      e.preventDefault()
+      const isCreate = await updateSiswa({
+        ...payload,
+        lastNis: currentNis,
+        ttl: `${tempatLahir}, ${tanggalLahir}`,
+        image: file[0],
+      });
+      return isCreate.data;
+    },
+    onSuccess: (data) => {
+      handleOpen();
+      setOpen(true);
+      setStatus(true);
+      setMsg(data.message);
+      refetch()
     },
     onError: (error) => {
       setErrorMsg(error.response.data.message);
@@ -56,28 +98,39 @@ const Form = ({ handleOpen }) => {
 
   return (
     <div className="space-y-2">
-      <form className="space-y-2" onSubmit={mutate}>
+      <form
+        className="space-y-2"
+        onSubmit={
+          isEdit
+            ? handleEditSiswa.mutate
+            : mutate
+        }
+      >
         <TextInput
           label={"NIS/NISN"}
           required
           onChange={handleChange}
           name="nis"
+          defaultValue={payload?.nis}
         />
         <TextInput
           label={"Nama Lengkap"}
           required
           onChange={handleChange}
           name="namaLengkap"
+          defaultValue={payload?.namaLengkap}
         />
         <div className="flex gap-10">
           <Radio
             name="type"
-            label="Laki-Laki"
+            label="laki-laki"
             color="blue"
             onChange={handleChange}
             name="jenisKelamin"
-            value={"laki-laki"}
+            value="laki-laki"
+            checked={payload?.jenisKelamin === "laki-laki" ? true : false}
           />
+         
           <Radio
             name="type"
             label="Perempuan"
@@ -85,30 +138,34 @@ const Form = ({ handleOpen }) => {
             onChange={handleChange}
             name="jenisKelamin"
             value="perempuan"
+            checked={payload?.jenisKelamin === "perempuan"}
           />
         </div>
         <TextInput
           label={"Tempat Lahir"}
           required
           onChange={(e) => setTempatLahir(e.target.value)}
+          value={tempatLahir}
         />
         <TextInput
           label={"Tanggal Lahir"}
           type="date"
           required
           onChange={(e) => setTanggalLahir(e.target.value)}
+          value={tanggalLahir}
         />
         <TextAreaCustom
           label={"Alamat"}
           required
           onChange={handleChange}
           name="alamat"
+          defaultValue={payload?.alamat}
         />
         <Suspense fallback={<Loader />}>
           <FileDropZone onFilesAdded={setFile} />
         </Suspense>
         <p className="text-red-600 text-xs">{errorMsg}</p>
-        <ButtonCustom text={isLoading ? <Loader /> : "Simpan"} type="submit" />
+        <ButtonCustom text={isLoading || handleEditSiswa.isLoading ? <Loader /> : "Simpan"} type="submit" />
       </form>
     </div>
   );
@@ -116,5 +173,9 @@ const Form = ({ handleOpen }) => {
 
 Form.propTypes = {
   handleOpen: PropTypes.func,
+  isEdit: PropTypes.bool,
+  dataSiswa: PropTypes.object,
+  currentNis: PropTypes.number,
+  refetch:PropTypes.func
 };
 export default WithContainerModal(Form);

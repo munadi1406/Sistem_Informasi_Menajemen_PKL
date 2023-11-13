@@ -19,6 +19,16 @@ export const storeDataSiswa = async (payload) => {
   return data;
 };
 
+export const updateSiswa = async (payload) => {
+  console.log(payload);
+  const data = await axiosJwt.put(`${endpoint}/siswa`, payload, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return data;
+};
+
 export const getListSiswa = async (lastNis, query) => {
   const data = await axiosJwt.get(`${endpoint}/siswa/list/${lastNis}${query}`);
   return data;
@@ -35,3 +45,10 @@ export const deleteSiswa = async (nis) => {
   const data = await axiosJwt.delete(`${endpoint}/siswa/${nis}`);
   return data;
 };
+
+export const detailSiswa = async (nis) => {
+  const data = await axiosJwt.get(`${endpoint}/siswa/${nis}`);
+  return data;
+};
+
+

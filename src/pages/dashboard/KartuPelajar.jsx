@@ -96,7 +96,8 @@ export default function KartuPelajar() {
   };
 
   return (
-    <>
+    <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 ">
+      <h5 className="text-2xl text-black font-bold">Kartu Pelajar </h5>
       <TextInput
         label={"Warna Header Kartu"}
         type={"color"}
@@ -129,19 +130,25 @@ export default function KartuPelajar() {
         onClick={handlePrint}
       />
       <Suspense fallback={<>Loading...</>}>
-        <div className="m-2 " ref={componentRef}>
+        <div className="flex flex-col" ref={componentRef}>
           {valueCard.map((e, i) => (
-            <Card
-              headerColor={headerColor}
-              isLight={isLight}
-              isLightBody={isLightBody}
+            <div
               key={i}
-              cardData={e}
-              bodyColor={bodyColor}
-            />
+              className={`card ${i !== 0 ? "print-page" : ""}`}
+              style={{ maxHeight: "300px" }}
+            >
+              {/* Your Card component */}
+              <Card
+                headerColor={headerColor}
+                isLight={isLight}
+                isLightBody={isLightBody}
+                cardData={e}
+                bodyColor={bodyColor}
+              />
+            </div>
           ))}
         </div>
       </Suspense>
-    </>
+    </div>
   );
 }

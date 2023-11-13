@@ -33,7 +33,7 @@ export default function Card({
   }
 
   return (
-    <div className="flex gap-2 ">
+    <div className="flex gap-2 my-1 mx-2">
       <div
         className="w-[325.08px] h-[204.12px] relative rounded-lg overflow-clip border-2"
         style={{ backgroundColor: `${bodyColor}` }}

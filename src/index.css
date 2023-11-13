@@ -8,6 +8,18 @@
   background-color: #78909c; 
   border-radius: 20px;
 }
+/* CSS */
+@media print {
+  .card {
+    page-break-inside: avoid;
+  }
+
+  .print-page {
+    page-break-before: auto;
+  }
+}
+
+
 
 
 @tailwind components;

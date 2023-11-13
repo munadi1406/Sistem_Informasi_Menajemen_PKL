@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import TableSkeleton from "../../components/skeleton/TableSkeleton";
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
-import { createSurat, editSurat, getDetailSurat } from "../../api/surat";
 import {
   Card,
   CardBody,
@@ -19,10 +18,15 @@ import Form from "./siswa/Form";
 import { useAlertNotification } from "../../store/store";
 import DetailSiswa from "./siswa/DetailSiswa";
 import ModalDeleteSiswa from "../../components/ModalDeleteSiswa";
-import { deleteSiswa, getListSiswa, searchSiswa } from "../../api/siswa";
+import {
+  deleteSiswa,
+  detailSiswa,
+  getListSiswa,
+  searchSiswa,
+} from "../../api/siswa";
 const ExportFromXlsx = lazy(() => import("./siswa/ExportFromXlsx"));
 const DataSiswa = lazy(() => import("./siswa/DataSiswa"));
-import {BiImport} from 'react-icons/bi'
+import { BiImport } from "react-icons/bi";
 
 export default function Siswa() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
@@ -74,29 +78,9 @@ export default function Siswa() {
     staleTime: 5000,
   });
 
-  const handleCreateSurat = useMutation({
-    mutationFn: async (payload) => {
-      const datas = await createSurat(payload);
-      return datas.data;
-    },
-    onSuccess: (data) => {
-      setOpenCreateForm(false);
-      setOpen(true);
-      setStatus(true);
-      refetch();
-      setMsg(data.message);
-    },
-    onError: (error) => {
-      setOpenCreateForm(false);
-      setOpen(true);
-      setStatus(true);
-      setMsg(error.response.data.message);
-    },
-  });
-
-  const handleGetDetailSurat = useQuery(`detailSurat-${currentNis}`, {
+  const handleGetDetailSiswa = useQuery(`detailSiswa-${currentNis}`, {
     queryFn: async () => {
-      const datas = await getDetailSurat(currentNis);
+      const datas = await detailSiswa(currentNis);
       return datas.data.data;
     },
     staleTime: 10000,
@@ -151,26 +135,6 @@ export default function Siswa() {
     }
   };
 
-  const handleEditSurat = useMutation({
-    mutationFn: async (e) => {
-      const isCreate = await editSurat({
-        idSurat: currentNis,
-        ...e,
-      });
-      return isCreate.data;
-    },
-    onSuccess: (data) => {
-      // console.log(data)
-      setOpenModalEdit(false);
-      setOpen(true);
-      setStatus(true);
-      setMsg(data.message);
-    },
-    onError: (error) => {
-      // setErrorMsg(error.response.data.message);
-      console.log(error);
-    },
-  });
   if (isLoading) {
     return <TableSkeleton />;
   }
@@ -181,9 +145,10 @@ export default function Siswa() {
         open={openCreateForm || openModalEdit}
         handleOpen={openModalEdit ? handleOpenModalEdit : handleOpenForm}
         title="Tambah Data Siswa"
-        handleSubmit={openModalEdit ? handleEditSurat : handleCreateSurat}
+        currentNis={currentNis}
         isEdit={openModalEdit}
-        dataSurat={handleGetDetailSurat.data}
+        refetch={refetch}
+        dataSiswa={handleGetDetailSiswa.data}
       />
       <ModalDeleteSiswa
         open={openModalDelete}

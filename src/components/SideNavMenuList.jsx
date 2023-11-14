@@ -108,6 +108,22 @@ export default function SideNavMenuList() {
           Surat
         </ListItem>
       </NavLink>
+      <NavLink to={"./suratMasuk"}>
+        <ListItem>
+          <ListItemPrefix>
+            <CiMail className="h-5 w-5" />
+          </ListItemPrefix>
+          Surat Masuk
+        </ListItem>
+      </NavLink>
+      <NavLink to={"./suratKeluar"}>
+        <ListItem>
+          <ListItemPrefix>
+            <CiMail className="h-5 w-5" />
+          </ListItemPrefix>
+          Surat Keluar
+        </ListItem>
+      </NavLink>
       <NavLink to={"./kartu-pelajar"}>
         <ListItem>
           <ListItemPrefix>

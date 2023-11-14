@@ -11,6 +11,9 @@ import SideNavSkeleton from "../components/skeleton/SideNavSkeleton";
 import NavbarSkeleton from "../components/skeleton/NavbarSkeleton";
 import { AlertCustom } from "../components/AlertCustom";
 import FooterSkeleton from "../components/skeleton/FooterSkeleton";
+import Loader from "../components/Loader";
+const SuratMasuk =lazy(()=>import( "../pages/dashboard/SuratMasuk"));
+const SuratKeluar = lazy(()=>import( "../pages/dashboard/SuratKeluar"));
 const  Siswa =lazy(()=>import ("../pages/dashboard/Siswa"));
 const Log =lazy(()=>import( "../pages/dashboard/Log"));
 const KartuPelajar =lazy(()=>import( "../pages/dashboard/KartuPelajar"));
@@ -19,11 +22,12 @@ const Surat = lazy(()=>import( "../pages/dashboard/Surat"));
 const TemplateSurat = lazy(()=>import( "../pages/dashboard/TemplateSurat"));
 const Kepsek = lazy(()=>import( "../pages/dashboard/Kepsek"));
 const Users = lazy(()=>import( "../pages/dashboard/Users"));
-const Profile = lazy(() => import("../pages/dashboard/profile"));
+const Profile = lazy(() => import("../pages/dashboard/Profile"));
 const Home = lazy(() => import("../pages/dashboard/home"));
 const Notifications = lazy(() => import("../pages/dashboard/notifications"));
 const Tables = lazy(() => import("../pages/dashboard/tables"));
 const TemplateSertifikat = lazy(() => import("../pages/dashboard/TemplateSertifikat"));
+
 
 
 export function Dashboard() {
@@ -67,10 +71,9 @@ export function Dashboard() {
           <DashboardNavbar />
         </Suspense>
         <div className="mt-12 mb-8 flex flex-col gap-12">
-          <Suspense fallback={<>Please Wait...</>}>
+          <Suspense fallback={<Loader/>}>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/profile" element={<Profile />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/tables" element={<Tables />} />
               <Route path="/templateSertifikat" element={<TemplateSertifikat />} />
@@ -82,6 +85,9 @@ export function Dashboard() {
               <Route path="/sertifikat" element={<Sertifikat />} />
               <Route path="/kartu-pelajar" element={<KartuPelajar />} />
               <Route path="/log" element={<Log />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/suratMasuk" element={<SuratMasuk />} />
+              <Route path="/suratKeluar" element={<SuratKeluar />} />
             </Routes>
           </Suspense>
         </div>

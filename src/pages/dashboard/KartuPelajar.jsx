@@ -9,6 +9,8 @@ import Loader from "../../components/Loader";
 import { useReactToPrint } from "react-to-print";
 import ButtonCustom from "../../components/ButtonCustom";
 import { AiOutlinePrinter } from "react-icons/ai";
+import KartuPelajarPageSkeleton from "../../components/skeleton/KartuPelajarPageSkeleton";
+import CardSkeleton from "../../components/skeleton/CardSkeleton";
 const animatedComponents = makeAnimated();
 
 export default function KartuPelajar() {
@@ -32,7 +34,7 @@ export default function KartuPelajar() {
     }
   };
 
-  const { isLoading, data, refetch } = useQuery(`listSiswaKartuPelajar`, {
+  const { isLoading, data, refetch ,isRefetching} = useQuery(`listSiswaKartuPelajar`, {
     queryFn: async ({ pageParam }) => {
       const data = await getListSiswa(
         pageParam || 0,
@@ -68,9 +70,7 @@ export default function KartuPelajar() {
 
   if (isLoading) {
     return (
-      <>
-        <Loader />
-      </>
+       <KartuPelajarPageSkeleton/>
     );
   }
   const options = data.data.data.map((item) => ({
@@ -97,7 +97,8 @@ export default function KartuPelajar() {
 
   return (
     <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 ">
-      <h5 className="text-2xl text-black font-bold">Kartu Pelajar </h5>
+      <h5 className="text-xl text-black font-semibold">Kartu Pelajar </h5>
+     
       <TextInput
         label={"Warna Header Kartu"}
         type={"color"}
@@ -117,6 +118,8 @@ export default function KartuPelajar() {
         closeMenuOnSelect={false}
         components={animatedComponents}
         onInputChange={handleSearch}
+        className="relative z-30"
+        isLoading={isRefetching}
       />
       <ButtonCustom
         className="flex items-center gap-3 w-max"
@@ -129,7 +132,10 @@ export default function KartuPelajar() {
         color="blue"
         onClick={handlePrint}
       />
-      <Suspense fallback={<>Loading...</>}>
+      <Suspense fallback={<div className="flex gap-2">
+        <CardSkeleton/>
+        <CardSkeleton/>
+        </div>}>
         <div className="flex flex-col" ref={componentRef}>
           {valueCard.map((e, i) => (
             <div
@@ -145,6 +151,7 @@ export default function KartuPelajar() {
                 cardData={e}
                 bodyColor={bodyColor}
               />
+              
             </div>
           ))}
         </div>

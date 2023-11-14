@@ -5,6 +5,7 @@ import BarcodeComponent from "./BarcodeComponent";
 import { endpoint } from "../../api/users";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import CardSkeleton from "../skeleton/CardSkeleton";
 
 export default function Card({
   headerColor,
@@ -29,7 +30,12 @@ export default function Card({
   }, [isLight, isLightBody]);
 
   if (isLoading) {
-    return <>Loading...</>;
+    return (
+      <div className="flex gap-2">
+        <CardSkeleton/>
+        <CardSkeleton/>
+        </div>
+    );
   }
 
   return (

@@ -39,7 +39,7 @@ export default function TextEditor({defaultValue,onChange}) {
         "indent",
         "align",
     ];
-    const initialValue =  '<h1 class="ql-align-center"><strong><u>NAMA SURAT </u></strong></h1><h2 class="ql-align-center"><span class="ql-size-small">Nomor : 400.3.8.6 / {nomor} -DM/SMAN1.KI/{date} </span></h2><p class="ql-align-center"><br></p><p class="ql-align-center"><br></p><p>Berdasarkan [berdasarkan], Perihal [perihal], maka dengan ini kami sampaikan siswa perwakilan SMA Negeri 1 Karang Intan untuk mengikuti kegiatan tersebut di atas sebagai berikut :</p><p><br></p><p>[isi:nama,alamat,kelas]</p><p><br></p><p><br></p><p>Demikian surat rekomendasi ini dibuat dengan sebenarnya, untukdapat dipergunakan sebagaimana mestinya.</p>'
+    const initialValue =  '<h1 class="ql-align-center"><strong><u>Nama Surat</u></strong></h1><h2 class="ql-align-center"><span class="ql-size-small">Nomor : 400.3.8.6 / {nomor} -DM/SMAN1.KI/{date} </span></h2><p class="ql-align-center"><br></p><p class="ql-align-center"><br></p><p>\t\tBerdasarkan [berdasarkan], Perihal {perihal}, maka dengan ini kami sampaikan siswa perwakilan SMA Negeri 1 Karang Intan untuk mengikuti kegiatan tersebut di atas sebagai berikut :</p><p><br></p><p>[isi_nama_nip_tujuan_tanggal]</p><p><br></p><p><br></p><p>Demikian surat rekomendasi ini dibuat dengan sebenarnya, untukdapat dipergunakan sebagaimana mestinya.</p>'
     return (
         <div className="overflow-auto h-[200px] border-red-600 flex w-full ">
             <ReactQuill

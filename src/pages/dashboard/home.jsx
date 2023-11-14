@@ -1,9 +1,12 @@
 import CardStat from "../../components/CardStat";
 import { FaUser,FaUsers,FaChild,FaMailBulk,FaCertificate } from "react-icons/fa";
+import { IoEnterOutline } from "react-icons/io5";
 import { AiFillMail } from "react-icons/ai";
+import { BiLogOut } from "react-icons/bi";
 import { useQuery } from "react-query";
 import { countUsers,countThisWeek } from "../../api/users";
 import { countTemplate } from "../../api/templateSurat";
+import CardHomeSkeleton from "../../components/skeleton/CardHomeSkeleton";
 
 export function Home() {
   const {data,isLoading} = useQuery('usersCount',{
@@ -28,10 +31,11 @@ export function Home() {
   )
   
   if(isLoading){
-    return <>Loading...</>
+    return <CardHomeSkeleton/>
   }
   return (
     <>
+    
       <div className="grid grid-cols-3 gap-2">
         <CardStat
           icon={<FaUser />}
@@ -71,7 +75,20 @@ export function Home() {
           desc={" Sertifikat"}
           color={"bg-pink-400"}
         />
-        
+        <div className="col-span-3 grid grid-cols-2 w-full gap-2">
+          <CardStat
+          icon={<IoEnterOutline />}
+          count={190}
+          desc={" Surat Masuk"}
+          color={"bg-teal-400"}
+        />
+        <CardStat
+          icon={<BiLogOut />}
+          count={190}
+          desc={" Surat Keluar"}
+          color={"bg-indigo-400"}
+        />
+          </div>
       </div>
     </>
   );

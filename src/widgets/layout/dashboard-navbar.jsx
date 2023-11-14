@@ -55,7 +55,9 @@ export function DashboardNavbar() {
             <Bars3Icon strokeWidth={3} className="h-6 w-6 text-blue-gray-500" />
           </IconButton>
 
-          <div className="bg-green-600 text-white rounded-md text-xs py-1 px-3">{roles[role]}</div>
+          <div className="bg-green-600 text-white rounded-md text-xs py-1 px-3">
+            {roles[role]}
+          </div>
           <Menu>
             <MenuHandler color="blue-gray" variant="text">
               <Button className="flex gap-1 justify-center items-center">
@@ -64,7 +66,9 @@ export function DashboardNavbar() {
               </Button>
             </MenuHandler>
             <MenuList>
-              <MenuItem>Account</MenuItem>
+              <Link to={"./profile"}>
+                <MenuItem>Account</MenuItem>
+              </Link>
               <MenuItem>Log Out</MenuItem>
             </MenuList>
           </Menu>

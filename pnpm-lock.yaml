@@ -10,7 +10,6 @@ specifiers:
   apexcharts: 3.35.5
   autoprefixer: ^10.4.16
   axios: ^1.5.1
-  dom-to-image: ^2.6.0
   eslint: ^8.45.0
   eslint-plugin-react: ^7.32.2
   eslint-plugin-react-hooks: ^4.6.0
@@ -41,7 +40,6 @@ dependencies:
   '@tanstack/react-table': 8.10.7_biqbaboplfbrettd7655fr4n2y
   apexcharts: 3.35.5
   axios: 1.6.0
-  dom-to-image: 2.6.0
   jwt-decode: 3.1.2
   prop-types: 15.8.1
   qrcode.react: 3.1.0_react@18.2.0
@@ -1307,10 +1305,6 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.2
       csstype: 3.1.2
-    dev: false
-
-  /dom-to-image/2.6.0:
-    resolution: {integrity: sha512-Dt0QdaHmLpjURjU7Tnu3AgYSF2LuOmksSGsUcE6ItvJoCWTBEmiMXcqBdNSAm9+QbbwD7JMoVsuuKX6ZVQv1qA==}
     dev: false
 
   /electron-to-chromium/1.4.569:

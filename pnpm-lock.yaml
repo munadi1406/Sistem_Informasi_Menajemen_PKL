@@ -10,6 +10,7 @@ specifiers:
   apexcharts: 3.35.5
   autoprefixer: ^10.4.16
   axios: ^1.5.1
+  boring-avatars: ^1.10.1
   eslint: ^8.45.0
   eslint-plugin-react: ^7.32.2
   eslint-plugin-react-hooks: ^4.6.0
@@ -40,6 +41,7 @@ dependencies:
   '@tanstack/react-table': 8.10.7_biqbaboplfbrettd7655fr4n2y
   apexcharts: 3.35.5
   axios: 1.6.0
+  boring-avatars: 1.10.1
   jwt-decode: 3.1.2
   prop-types: 15.8.1
   qrcode.react: 3.1.0_react@18.2.0
@@ -1053,6 +1055,10 @@ packages:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
     dev: true
+
+  /boring-avatars/1.10.1:
+    resolution: {integrity: sha512-WcgHDeLrazCR03CDPEvCchLsUecZAZvs4F6FnMiGlTEjyQQf15Q5TRl4EUaAQ1dacvhPq7lC9EOTWkCojQ6few==}
+    dev: false
 
   /brace-expansion/1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}

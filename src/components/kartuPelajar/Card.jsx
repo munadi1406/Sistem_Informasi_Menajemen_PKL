@@ -6,6 +6,8 @@ import { endpoint } from "../../api/users";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import CardSkeleton from "../skeleton/CardSkeleton";
+import { Avatar } from "@material-tailwind/react";
+import Avatars from "../Avatars";
 
 export default function Card({
   headerColor,
@@ -25,6 +27,7 @@ export default function Card({
   const [textColorBody, setTextColorBody] = useState("");
 
   useEffect(() => {
+    console.log({ cardData });
     setTextColor(isLight ? "text-black" : "text-white");
     setTextColorBody(isLightBody ? "text-black" : "text-white");
   }, [isLight, isLightBody]);
@@ -32,9 +35,9 @@ export default function Card({
   if (isLoading) {
     return (
       <div className="flex gap-2">
-        <CardSkeleton/>
-        <CardSkeleton/>
-        </div>
+        <CardSkeleton />
+        <CardSkeleton />
+      </div>
     );
   }
 
@@ -90,11 +93,19 @@ export default function Card({
                 {cardData.alamat}
               </div>
             </div>
-            <div className="flex col-span-1 justify-end items-center px-3 ">
-              <img
-                className="w-[55px] h-[55px] rounded-full"
-                src="https://via.placeholder.com/138x138"
-              />
+            <div className="flex col-span-1 justify-start items-center px-3 ">
+              {cardData.image ? (
+                <img
+                  src={`${endpoint}/siswa/image/${cardData.image}`}
+                  alt={`${cardData.namaLengkap}`}
+                  className="rounded-full object-cover"
+                  width="55px"
+                  height="55px"
+                  loading="eager"
+                />
+              ) : (
+                <Avatars />
+              )}
             </div>
           </div>
           <div className="grid grid-cols-2">
@@ -135,12 +146,17 @@ export default function Card({
           </div>
         </div>
       </div>
-      <div className="w-[325.08px] h-[204.12px] relative  rounded-lg overflow-clip border-2" style={{ backgroundColor: `${bodyColor}` }}>
+      <div
+        className="w-[325.08px] h-[204.12px] relative  rounded-lg overflow-clip border-2"
+        style={{ backgroundColor: `${bodyColor}` }}
+      >
         <img
           className={`w-[202px] h-[210px] left-[62px] top-[-21px] absolute opacity-30`}
           src={LogoSekolah}
         />
-        <div className={`w-full ${textColorBody} text-[9.4px] font-bold font-['Nunito Sans']`}>
+        <div
+          className={`w-full ${textColorBody} text-[9.4px] font-bold font-['Nunito Sans']`}
+        >
           <ul className="list-decimal pl-6 py-3">
             <li>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
@@ -164,7 +180,10 @@ export default function Card({
             </li>
           </ul>
         </div>
-        <div className="w-[325px] h-[23px] left-0 top-[181px] absolute " style={{ backgroundColor: `${headerColor}` }}/>
+        <div
+          className="w-[325px] h-[23px] left-0 top-[181px] absolute "
+          style={{ backgroundColor: `${headerColor}` }}
+        />
       </div>
     </div>
   );

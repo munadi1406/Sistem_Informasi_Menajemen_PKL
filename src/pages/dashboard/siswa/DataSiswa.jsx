@@ -8,6 +8,8 @@ import {
   Avatar,
 } from "@material-tailwind/react";
 import PropTypes from "prop-types";
+import Avatars from "../../../components/Avatars";
+import { endpoint } from "../../../api/users";
 
 const TABLE_HEAD = [
   "Siswa",
@@ -59,6 +61,7 @@ export default function DataSiswa({
                 ttl,
                 jenis_kelamin,
                 alamat,
+                image,
                 createdAt,
                 updatedAt,
               },
@@ -72,13 +75,17 @@ export default function DataSiswa({
                 <tr key={i}>
                   <td className={classes}>
                     <div className="flex items-center gap-3">
+                    {image ? (
+
                       <Avatar
-                        src={
-                          "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg"
-                        }
-                        alt={"name"}
-                        size="sm"
+                      src={`${endpoint}/siswa/image/${image}`}
+                      alt={"name"}
+                      size="sm"
+                      placeholder={nama_lengkap}
                       />
+                      ):(
+                        <Avatars/>
+                      )}
                       <div className="flex flex-col">
                         <Typography
                           variant="small"

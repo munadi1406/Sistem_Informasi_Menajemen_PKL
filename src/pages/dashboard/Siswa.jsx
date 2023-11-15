@@ -27,6 +27,7 @@ import {
 const ExportFromXlsx = lazy(() => import("./siswa/ExportFromXlsx"));
 const DataSiswa = lazy(() => import("./siswa/DataSiswa"));
 import { BiImport } from "react-icons/bi";
+import Avatars from "../../components/Avatars";
 
 export default function Siswa() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
@@ -215,6 +216,16 @@ export default function Siswa() {
                 }
                 onChange={search}
               />
+            </div>
+             <div>
+              <div className="text-black text-lg font-semibold">Keterangan</div>
+              <div className="flex gap-2 items-center">
+               
+                <div className="flex gap-2 justify-center items-center">
+                  <Avatars/>
+                  Jika Gambar Masih Seperti Itu Artinya Gambar Siswa/Siswi Belum Di Upload
+                </div>
+              </div>
             </div>
           </div>
         </CardHeader>

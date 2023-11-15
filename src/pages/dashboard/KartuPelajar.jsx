@@ -63,10 +63,18 @@ export default function KartuPelajar() {
   useEffect(() => {
     refetch();
   }, [valueSearch]);
+
   const componentRef = useRef();
+  const [isPrint, setIsPrint] = useState(false);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
+    onAfterPrint: () => setIsPrint(false),
   });
+  useEffect(() => {
+    if (isPrint) {
+      handlePrint();
+    }
+  }, [componentRef, isPrint]);
 
   if (isLoading) {
     return (
@@ -81,6 +89,7 @@ export default function KartuPelajar() {
     alamat: item.alamat,
     ttl: item.ttl,
     jenisKelamin: item.jenis_kelamin,
+    image:item.image,
   }));
 
   const handleChangeColor = (e) => {
@@ -94,6 +103,9 @@ export default function KartuPelajar() {
     setBodyColor(e.target.value);
     hexConversion(color, setIsLightBody);
   };
+  
+  
+
 
   return (
     <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 ">
@@ -130,7 +142,10 @@ export default function KartuPelajar() {
           </>
         }
         color="blue"
-        onClick={handlePrint}
+       onClick={() => {
+                  setIsPrint(true);
+                 
+                }}
       />
       <Suspense fallback={<div className="flex gap-2">
         <CardSkeleton/>

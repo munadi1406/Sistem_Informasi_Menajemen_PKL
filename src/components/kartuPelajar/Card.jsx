@@ -99,8 +99,8 @@ export default function Card({
                   src={`${endpoint}/siswa/image/${cardData.image}`}
                   alt={`${cardData.namaLengkap}`}
                   className="rounded-full object-cover"
-                  width="55px"
-                  height="55px"
+                  width={55}
+                  height={55}
                   loading="eager"
                 />
               ) : (

@@ -51,4 +51,9 @@ export const detailSiswa = async (nis) => {
   return data;
 };
 
+export const countStudent = async ()=>{
+  const data = await axiosJwt.get(`${endpoint}/siswa/stat`)
+  return data 
+}
+
 

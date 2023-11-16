@@ -31,3 +31,8 @@ export const searchSurat = async (lastIdSurat, query) => {
   );
   return data;
 };
+
+export const countSurat = async () => {
+  const data = await axiosJwt.get(`${endpoint}/surat/count`);
+  return data;
+};

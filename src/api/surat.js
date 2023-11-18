@@ -36,3 +36,12 @@ export const countSurat = async () => {
   const data = await axiosJwt.get(`${endpoint}/surat/count`);
   return data;
 };
+
+export const getSuratMasukStat = async () => {
+  const data = await axiosJwt.get(`${endpoint}/suratMasuk/stat`);
+  return data;
+};
+export const getSuratKeluarStat = async () => {
+  const data = await axiosJwt.get(`${endpoint}/suratKeluar/stat`);
+  return data;
+};

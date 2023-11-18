@@ -8,14 +8,20 @@ import {
 } from "react-icons/fa";
 import { IoEnterOutline } from "react-icons/io5";
 import { AiFillMail } from "react-icons/ai";
-import { BiLogOut } from "react-icons/bi";
+import { BiLogOut, BiCertification } from "react-icons/bi";
 import { useQuery } from "react-query";
 import { countUsers, countThisWeek } from "../../api/users";
 import { countTemplate } from "../../api/templateSurat";
 import CardHomeSkeleton from "../../components/skeleton/CardHomeSkeleton";
 import { countStudent } from "../../api/siswa";
 import Charts from "react-apexcharts";
-import { countSurat } from "../../api/surat";
+import {
+  countSurat,
+  getSuratKeluarStat,
+  getSuratMasukStat,
+} from "../../api/surat";
+import { getLogStat } from "../../api/log";
+import Loader from "../../components/Loader";
 
 export function Home() {
   const { data, isLoading } = useQuery("usersCount", {
@@ -51,20 +57,50 @@ export function Home() {
       return datas.data.data;
     },
   });
+  const handleGetSuratMasukStat = useQuery("suratIn", {
+    queryFn: async () => {
+      const datas = await getSuratMasukStat();
+      return datas.data.data;
+    },
+  });
+  const handleGetSuratKeluarStat = useQuery("suratOut", {
+    queryFn: async () => {
+      const datas = await getSuratKeluarStat();
+      return datas.data.data;
+    },
+  });
+  const handleGetSertifkatStat = useQuery("sertifikat", {
+    queryFn: async () => {
+      const datas = await getSuratKeluarStat();
+      return datas.data.data;
+    },
+  });
+  const handleGetTemplateSertifikat = useQuery("template-sertifikat", {
+    queryFn: async () => {
+      const datas = await getSuratKeluarStat();
+      return datas.data.data;
+    },
+  });
+
+  const handleGetLogStat = useQuery("logStat", {
+    queryFn: async () => {
+      const datas = await getLogStat();
+      return datas.data.data;
+    },
+  });
 
   if (isLoading) {
     return <CardHomeSkeleton />;
   }
   return (
     <>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid h-full grid-cols-3 w-full gap-2">
         <CardStat
           icon={<FaUser />}
           count={data}
           desc={" User"}
           color={"bg-blue-600"}
         />
-
         <CardStat
           icon={<FaUsers />}
           count={countUsersThisWeek?.data}
@@ -91,20 +127,28 @@ export function Home() {
         />
         <CardStat
           icon={<FaCertificate />}
-          count={190}
-          desc={" Sertifikat"}
+          count={handleGetSertifkatStat?.data}
+          desc={"Sertifikat"}
           color={"bg-pink-400"}
         />
-        <div className="col-span-3 grid grid-cols-2 w-full gap-2">
+        <div className="lg:col-span-full">
+          <CardStat
+            icon={<BiCertification />}
+            count={handleGetTemplateSertifikat.data}
+            desc={"Template Sertifikat"}
+            color={"bg-pink-400"}
+          />
+        </div>
+        <div className="col-span-3 grid lg:grid-cols-2 grid-cols-1 w-full gap-2">
           <CardStat
             icon={<IoEnterOutline />}
-            count={190}
+            count={handleGetSuratMasukStat?.data}
             desc={" Surat Masuk"}
             color={"bg-teal-400"}
           />
           <CardStat
             icon={<BiLogOut />}
-            count={190}
+            count={handleGetSuratKeluarStat?.data}
             desc={" Surat Keluar"}
             color={"bg-indigo-400"}
           />
@@ -150,7 +194,7 @@ export function Home() {
           )}
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm lg:col-span-2 p-2 overflow-auto w-full">
+        <div className="bg-white rounded-lg shadow-sm col-span-2 p-2 overflow-auto w-full">
           {handleGetCountSurat.isSuccess && (
             <Charts
               type="bar"
@@ -218,6 +262,30 @@ export function Home() {
               ]}
               height={350}
             />
+          )}
+        </div>
+        <div className="bg-white rounded-lg shadow-sm col-span-2 flex flex-col gap-2 p-2 overflow-auto w-full">
+          {handleGetLogStat.isLoading ? (
+            <Loader />
+          ) : (
+            <>
+              <div className="flex p-2 rounded-md bg-blue-600 justify-between text-white">
+                Total Pengunjung
+                <div>{handleGetLogStat.data.totalLog}</div>
+              </div>
+              <div className="flex p-2 rounded-md bg-red-300 justify-between text-white">
+                Total Per Tahun
+                <div>{handleGetLogStat.data.logsPerYear}</div>
+              </div>
+              <div className="flex p-2 rounded-md bg-yellow-400 justify-between text-white">
+                Total Per Bulan
+                <div>{handleGetLogStat.data.logsPerMonth}</div>
+              </div>
+              <div className="flex p-2 rounded-md bg-green-400 justify-between text-white">
+                Total Pengunjung Hari Ini
+                <div>{handleGetLogStat.data.logsPerDay}</div>
+              </div>
+            </>
           )}
         </div>
       </div>

@@ -38,7 +38,7 @@ const TemplateSertifikat = () => {
   };
 
   const handleOpenPreview = (id) => {
-    console.log("running");
+   
     setIsOpenPreview(!isOpenPreview);
     setCurrentId(id)
   };
@@ -125,7 +125,7 @@ const TemplateSertifikat = () => {
 
   useEffect(()=>{
     if(inView){
-      console.log(inView)
+     
       fetchNextPage()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

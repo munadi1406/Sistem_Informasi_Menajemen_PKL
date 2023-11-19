@@ -10,7 +10,7 @@ export const storeDataSiswaWithXlsx = async (payload) => {
   return data;
 };
 export const storeDataSiswa = async (payload) => {
-  console.log(payload);
+  
   const data = await axiosJwt.post(`${endpoint}/siswa`, payload, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -20,7 +20,7 @@ export const storeDataSiswa = async (payload) => {
 };
 
 export const updateSiswa = async (payload) => {
-  console.log(payload);
+ 
   const data = await axiosJwt.put(`${endpoint}/siswa`, payload, {
     headers: {
       "Content-Type": "multipart/form-data",

@@ -27,7 +27,7 @@ export default function Card({
   const [textColorBody, setTextColorBody] = useState("");
 
   useEffect(() => {
-    console.log({ cardData });
+    
     setTextColor(isLight ? "text-black" : "text-white");
     setTextColorBody(isLightBody ? "text-black" : "text-white");
   }, [isLight, isLightBody]);

@@ -7,15 +7,17 @@ import PropTypes from "prop-types";
 const DetailSiswa = ({ data }) => {
   return (
     <div className="w-full  grid grid-cols-3 gap-2">
-      <div className="h-[400px]  col-span-1 rounded-md" >
-        {console.log(data)}
+      <div className="h-[400px]  col-span-1 rounded-md">
+        
         {data.image ? (
-
- <LazyImage src={`${endpoint}/siswa/image/${data.image}`} alt={data.nama_lengkap} className="w-full"/>
-        ):(
-          <div className="h-[400px] bg-gray-600 rounded-md"/>
-        )
-        }
+          <LazyImage
+            src={`${endpoint}/siswa/image/${data.image}`}
+            alt={data.nama_lengkap}
+            className="w-full"
+          />
+        ) : (
+          <div className="h-[400px] bg-gray-600 rounded-md" />
+        )}
       </div>
       <table className="h-max w-max col-span-2">
         <tbody>
@@ -24,9 +26,7 @@ const DetailSiswa = ({ data }) => {
             <td className="text-start px-2 py-1">: {data.nis}</td>
           </tr>
           <tr>
-            <td className="text-start font-semibold px-2 py-1">
-              Nama Lengkap
-            </td>
+            <td className="text-start font-semibold px-2 py-1">Nama Lengkap</td>
             <td className="text-start capitalize px-2 py-1">
               : {data.nama_lengkap}
             </td>
@@ -35,9 +35,7 @@ const DetailSiswa = ({ data }) => {
             <td className="text-start font-semibold px-2 py-1">
               Tempat Tanggal Lahir
             </td>
-            <td className="text-start capitalize px-2 py-1">
-              : {data.ttl}
-            </td>
+            <td className="text-start capitalize px-2 py-1">: {data.ttl}</td>
           </tr>
           <tr>
             <td className="text-start font-semibold px-2 py-1">
@@ -48,12 +46,8 @@ const DetailSiswa = ({ data }) => {
             </td>
           </tr>
           <tr>
-            <td className="text-start font-semibold px-2 py-1">
-              Alamat:
-            </td>
-            <td className="text-start capitalize px-2 py-1">
-              : {data.alamat}
-            </td>
+            <td className="text-start font-semibold px-2 py-1">Alamat:</td>
+            <td className="text-start capitalize px-2 py-1">: {data.alamat}</td>
           </tr>
         </tbody>
       </table>

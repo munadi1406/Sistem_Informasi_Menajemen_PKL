@@ -1,5 +1,5 @@
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import { FaPencilAlt, FaEye, FaTrash, FaFileSignature } from "react-icons/fa";
+import { FaPencilAlt, FaEye, FaTrash } from "react-icons/fa";
 
 import {
   Typography,

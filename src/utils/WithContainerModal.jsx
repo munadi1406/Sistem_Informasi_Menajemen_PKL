@@ -1,6 +1,7 @@
 import { Dialog, DialogBody, DialogHeader } from "@material-tailwind/react";
 import PropTypes from "prop-types";
-import ButtonCustom from "../components/ButtonCustom";
+import { IoCloseCircle } from "react-icons/io5";
+
 
 const WithContainerModal = (OriginalComponent) => {
   const WrapperComponent = (props) => {
@@ -11,16 +12,16 @@ const WithContainerModal = (OriginalComponent) => {
         className="max-h-[90vh] overflow-y-auto"
         size={props.size}
       >
-        <DialogHeader>{props.title}</DialogHeader>
+        <DialogHeader>
+        <div className="flex justify-between w-full">
+        <div>
+        {props.title}
+        </div>
+        <IoCloseCircle/>
+        </div>
+        </DialogHeader>
         <DialogBody>
           <OriginalComponent {...props} />
-          <div className="w-full grid grid-cols-1 my-2">
-            <ButtonCustom
-              text={"Tutup"}
-              color="red"
-              onClick={props.handleOpen}
-            />
-          </div>
         </DialogBody>
       </Dialog>
     );

@@ -10,6 +10,7 @@ import {
 import PropTypes from "prop-types";
 import Avatars from "../../../components/Avatars";
 import { endpoint } from "../../../api/users";
+import LazyImage from "../../../components/LazyImage";
 
 const TABLE_HEAD = [
   "Siswa",
@@ -76,13 +77,7 @@ export default function DataSiswa({
                   <td className={classes}>
                     <div className="flex items-center gap-3">
                     {image ? (
-
-                      <Avatar
-                      src={`${endpoint}/siswa/image/${image}`}
-                      alt={"name"}
-                      size="sm"
-                      placeholder={nama_lengkap}
-                      />
+                      <LazyImage src={`${endpoint}/siswa/image/${image}`} alt={nama_lengkap} className="w-[40px] h-[40px] rounded-full object-cover relative"/>
                       ):(
                         <Avatars/>
                       )}
@@ -170,6 +165,7 @@ export default function DataSiswa({
                               ttl,
                               jenis_kelamin,
                               alamat,
+                              image,
                               createdAt,
                               updatedAt,
                             })

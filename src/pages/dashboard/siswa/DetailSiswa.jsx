@@ -1,11 +1,22 @@
 import WithContainerModal from "../../../utils/WithContainerModal";
+import { endpoint } from "../../../api/users";
+import LazyImage from "../../../components/LazyImage";
 
 import PropTypes from "prop-types";
 
 const DetailSiswa = ({ data }) => {
   return (
     <div className="w-full  grid grid-cols-3 gap-2">
-      <div className="h-[400px] bg-gray-600 col-span-1 rounded-md" />
+      <div className="h-[400px]  col-span-1 rounded-md" >
+        {console.log(data)}
+        {data.image ? (
+
+ <LazyImage src={`${endpoint}/siswa/image/${data.image}`} alt={data.nama_lengkap} className="w-full"/>
+        ):(
+          <div className="h-[400px] bg-gray-600 rounded-md"/>
+        )
+        }
+      </div>
       <table className="h-max w-max col-span-2">
         <tbody>
           <tr>

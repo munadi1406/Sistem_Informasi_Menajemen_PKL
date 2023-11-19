@@ -6,3 +6,9 @@ export const getLogStat = async () => {
   const data = await axiosJwt.get(`${endpoint}/log/stat`);
   return data;
 };
+
+
+export const getListLog = async (id) => {
+  const data = await axiosJwt.get(`${endpoint}/log/list/${id}`);
+  return data;
+};

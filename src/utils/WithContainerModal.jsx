@@ -17,7 +17,7 @@ const WithContainerModal = (OriginalComponent) => {
         <div>
         {props.title}
         </div>
-        <IoCloseCircle/>
+        <IoCloseCircle onClick={props.handleOpen} className="cursor-pointer"/>
         </div>
         </DialogHeader>
         <DialogBody>

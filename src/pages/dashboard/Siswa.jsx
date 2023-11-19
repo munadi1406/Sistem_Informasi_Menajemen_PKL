@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import TableSkeleton from "../../components/skeleton/TableSkeleton";
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
 import {
@@ -28,6 +28,7 @@ const ExportFromXlsx = lazy(() => import("./siswa/ExportFromXlsx"));
 const DataSiswa = lazy(() => import("./siswa/DataSiswa"));
 import { BiImport } from "react-icons/bi";
 import Avatars from "../../components/Avatars";
+import { useInView } from "react-intersection-observer";
 
 export default function Siswa() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
@@ -39,7 +40,7 @@ export default function Siswa() {
   const [openModalEdit, setOpenModalEdit] = useState(false);
   const [openModalExport, setOpenModalExport] = useState(false);
   const [detailSiswaData, setDetailSiswaData] = useState({});
-
+  const { ref, inView } = useInView();
   const handleOpenModalExport = () => {
     setOpenModalExport(!openModalExport);
   };
@@ -135,6 +136,11 @@ export default function Siswa() {
       setIsSearch(false);
     }
   };
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
 
   if (isLoading) {
     return <TableSkeleton />;
@@ -217,19 +223,19 @@ export default function Siswa() {
                 onChange={search}
               />
             </div>
-             <div>
+            <div>
               <div className="text-black text-lg font-semibold">Keterangan</div>
               <div className="flex gap-2 items-center">
-               
                 <div className="flex gap-2 justify-center items-center">
-                  <Avatars/>
-                  Jika Gambar Masih Seperti Itu Artinya Gambar Siswa/Siswi Belum Di Upload
+                  <Avatars />
+                  Jika Gambar Masih Seperti Itu Artinya Gambar Siswa/Siswi Belum
+                  Di Upload
                 </div>
               </div>
             </div>
           </div>
         </CardHeader>
-        <CardBody className="overflow-auto px-0">
+        <CardBody className="overflow-auto px-0 min-h-screen">
           <Suspense fallback={<TableSkeleton />}>
             <DataSiswa
               dataSurat={
@@ -248,23 +254,25 @@ export default function Siswa() {
         </CardBody>
         <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
           {hasNextPage && (
-            <ButtonCustom
-              text={
-                isFetchingNextPage || handleSearchSiswa.isFetchingNextPage ? (
-                  <Spinner />
-                ) : (
-                  "Load More"
-                )
-              }
-              onClick={
-                isSearch ? handleSearchSiswa.fetchNextPage : fetchNextPage
-              }
-              disabled={
-                isSearch
-                  ? handleSearchSiswa.isFetchingNextPage
-                  : isFetchingNextPage
-              }
-            />
+            <div ref={ref}>
+              <ButtonCustom
+                text={
+                  isFetchingNextPage || handleSearchSiswa.isFetchingNextPage ? (
+                    <Spinner />
+                  ) : (
+                    "Load More"
+                  )
+                }
+                onClick={
+                  isSearch ? handleSearchSiswa.fetchNextPage : fetchNextPage
+                }
+                disabled={
+                  isSearch
+                    ? handleSearchSiswa.isFetchingNextPage
+                    : isFetchingNextPage
+                }
+              />
+            </div>
           )}
         </CardFooter>
       </Card>

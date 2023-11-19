@@ -7,8 +7,9 @@ import { Option, Spinner } from "@material-tailwind/react";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 import { Select } from "@material-tailwind/react";
-const AlertNotification = lazy(() =>
-  import("../../../components/AlertNotification"),
+import WithContainerModal from "../../../utils/WithContainerModal";
+const AlertNotification = lazy(
+  () => import("../../../components/AlertNotification"),
 );
 
 const Form = ({ handleSubmit, errorMsg, isEdit, data }) => {
@@ -19,12 +20,12 @@ const Form = ({ handleSubmit, errorMsg, isEdit, data }) => {
   const handleSub = (e) => {
     e.preventDefault();
     const newObj = {};
-    variableSetting.forEach(prop => {
+    variableSetting.forEach((prop) => {
       if (prop in variabel) {
         newObj[prop] = variabel[prop];
       }
     });
-    
+
     handleSubmit.mutate({
       jenisSurat,
       variable: newObj,
@@ -44,19 +45,23 @@ const Form = ({ handleSubmit, errorMsg, isEdit, data }) => {
   const handleChange = (key, value) => {
     setVariabel((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
-  }
-
+  };
 
   const VariableSet = () => {
-
     return (
       <div className="flex flex-col gap-2">
         {variableSetting.map((e, i) => (
           <div className="flex justify-center items-center gap-2" key={i}>
             <TextInput label={"Nama Variabel"} value={e} disabled />
-            <Select label="Tipe Data" color="blue" onChange={(value) => handleChange(e, value)} key={i} value={variabel[e]}>
+            <Select
+              label="Tipe Data"
+              color="blue"
+              onChange={(value) => handleChange(e, value)}
+              key={i}
+              value={variabel[e]}
+            >
               <Option value="Table">Table</Option>
               <Option value="Text">Text</Option>
             </Select>
@@ -133,4 +138,4 @@ Form.defaultProps = {
   isEdit: false,
 };
 
-export default Form;
+export default WithContainerModal(Form);

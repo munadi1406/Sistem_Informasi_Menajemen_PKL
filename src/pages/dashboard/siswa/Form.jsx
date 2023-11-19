@@ -12,6 +12,8 @@ import { useMutation } from "react-query";
 import { storeDataSiswa, updateSiswa } from "../../../api/siswa";
 const FileDropZone = lazy(() => import("../../../components/FileDropZone"));
 import PropTypes from "prop-types";
+import LazyImage from "../../../components/LazyImage";
+import { endpoint } from "../../../api/users";
 
 const Form = ({ handleOpen, isEdit, dataSiswa, currentNis,refetch }) => {
   const [file, setFile] = useState([]);
@@ -106,6 +108,7 @@ const Form = ({ handleOpen, isEdit, dataSiswa, currentNis,refetch }) => {
             : mutate
         }
       >
+        
         <TextInput
           label={"NIS/NISN"}
           required
@@ -161,6 +164,12 @@ const Form = ({ handleOpen, isEdit, dataSiswa, currentNis,refetch }) => {
           name="alamat"
           defaultValue={payload?.alamat}
         />
+        {dataSiswa?.image && isEdit &&(
+          <>
+          <p>Gambar Sebelumnya</p>
+         <LazyImage src={`${endpoint}/siswa/image/${dataSiswa?.image}`} alt={dataSiswa?.nama_lengkap} className="w-44"/>
+         </>
+        )}
         <Suspense fallback={<Loader />}>
           <FileDropZone onFilesAdded={setFile} />
         </Suspense>

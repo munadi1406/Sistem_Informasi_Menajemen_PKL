@@ -1,6 +1,8 @@
 import Avatar from "boring-avatars";
+import { useEffect, useState } from "react";
 
 export default function Avatars() {
+  const [randomName,setRandomName] = useState("")
   const names = [
     "Mary Baker",
     "Amelia Earhart",
@@ -32,10 +34,18 @@ export default function Avatars() {
     return names[randomNumber];
   };
 
+
+  useEffect(()=>{
+    const random = getRandomName()
+    setRandomName(random)
+  },[])
+
+
+
   return (
     <Avatar
       size={40}
-      name={`${getRandomName()}`}
+      name={`${randomName}`}
       variant="beam"
       colors={["#f26b7a", "#f0f2dc", "#d9eb52", "#8ac7de", "#87796f"]}
     />

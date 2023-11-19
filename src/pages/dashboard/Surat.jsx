@@ -14,8 +14,6 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  Option,
-  Select,
 } from "@material-tailwind/react";
 import TextInput from "../../components/TextInput";
 import ButtonCustom from "../../components/ButtonCustom";
@@ -30,6 +28,7 @@ import PreviewSurat from "./Surat/PreviewSurat";
 import ModalDeleteSurat from "../../components/ModalDeleteSurat";
 import ModalConfirmTTD from "../../components/ModalConfirmTTD";
 import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 const DataSurat = lazy(() => import("./Surat/DataSurat"));
 
 export default function Surat() {
@@ -40,6 +39,7 @@ export default function Surat() {
   const [deleteConfirmData, setDeleteConfirmData] = useState({});
   const [openModalConfrimTTD, setOpenModalConfirmTTD] = useState(false);
   const [openModalEdit, setOpenModalEdit] = useState(false);
+  const { ref, inView } = useInView();
   const handleOpenModalConfirmTTD = (idSurat) => {
     setOpenModalConfirmTTD(!openModalConfrimTTD);
     setCurrentIdSurat(idSurat);
@@ -126,15 +126,15 @@ export default function Surat() {
     },
   });
   const [isSearch, setIsSearch] = useState();
-  const [query,setQuery] = useState("");
+  const [query, setQuery] = useState("");
   const handleSearchSurat = useInfiniteQuery(`listSearch-${query}`, {
     queryFn: async ({ pageParam }) => {
-      const data = await searchSurat(pageParam || 0,query);
+      const data = await searchSurat(pageParam || 0, query);
       return data.data;
     },
     getNextPageParam: (lastPage) => lastPage.data.data.lastIdSurat,
     staleTime: 5000,
-    enabled:!!isSearch,
+    enabled: !!isSearch,
   });
 
   let searchTimeout;
@@ -146,7 +146,7 @@ export default function Surat() {
         clearTimeout(searchTimeout);
       }
       searchTimeout = setTimeout(() => {
-        setQuery(query)
+        setQuery(query);
       }, 2000);
     } else {
       setIsSearch(false);
@@ -173,6 +173,12 @@ export default function Surat() {
       console.log(error);
     },
   });
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
   if (isLoading) {
     return <TableSkeleton />;
   }
@@ -255,10 +261,16 @@ export default function Surat() {
             </div>
           </div>
         </CardHeader>
-        <CardBody className="overflow-auto px-0">
+        <CardBody className="overflow-auto px-0 min-h-screen">
           <Suspense fallback={<TableSkeleton />}>
             <DataSurat
-              dataSurat={isSearch ? handleSearchSurat.data ? handleSearchSurat.data.pages : data.pages: data.pages}
+              dataSurat={
+                isSearch
+                  ? handleSearchSurat.data
+                    ? handleSearchSurat.data.pages
+                    : data.pages
+                  : data.pages
+              }
               handleOpenPreview={handleOpenPreview}
               handleOpenDelete={handleOpenModalDelete}
               handleOpenModalConfirmTTD={handleOpenModalConfirmTTD}
@@ -268,11 +280,13 @@ export default function Surat() {
         </CardBody>
         <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
           {hasNextPage && (
-            <ButtonCustom
-              text={isFetchingNextPage ? <Spinner /> : "Load More"}
-              onClick={fetchNextPage}
-              disabled={isFetchingNextPage}
-            />
+            <div ref={ref}>
+              <ButtonCustom
+                text={isFetchingNextPage ? <Spinner /> : "Load More"}
+                onClick={fetchNextPage}
+                disabled={isFetchingNextPage}
+              />
+            </div>
           )}
         </CardFooter>
       </Card>

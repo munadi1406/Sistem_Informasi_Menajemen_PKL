@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import TableSkeleton from "../../components/skeleton/TableSkeleton";
 import {
   Card,
@@ -26,13 +26,15 @@ import {
   searchTemplate,
 } from "../../api/templateSurat";
 import { Spinner } from "@material-tailwind/react";
-const DataTemplateSurat = lazy(() =>
-  import("./TemplateSurat/DataTemplateSurat"),
+const DataTemplateSurat = lazy(
+  () => import("./TemplateSurat/DataTemplateSurat"),
 );
 const Form = lazy(() => import("./TemplateSurat/Form"));
 import Index from "../../components/templateSuratLayout/Index";
 import { useAlertNotification } from "../../store/store";
 import ModalDelete from "../../components/ModalDelete";
+import { useInView } from "react-intersection-observer";
+import Preview from "./TemplateSurat/Preview";
 
 export default function TemplateSurat() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
@@ -41,7 +43,7 @@ export default function TemplateSurat() {
   const [errorMsg, setErrorMsg] = useState("");
   const { setOpen, setStatus, setMsg } = useAlertNotification((state) => state);
   const [openModalDelete, setOpenModalDelete] = useState(false);
-
+  const { ref, inView } = useInView();
   const [openModalEdit, setOpenModalEdit] = useState(false);
 
   const handleOpenModalDelete = (currentId) => {
@@ -61,15 +63,21 @@ export default function TemplateSurat() {
     setErrorMsg("");
   };
 
-  const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, data,refetch } =
-    useInfiniteQuery(`listTemplate`, {
-      queryFn: async ({ pageParam }) => {
-        const data = await getListTemplate(pageParam || 0);
-        return data.data;
-      },
-      getNextPageParam: (lastPage) => lastPage.data.lastIdTemplate,
-      staleTime: 5000,
-    });
+  const {
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    data,
+    refetch,
+  } = useInfiniteQuery(`listTemplate`, {
+    queryFn: async ({ pageParam }) => {
+      const data = await getListTemplate(pageParam || 0);
+      return data.data;
+    },
+    getNextPageParam: (lastPage) => lastPage.data.lastIdTemplate,
+    staleTime: 5000,
+  });
 
   const TemplateById = useQuery(["template", currentIdTemplate], {
     queryFn: async () => {
@@ -89,6 +97,7 @@ export default function TemplateSurat() {
       setOpen(true);
       setStatus(true);
       setMsg(data.message);
+      refetch();
     },
     onError: (error) => {
       setErrorMsg(error.response.data.message);
@@ -107,6 +116,7 @@ export default function TemplateSurat() {
       setOpen(true);
       setStatus(true);
       setMsg(data.message);
+      refetch();
     },
     onError: (error) => {
       setErrorMsg(error.response.data.message);
@@ -143,6 +153,10 @@ export default function TemplateSurat() {
     setOpenPreview(!openPreview);
   };
 
+
+
+
+
   const handleDeleteTemplateSurat = useMutation({
     mutationFn: async () => {
       const data = await deleteTemplate(currentIdTemplate);
@@ -153,45 +167,43 @@ export default function TemplateSurat() {
       setOpen(true);
       setStatus(true);
       setMsg(data.message);
-      refetch()
+      refetch();
     },
     onError: (error) => {
-        setOpenModalDelete(false);
+      setOpenModalDelete(false);
       setOpen(true);
       setStatus(true);
       setMsg(error.response.data.message);
     },
   });
-
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
   if (isLoading) {
     return <TableSkeleton />;
   }
 
   return (
     <Card className="h-full w-full">
+      <Form
+        open={openCreateForm || openModalEdit}
+        handleOpen={handleOpen}
+        title={"Buat Template Surat"}
+        handleSubmit={openModalEdit ? handleEditTemplate : handleCreateTemplate}
+        errorMsg={errorMsg}
+        isEdit={openModalEdit}
+        data={TemplateById.data}
+      />
       <ModalDelete
         open={openModalDelete}
         handleOpen={handleOpenModalDelete}
         title="Delete Template"
         handleDelete={handleDeleteTemplateSurat}
       />
-      <Dialog
-        open={openPreview}
-        handler={handleOpenPreview}
-        className="max-h-[90vh] overflow-y-auto"
-        size="xl"
-      >
-        <DialogHeader>Preview</DialogHeader>
-        <DialogBody>
-          <Index
-            isi={
-              TemplateById.isLoading
-                ? "Loading..."
-                : TemplateById.data?.isi_template
-            }
-          />
-        </DialogBody>
-      </Dialog>
+      <Preview open={openPreview} handleOpen={()=>setOpenPreview(false)} size={"xl"} TemplateById={TemplateById}/>
+
       <CardHeader floated={false} shadow={false} className="rounded-none">
         <div className="mb-8 flex items-center justify-between gap-8">
           <div>
@@ -209,29 +221,6 @@ export default function TemplateSurat() {
             >
               <FaPlusCircle className="h-4 w-4" /> Buat Template
             </Button>
-            <Dialog
-              open={openCreateForm || openModalEdit}
-              handler={handleOpen}
-              className="max-h-[90vh] overflow-y-auto"
-              size="xl"
-            >
-              <DialogHeader>
-                {" "}
-                {openModalEdit ? "Edit Template Surat" : "Buat Template Surat"}
-              </DialogHeader>
-              <DialogBody>
-                <Suspense>
-                  <Form
-                    handleSubmit={
-                      openModalEdit ? handleEditTemplate : handleCreateTemplate
-                    }
-                    errorMsg={errorMsg}
-                    isEdit={openModalEdit}
-                    data={TemplateById.data}
-                  />
-                </Suspense>
-              </DialogBody>
-            </Dialog>
           </div>
         </div>
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -250,7 +239,7 @@ export default function TemplateSurat() {
           </div>
         </div>
       </CardHeader>
-      <CardBody className="overflow-auto px-0">
+      <CardBody className="overflow-auto px-0 min-h-screen">
         <Suspense fallback={<TableSkeleton />}>
           <DataTemplateSurat
             dataTemplateSurat={
@@ -267,13 +256,14 @@ export default function TemplateSurat() {
         </Suspense>
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-      
         {hasNextPage && (
-          <ButtonCustom
-            text={isFetchingNextPage ? <Spinner /> : "Load More"}
-            onClick={fetchNextPage}
-            disabled={isFetchingNextPage}
-          />
+          <div ref={ref}>
+            <ButtonCustom
+              text={isFetchingNextPage ? <Spinner /> : "Load More"}
+              onClick={fetchNextPage}
+              disabled={isFetchingNextPage}
+            />
+          </div>
         )}
       </CardFooter>
     </Card>

@@ -7,13 +7,13 @@ import PropTypes from "prop-types";
 const TABLE_HEAD = [
   "ID Surat Masuk",
   "Nomor Surat",
-  "Pengirim",
+  "Penerima",
   "Perihal",
-  "Tanggal Masuk",
+  "Tanggal Keluar",
   "Aksi",
 ];
 
-export default function DataSuratMasuk({
+export default function DataSuratKeluar({
   dataSurat,
   handleOpenPreview,
   handleOpenDelete,
@@ -49,10 +49,10 @@ export default function DataSuratMasuk({
               {
                 id,
                 nomorSurat,
-                pengirim,
+                penerima,
                 perihal,
 
-                tanggalMasuk,
+                tanggalKeluar,
               },
               i,
             ) => {
@@ -86,7 +86,7 @@ export default function DataSuratMasuk({
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {pengirim}
+                      {penerima}
                     </Typography>
                   </td>
                   <td className={classes}>
@@ -104,13 +104,13 @@ export default function DataSuratMasuk({
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {new Date(tanggalMasuk).toDateString()}
+                      {new Date(tanggalKeluar).toDateString()}
                     </Typography>
                   </td>
 
                   <td className={classes}>
                     <div className="bg-white rounded-md text-white">
-                      <Tooltip content="Edit Surat Masuk">
+                      <Tooltip content="Edit Surat Keluar">
                         <IconButton
                           variant="text"
                           onClick={() => handleOpenEdit(id)}
@@ -118,7 +118,7 @@ export default function DataSuratMasuk({
                           <FaPencilAlt className="h-4 w-4" />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip content="Lihat Surat Masuk">
+                      <Tooltip content="Lihat Surat Keluar">
                         <IconButton
                           variant="text"
                           className="text-deep-purple-600"
@@ -127,12 +127,12 @@ export default function DataSuratMasuk({
                           <FaEye className="h-4 w-4" />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip content="Hapus Surat Masuk">
+                      <Tooltip content="Hapus Surat Keluar">
                         <IconButton
                           variant="text"
                           className="text-red-600"
                           onClick={() =>
-                            handleOpenDelete(id, { perihal, pengirim })
+                            handleOpenDelete(id, { perihal, penerima })
                           }
                         >
                           <FaTrash className="h-4 w-4" />
@@ -149,12 +149,12 @@ export default function DataSuratMasuk({
     </table>
   );
 }
-DataSuratMasuk.propTypes = {
+DataSuratKeluar.propTypes = {
   dataSurat: PropTypes.array,
   handleOpenPreview: PropTypes.func.isRequired,
   handleOpenDelete: PropTypes.func.isRequired,
   handleOpenEdit: PropTypes.func.isRequired,
 };
-DataSuratMasuk.defaultProps = {
+DataSuratKeluar.defaultProps = {
   dataSurat: [],
 };

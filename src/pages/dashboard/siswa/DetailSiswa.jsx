@@ -6,20 +6,21 @@ import PropTypes from "prop-types";
 
 const DetailSiswa = ({ data }) => {
   return (
-    <div className="w-full  grid grid-cols-3 gap-2">
-      <div className="h-[400px]  col-span-1 rounded-md">
+    <div className="w-full  grid lg:grid-cols-3 grid-cols-1 gap-2 h-max">
+      <div className="min-h-[400px]  col-span-1 rounded-md">
         
         {data.image ? (
           <LazyImage
             src={`${endpoint}/siswa/image/${data.image}`}
             alt={data.nama_lengkap}
-            className="w-full"
+            className="w-full rounded-md"
+
           />
         ) : (
           <div className="h-[400px] bg-gray-600 rounded-md" />
         )}
       </div>
-      <table className="h-max w-max col-span-2">
+      <table className="h-max w-max lg:col-span-2 col-span-1">
         <tbody>
           <tr>
             <td className="text-start font-semibold px-2 py-1">NIS</td>

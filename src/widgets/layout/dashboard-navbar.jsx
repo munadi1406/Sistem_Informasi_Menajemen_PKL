@@ -9,13 +9,11 @@ import {
   MenuList,
   MenuItem,
 } from "@material-tailwind/react";
-import { UserCircleIcon, Bars3Icon } from "@heroicons/react/24/solid";
-import { useMaterialTailwindController, setOpenSidenav } from "@/context";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 import { useDataUser } from "../../store/store";
 
 export function DashboardNavbar() {
-  const [controller, dispatch] = useMaterialTailwindController();
-  const { openSidenav } = controller;
+  
   const fixedNavbar = true;
   const { pathname } = useLocation();
   const [layout, page] = pathname.split("/").filter((el) => el !== "");
@@ -31,7 +29,7 @@ export function DashboardNavbar() {
       fullWidth
       blurred={fixedNavbar}
     >
-      <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+      <div className="flex flex-col justify-between md:flex-row md:items-center">
         <div className="capitalize w-max">
           <Breadcrumbs
             className={`bg-transparent p-0 transition-all ${
@@ -45,16 +43,7 @@ export function DashboardNavbar() {
           </Breadcrumbs>
           <div className="text-sm text-gray-600">{page}</div>
         </div>
-        <div className="md:w-max flex items-center justify-start w-full flex-row-reverse md:flex-row ">
-          <IconButton
-            variant="text"
-            color="blue-gray"
-            className="grid xl:hidden"
-            onClick={() => setOpenSidenav(dispatch, !openSidenav)}
-          >
-            <Bars3Icon strokeWidth={3} className="h-6 w-6 text-blue-gray-500" />
-          </IconButton>
-
+        <div className="md:w-max flex items-center justify-end w-full flex-row ">
           <div className="bg-green-600 text-white rounded-md text-xs py-1 px-3">
             {roles[role]}
           </div>

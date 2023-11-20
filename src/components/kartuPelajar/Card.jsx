@@ -27,7 +27,6 @@ export default function Card({
   const [textColorBody, setTextColorBody] = useState("");
 
   useEffect(() => {
-    
     setTextColor(isLight ? "text-black" : "text-white");
     setTextColorBody(isLightBody ? "text-black" : "text-white");
   }, [isLight, isLightBody]);
@@ -42,7 +41,7 @@ export default function Card({
   }
 
   return (
-    <div className="flex gap-2 my-1 mx-2">
+    <div className="flex gap-2 my-1 mx-2 w-max ">
       <div
         className="w-[325.08px] h-[204.12px] relative rounded-lg overflow-clip border-2"
         style={{ backgroundColor: `${bodyColor}` }}
@@ -99,7 +98,6 @@ export default function Card({
                   src={`${endpoint}/siswa/image/${cardData.image}`}
                   alt={`${cardData.namaLengkap}`}
                   className="rounded-full w-[55px] h-[55px] object-cover"
-                 
                   loading="eager"
                 />
               ) : (

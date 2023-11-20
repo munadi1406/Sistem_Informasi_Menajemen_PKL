@@ -30,6 +30,7 @@ import { BiImport } from "react-icons/bi";
 import Avatars from "../../components/Avatars";
 import { useInView } from "react-intersection-observer";
 
+
 export default function Siswa() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
   const [isOpenDetailSiswa, setIsOpenDetailSiswa] = useState(false);

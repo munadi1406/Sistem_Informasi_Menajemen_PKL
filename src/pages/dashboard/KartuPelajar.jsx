@@ -151,7 +151,7 @@ export default function KartuPelajar() {
         <CardSkeleton/>
         <CardSkeleton/>
         </div>}>
-        <div className="flex flex-col" ref={componentRef}>
+        <div className="flex flex-col w-full overflow-auto" ref={componentRef}>
           {valueCard.map((e, i) => (
             <div
               key={i}

@@ -66,7 +66,7 @@ export function Dashboard() {
           }
         />
       </Suspense>
-      <div className="p-4 xl:ml-80">
+      <div className="p-4 md:ml-80 ">
         <Suspense fallback={<NavbarSkeleton />}>
           <DashboardNavbar />
         </Suspense>

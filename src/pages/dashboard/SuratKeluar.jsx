@@ -10,7 +10,7 @@ import {
 } from "@material-tailwind/react";
 import TextInput from "../../components/TextInput";
 import ButtonCustom from "../../components/ButtonCustom";
-import { FaPlusCircle } from "react-icons/fa";
+import { FaPlusCircle, FaPrint } from "react-icons/fa";
 import { Typography } from "@material-tailwind/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Spinner } from "@material-tailwind/react";
@@ -29,6 +29,7 @@ const DataSuratKeluar = lazy(() => import("./suratKeluar/DataSuratKeluar"));
 const ModalDeleteSuratKeluar = lazy(
   () => import("../../components/ModalDeleteSuratKeluar"),
 );
+const Print = lazy(() => import("./suratKeluar/Print"));
 
 export default function SuratKeluar() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
@@ -42,6 +43,12 @@ export default function SuratKeluar() {
   const { ref, inView } = useInView();
   const [filter, setFilter] = useState({});
   const [isFilter, setIsFilter] = useState(false);
+  const [isPrint, setIsPrint] = useState(false);
+
+  const handleIsPrint = () => {
+    setFilter({startDate:null,endDate:null})
+    setIsPrint(!isPrint)
+  };
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -209,6 +216,15 @@ export default function SuratKeluar() {
         title={"Detail Surat Keluar"}
         handleGetDetailSuratKeluar={handleGetDetailSuratKeluar}
       />
+      <Print
+        open={isPrint}
+        handleOpen={handleIsPrint}
+        title={"Print Data Surat Keluar"}
+        handleChange={handleChange}
+        data={handleSearchSuratKeluar}
+        initialData={filter}
+        clearFilter={clearFilter}
+      />
       <Card className="h-full w-full">
         <CardHeader floated={false} shadow={false} className="rounded-none">
           <div className="mb-8 flex items-center justify-between gap-8">
@@ -218,6 +234,17 @@ export default function SuratKeluar() {
               </Typography>
             </div>
             <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+              <ButtonCustom
+                className="flex items-center gap-3"
+                size="sm"
+                text={
+                  <>
+                    <FaPrint className="h-4 w-4" /> Cetak
+                  </>
+                }
+                color="green"
+                onClick={handleIsPrint}
+              />
               <ButtonCustom
                 className="flex items-center gap-3"
                 size="sm"

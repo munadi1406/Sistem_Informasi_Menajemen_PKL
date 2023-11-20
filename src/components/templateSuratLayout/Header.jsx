@@ -3,13 +3,13 @@ import LogoSekolah from "../../assets/logosma1.png";
 
 export default function Header() {
     return (
-        <div className="pb-3 border-b-2 border-black mb-6 flex justify-center items-center ">
+        <div className="pb-3 border-b-2 border-black mb-6 flex justify-center items-center w-max">
             <div className="flex w-full justify-center items-center gap-2">
                 <div>
                     <img src={LogoKalsel} width={60} className="block"/>
                 </div>
                 <div className="font-sans">
-                    <p className="text-center  text-xl font-semibold uppercase">
+                    <p className="text-center  text-xl font-semibold uppercase ">
                         Pemerintah Provinsi Kalimantan Selatan
                     </p>
                     <p className="text-center font-semibold text-xl">

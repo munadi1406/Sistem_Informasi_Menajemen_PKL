@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import TableSkeleton from "../../components/skeleton/TableSkeleton";
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
-import { getDetailSurat, searchSurat } from "../../api/surat";
 import {
   deleteSuratMasuk,
   detailSuratMasuk,
@@ -15,7 +14,7 @@ import {
 } from "@material-tailwind/react";
 import TextInput from "../../components/TextInput";
 import ButtonCustom from "../../components/ButtonCustom";
-import { FaPlusCircle } from "react-icons/fa";
+import { FaPlusCircle, FaPrint } from "react-icons/fa";
 import { Typography } from "@material-tailwind/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Spinner } from "@material-tailwind/react";
@@ -24,6 +23,7 @@ import Form from "./suratMasuk/Form";
 import { useAlertNotification } from "../../store/store";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
+const Print = lazy(() => import("./suratMasuk/Print"));
 const ModalDeleteSuratMasuk = lazy(
   () => import("../../components/ModalDeleteSuratMasuk"),
 );
@@ -42,7 +42,12 @@ export default function SuratMasuk() {
   const { ref, inView } = useInView();
   const [filter, setFilter] = useState({});
   const [isFilter, setIsFilter] = useState(false);
+const [isPrint, setIsPrint] = useState(false);
 
+  const handleIsPrint = () => {
+    setFilter({startDate:null,endDate:null})
+    setIsPrint(!isPrint)
+  };
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -172,11 +177,11 @@ export default function SuratMasuk() {
     setIsFilter(false);
   }, [filter]);
 
-  const clearFilter = ()=>{
-    setIsFilter(false)
-    setIsSearch(false)
-    setFilter({startDate:null,endDate:null})
-  }
+  const clearFilter = () => {
+    setIsFilter(false);
+    setIsSearch(false);
+    setFilter({ startDate: null, endDate: null });
+  };
 
   if (isLoading) {
     return <TableSkeleton />;
@@ -206,6 +211,15 @@ export default function SuratMasuk() {
         title={"Detail Surat Masuk"}
         handleGetDetailSuratMasuk={handleGetDetailSuratMasuk}
       />
+      <Print
+        open={isPrint}
+        handleOpen={handleIsPrint}
+        title={"Print Data Surat Masuk"}
+        handleChange={handleChange}
+        data={handleSearchSuratMasuk}
+        initialData={filter}
+        clearFilter={clearFilter}
+      />
       <Card className="h-full w-full">
         <CardHeader floated={false} shadow={false} className="rounded-none">
           <div className="mb-8 flex items-center justify-between gap-8">
@@ -215,6 +229,17 @@ export default function SuratMasuk() {
               </Typography>
             </div>
             <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+              <ButtonCustom
+                className="flex items-center gap-3"
+                size="sm"
+                text={
+                  <>
+                    <FaPrint className="h-4 w-4" /> Cetak
+                  </>
+                }
+                color="green"
+                onClick={handleIsPrint}
+              />
               <ButtonCustom
                 className="flex items-center gap-3"
                 size="sm"
@@ -247,22 +272,21 @@ export default function SuratMasuk() {
                 Filter Berdasarkan Tanggal Masuk
               </p>
               <div className="flex gap-2">
-                
                 <TextInput
                   type={"date"}
                   label={"Dari Tanggal"}
                   name="startDate"
                   onChange={handleChange}
-                  value={filter.startDate || ''}
+                  value={filter.startDate || ""}
                 />
                 <TextInput
                   type={"date"}
                   label={"Sampai Tanggal"}
                   name="endDate"
                   onChange={handleChange}
-                  value={filter.endDate || ''}
+                  value={filter.endDate || ""}
                 />
-                <ButtonCustom text={"Clear"} onClick={clearFilter}/>
+                <ButtonCustom text={"Clear"} onClick={clearFilter} />
               </div>
             </div>
           </div>

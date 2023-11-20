@@ -8,7 +8,7 @@ const LazyImage =  ({src,alt,...props})=>{
         <LazyLoadImage
     alt={alt}
     effect="blur"
-    src={src} {...props}/>
+    src={src} {...props} />
     )
 }
 

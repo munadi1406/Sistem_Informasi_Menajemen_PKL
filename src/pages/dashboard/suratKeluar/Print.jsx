@@ -16,8 +16,8 @@ const Print = ({ handleChange, data, initialData, clearFilter }) => {
     content: () => ref.current,
   });
   return (
-    <div className="relative">
-      <div className="flex gap-2">
+    <div className="relative flex place-items-center flex-col">
+      <div className="grid sm:grid-cols-3 grid-cols-1 gap-2 w-full sticky top-0 bg-white p-2">
         <TextInput
           type={"date"}
           label={"Dari Tanggal"}
@@ -44,9 +44,9 @@ const Print = ({ handleChange, data, initialData, clearFilter }) => {
       )}
       {!data.isLoading && data.isSuccess && initialData.endDate && (
         <>
-          <div className="py-3 px-3 text-black space-y-2 mt-5" ref={ref}>
+          <div className="py-3 px-3 text-black space-y-2 mt-5  w-[794px]" ref={ref}>
             <Header />
-            <div className="w-full text-center text-xl font-semibold uppercase underline">
+            <div className="w-full text-center text-xl font-semibold uppercase underline underline-offset-2">
               Laporan Surat Keluar
             </div>
             <p className="w-full text-center text-xs">
@@ -56,11 +56,11 @@ const Print = ({ handleChange, data, initialData, clearFilter }) => {
             <table className="border-collapse border border-black w-full">
               <thead>
                 <tr>
-                  <th className="border border-black py-2">No</th>
-                  <th className="border border-black py-2">Nomor Surat</th>
-                  <th className="border border-black py-2">Penerima</th>
-                  <th className="border border-black py-2">Perihal</th>
-                  <th className="border border-black py-2">Tanggal Keluar</th>
+                  <th className="border border-black py-2 text-[15px]">No</th>
+                  <th className="border border-black py-2 text-[15px]">Nomor Surat</th>
+                  <th className="border border-black py-2 text-[15px]">Penerima</th>
+                  <th className="border border-black py-2 text-[15px]">Perihal</th>
+                  <th className="border border-black py-2 text-[15px]">Tanggal Keluar</th>
                 </tr>
               </thead>
 

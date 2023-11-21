@@ -5,11 +5,8 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  DialogBody,
-  DialogHeader,
   Typography,
   Button,
-  Dialog,
 } from "@material-tailwind/react";
 import { FaPlusCircle } from "react-icons/fa";
 import { useState } from "react";
@@ -30,7 +27,7 @@ const DataTemplateSurat = lazy(
   () => import("./TemplateSurat/DataTemplateSurat"),
 );
 const Form = lazy(() => import("./TemplateSurat/Form"));
-import Index from "../../components/templateSuratLayout/Index";
+
 import { useAlertNotification } from "../../store/store";
 import ModalDelete from "../../components/ModalDelete";
 import { useInView } from "react-intersection-observer";

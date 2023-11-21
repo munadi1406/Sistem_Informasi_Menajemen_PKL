@@ -70,7 +70,7 @@ export function Dashboard() {
         <Suspense fallback={<NavbarSkeleton />}>
           <DashboardNavbar />
         </Suspense>
-        <div className="mt-12 mb-8 flex flex-col gap-12">
+        <div className="mt-12 mb-8  flex flex-col gap-12">
           <Suspense fallback={<Loader/>}>
             <Routes>
               <Route path="/" element={<Home />} />
@@ -91,7 +91,7 @@ export function Dashboard() {
             </Routes>
           </Suspense>
         </div>
-        <div className="text-blue-gray-600">
+        <div className="text-blue-gray-600 md:mb-0 mb-20">
           <Suspense fallback={<FooterSkeleton/>}>
             <Footer />
           </Suspense>

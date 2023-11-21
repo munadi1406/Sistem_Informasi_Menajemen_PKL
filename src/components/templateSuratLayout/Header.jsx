@@ -3,7 +3,7 @@ import LogoSekolah from "../../assets/logosma1.png";
 
 export default function Header() {
     return (
-        <div className="pb-3 border-b-2 border-black mb-6 flex justify-center items-center w-max">
+        <div className="pb-3 border-b-2 border-black mb-6 flex justify-center items-center w-full">
             <div className="flex w-full justify-center items-center gap-2">
                 <div>
                     <img src={LogoKalsel} width={60} className="block"/>

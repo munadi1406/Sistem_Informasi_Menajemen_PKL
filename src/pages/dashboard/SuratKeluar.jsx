@@ -272,11 +272,11 @@ export default function SuratKeluar() {
                 onChange={search}
               />
             </div>
-            <div className="w-full md:w-72 space-y-3">
+            <div className="w-full  space-y-3">
               <p className="text-blue-600 font-semibold text-xs">
                 Filter Berdasarkan Tanggal Keluar
               </p>
-              <div className="flex gap-2">
+              <div className="grid lg:grid-cols-3 grid-cols-1 w-full  gap-2">
                 <TextInput
                   type={"date"}
                   label={"Dari Tanggal"}
@@ -291,7 +291,10 @@ export default function SuratKeluar() {
                   onChange={handleChange}
                   value={filter.endDate || ""}
                 />
+                <div>
+
                 <ButtonCustom text={"Clear"} onClick={clearFilter} />
+                </div>
               </div>
             </div>
           </div>

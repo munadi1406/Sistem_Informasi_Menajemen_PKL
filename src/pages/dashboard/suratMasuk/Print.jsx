@@ -6,7 +6,7 @@ import Header from "../../../components/templateSuratLayout/Header";
 import Footer from "../../../components/templateSuratLayout/Footer";
 import Loader from "../../../components/Loader";
 import { useReactToPrint } from "react-to-print";
-import { useEffect, useRef, useState } from "react";
+import {  useRef } from "react";
 import { FaPrint } from "react-icons/fa";
 
 const Print = ({ handleChange, data, initialData, clearFilter }) => {
@@ -16,8 +16,8 @@ const Print = ({ handleChange, data, initialData, clearFilter }) => {
     content: () => ref.current,
   });
   return (
-    <div className="relative">
-      <div className="flex gap-2">
+     <div className="relative flex place-items-center flex-col">
+      <div className="grid sm:grid-cols-3 grid-cols-1 gap-2 w-full sticky top-0 bg-white p-2">
         <TextInput
           type={"date"}
           label={"Dari Tanggal"}
@@ -44,9 +44,9 @@ const Print = ({ handleChange, data, initialData, clearFilter }) => {
       )}
       {!data.isLoading && data.isSuccess && initialData.endDate && (
         <>
-          <div className="py-3 px-3 text-black space-y-2 mt-5" ref={ref}>
+         <div className="py-3 px-3 text-black space-y-2 mt-5  w-[794px]" ref={ref}>
             <Header />
-            <div className="w-full text-center text-xl font-semibold uppercase underline">
+            <div className="w-full text-center text-xl font-semibold uppercase underline underline-offset-2">
               Laporan Surat Masuk
             </div>
             <p className="w-full text-center text-xs">

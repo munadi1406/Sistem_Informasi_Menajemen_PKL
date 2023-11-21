@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import Loader from "../../components/Loader";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useRef } from "react";
 import { getListTemplateSertifikat } from "../../api/templateSertifkat";
 import { endpoint } from "../../api/users";
 import TextInput from "../../components/TextInput";
@@ -12,6 +12,8 @@ import MovedComponents from "../../components/MovedComponents";
 const animatedComponents = makeAnimated();
 import QrCode from "../../components/QrCode";
 import { Checkbox, Slider } from "@material-tailwind/react";
+import ButtonCustom from '../../components/ButtonCustom'
+import { useReactToPrint } from "react-to-print";
 
 export default function KartuPelajar() {
   const [valueSearch, setValueSearch] = useState("");
@@ -68,8 +70,35 @@ export default function KartuPelajar() {
   useEffect(() => {
     refetch();
   }, [valueSearch]);
+  const ref = useRef();
 
-  if (isLoading) {
+  const handlePrint = useReactToPrint({
+    content: () => ref.current,
+  });
+
+
+
+const [imageBlob, setImageBlob] = useState(null);
+
+  useEffect(() => {
+    const imageUrl = `${endpoint}/templateSertifikat/image/${value.template}`;
+
+    const fetchImage = async () => {
+      try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+
+        // Simpan objek Blob ke dalam state
+        setImageBlob(blob);
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
+    };
+
+    fetchImage();
+  }, [value]);
+
+  if (isLoading) { 
     return (
       <>
         <Loader />
@@ -118,17 +147,17 @@ export default function KartuPelajar() {
           onChange={(e) => setQrCodeSize(e.target.value)}
         />
       )}
-      <div className="flex flex-col overflow-auto gap-2">
-        <Suspense fallback={<Loader />}>
+      <div className="flex flex-col overflow-auto gap-2" ref={ref}>
+        
           {splitName.map((e, i) => (
             <div className="relative flex place-items-center " key={i}>
               {value.template && (
                 <>
                   <img
-                    src={`${endpoint}/templateSertifikat/image/${value.template}`}
-                    className={""}
+                    src={URL.createObjectURL(imageBlob)}
+                    className={"h-full"}
                   />
-                  <MovedComponents initialPosition={{ x: 50, y: -50 }}>
+                  <MovedComponents  type={""}>
                     <div>
                       <div className=" ">
                         <p className="text-4xl font-semibold text-center font-serif">
@@ -153,7 +182,7 @@ export default function KartuPelajar() {
                       </div>
                     </div>
                   </MovedComponents>
-                  <MovedComponents>
+                  <MovedComponents type={"kepsek"}>
                     <div className="text-xs">
                       <p className="text-black font-bold">
                         {kepsek.data.data.user.username}
@@ -162,7 +191,7 @@ export default function KartuPelajar() {
                     </div>
                   </MovedComponents>
                   {leadEvent && (
-                    <MovedComponents initialPosition={{ x: 0, y: 100 }}>
+                    <MovedComponents type={"kepel"}>
                       <div className="text-xs">
                         <p className="text-black font-bold">{leadEvent}</p>
                         <p>Ketua Pelaksana</p>
@@ -170,7 +199,7 @@ export default function KartuPelajar() {
                     </MovedComponents>
                   )}
                   {isQrCode && (
-                    <MovedComponents>
+                    <MovedComponents type={"qrCode"}>
                       <QrCode value={"Testing 123"} size={qrCodeSize} />
                     </MovedComponents>
                   )}
@@ -178,8 +207,9 @@ export default function KartuPelajar() {
               )}
             </div>
           ))}
-        </Suspense>
+        
       </div>
+          <ButtonCustom text={"Cetak"} onClick={handlePrint}/>
     </div>
   );
 }

@@ -29,3 +29,23 @@ export const useKepsekImage = create((set) => ({
   imageL: "",
   setImage: (image) => set({ image }),
 }));
+
+export const useMoveComponent = create((set) => ({
+  x: 50,
+  setX: (x) => set({ x }),
+  y: 50,
+  setY: (y) => set({ y }),
+  xKepsek: 200,
+  setXKepsek: (xKepsek) => set({ xKepsek }),
+  yKepsek: 100,
+  setYKepsek: (yKepsek) => set({ yKepsek }),
+  xKepel: 100,
+  setXKepel: (xKepel) => set({ xKepel }),
+  yKepel: 100,
+  setYKepel: (yKepel) => set({ yKepel }),
+  xQrCode: 150,
+  setXQrCode: (xQrCode) => set({ xQrCode }),
+  yQrCode: 150,
+  setYQrCode: (yQrCode) => set({ yQrCode }),
+}));
+

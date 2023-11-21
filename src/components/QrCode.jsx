@@ -2,15 +2,18 @@ import { QRCodeSVG } from "qrcode.react";
 import Logo from "../assets/logosma1.png";
 import PropTypes from 'prop-types'
 
-export default function QrCode({value}) {
+export default function QrCode({value,size}) {
   return (
     <QRCodeSVG
       value={value}
-      
-      size="100"
+      size={size}
     />
   );
 }
 QrCode.propTypes={
-  value:PropTypes.string
+  value:PropTypes.string,
+  size:PropTypes.number
+}
+QrCode.defaultProp={
+  size:100
 }

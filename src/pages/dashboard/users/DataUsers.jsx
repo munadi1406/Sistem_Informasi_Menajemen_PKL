@@ -55,6 +55,7 @@ export default function DataUsers({
 
   return (
     <Card className="h-full w-full">
+     
       <CardHeader floated={false} shadow={false} className="rounded-none">
         <div className="mb-8 flex items-center justify-between gap-8">
           <div>
@@ -73,7 +74,7 @@ export default function DataUsers({
             />
           </div>
         </div>
-      </CardHeader> 
+      </CardHeader>
 
       <CardBody className="overflow-auto px-0">
         <table className="mt-4 w-full min-w-max table-auto text-left">
@@ -117,15 +118,13 @@ export default function DataUsers({
                 return (
                   <tr key={username}>
                     <td className={classes}>
-                      
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-bold"
-                        >
-                          {username}
-                        </Typography>
-                      
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-bold"
+                      >
+                        {username}
+                      </Typography>
                     </td>
                     <td className={classes}>
                       <Typography
@@ -207,12 +206,13 @@ export default function DataUsers({
       </CardBody>
 
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-        <ButtonCustom
-          className={`${hasNextPage !== true && "hidden"}`}
-          text={isFetchingNextPage ? <Spinner /> : "Load More"}
-          onClick={fetchNextPage}
-          disabled={isFetchingNextPage}
-        />
+        {hasNextPage && (
+          <ButtonCustom
+            text={isFetchingNextPage ? <Spinner /> : "Load More"}
+            onClick={fetchNextPage}
+            disabled={isFetchingNextPage}
+          />
+        )}
       </CardFooter>
     </Card>
   );

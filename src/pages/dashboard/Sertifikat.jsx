@@ -2,21 +2,25 @@ import { useQuery } from "react-query";
 import Loader from "../../components/Loader";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { getListTemplateSertifikat } from "../../api/templateSertifkat";
 import { endpoint } from "../../api/users";
 import TextInput from "../../components/TextInput";
 import TextAreaCustom from "../../components/TextAreaCustom";
 import { getDetailKepsek } from "../../api/kepsek";
+import MovedComponents from "../../components/MovedComponents";
 const animatedComponents = makeAnimated();
+import QrCode from "../../components/QrCode";
+import { Checkbox, Slider } from "@material-tailwind/react";
 
 export default function KartuPelajar() {
   const [valueSearch, setValueSearch] = useState("");
   const [value, setValue] = useState({});
   const [perihal, setPerihal] = useState("");
   const [splitName, setSplitName] = useState([]);
-  const [isMove, setIsMove] = useState(false);
-  const [leadEvent,setLeadEvent] = useState("")
+  const [leadEvent, setLeadEvent] = useState("");
+  const [isQrCode, setIsQrCode] = useState(false);
+  const [qrCodeSize, setQrCodeSize] = useState(30);
 
   const { isLoading, data, refetch, isRefetching } = useQuery(
     `listSertifikatGenerate`,
@@ -28,7 +32,7 @@ export default function KartuPelajar() {
       staleTime: 5000,
     },
   );
-   const kepsek = useQuery("kepalaSekolah", {
+  const kepsek = useQuery("kepalaSekolah", {
     queryFn: async () => {
       const data = await getDetailKepsek();
       return data.data;
@@ -65,79 +69,6 @@ export default function KartuPelajar() {
     refetch();
   }, [valueSearch]);
 
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
-  const handleMouseDown = (e) => {
-    setIsMove(true);
-    setStartPosition({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    });
-    document.body.style.userSelect = "none";
-  };
-
-  const handleMouseUp = () => {
-    setIsMove(false);
-    document.body.style.userSelect = "auto";
-  };
-  const inlineStyles = {
-    transform: `translate(${position.x}px, ${position.y}px)`,
-    cursor: isMove ? "grabbing" : "grab",
-    border: isMove ? "1px dashed black" : "none",
-  };
-
-  const handleMouseMove = (e) => {
-    if (isMove) {
-      setPosition({
-        x: e.clientX - startPosition.x,
-        y: e.clientY - startPosition.y,
-      });
-    }
-  };
-
-
-// const [positionKepsek, setPositionKepsek] = useState({ x: 0, y: 0 });
-// const [positionKetuaPelaksana, setPositionKetuaPelaksana] = useState({ x: 0, y: 0 });
-
-// const handleMouseDownSignatureKepsek = (e) => {
-//   setIsMoveSignatureKepsek(true);
-//   setStartPositionSignatureKepsek({
-//     x: e.clientX - positionKepsek.x,
-//     y: e.clientY - positionKepsek.y,
-//   });
-// };
-
-// const handleMouseUpSignatureKepsek = () => {
-//   setIsMoveSignatureKepsek(false);
-// };
-
-// const handleMouseMoveSignatureKepsek = (e) => {
-//   if (isMoveSignatureKepsek) {
-//     setPositionKepsek({
-//       x: e.clientX - startPositionSignatureKepsek.x,
-//       y: e.clientY - startPositionSignatureKepsek.y,
-//     });
-//   }
-// };
-// const inlineStylesKepsek = {
-//   transform: `translate(${positionKepsek.x}px, ${positionKepsek.y}px)`,
-//   cursor: isMoveSignatureKepsek ? 'grabbing' : 'grab',
-// };
-
-// const inlineStylesKetuaPelaksana = {
-//   transform: `translate(${positionKetuaPelaksana.x}px, ${positionKetuaPelaksana.y}px)`,
-//   cursor: isMoveSignatureKetuaPelaksana ? 'grabbing' : 'grab',
-// };
-
-
-  useEffect(() => {
-    console.log({
-      isMove,
-      position,
-      startPosition,
-    });
-  }, [isMove, position, startPosition]);
-
   if (isLoading) {
     return (
       <>
@@ -168,70 +99,81 @@ export default function KartuPelajar() {
         label={"Dalam Rangka"}
         onChange={(e) => setPerihal(e.target.value)}
       />
-      <TextInput label={"Ketua Pelaksana Jika Ada"} onChange={(e)=>setLeadEvent(e.target.value)} />
+      <TextInput
+        label={"Ketua Pelaksana Jika Ada"}
+        onChange={(e) => setLeadEvent(e.target.value)}
+      />
+      <Checkbox
+        label="Gunakan QrCode"
+        color="blue"
+        onChange={() => setIsQrCode(!isQrCode)}
+        value={isQrCode}
+      />
+      {isQrCode && (
+        <Slider
+          color="blue"
+          value={qrCodeSize}
+          max={100}
+          min={10}
+          onChange={(e) => setQrCodeSize(e.target.value)}
+        />
+      )}
       <div className="flex flex-col overflow-auto gap-2">
         <Suspense fallback={<Loader />}>
           {splitName.map((e, i) => (
-            <div className="relative flex place-items-center" key={i}>
+            <div className="relative flex place-items-center " key={i}>
               {value.template && (
                 <>
                   <img
                     src={`${endpoint}/templateSertifikat/image/${value.template}`}
                     className={""}
                   />
-                  <div
-                    className="absolute top-[50%] h-max p-2 left-[50%] -translate-y-[50%] -translate-x-[50%] flex justify-start items-center flex-col"
-                    onMouseDown={handleMouseDown}
-                    onMouseUp={handleMouseUp}
-                    onMouseMove={handleMouseMove}
-                    style={inlineStyles}
-                  >
-                    <div className=" ">
-                      <p className="text-4xl font-semibold text-center font-serif">
-                        {" "}
-                        CERTIFICATE{" "}
-                      </p>
-                      <p className="text-semibold text-center  uppercase ">
-                        {" "}
-                        Penghargaan{" "}
-                      </p>
-                      <p className="text-semibold text-center  text-lg font-semibold m-4">
-                        Diberikan Kepada :
-                      </p>
+                  <MovedComponents initialPosition={{ x: 50, y: -50 }}>
+                    <div>
+                      <div className=" ">
+                        <p className="text-4xl font-semibold text-center font-serif">
+                          {" "}
+                          CERTIFICATE{" "}
+                        </p>
+                        <p className="text-semibold text-center  uppercase ">
+                          {" "}
+                          Penghargaan{" "}
+                        </p>
+                        <p className="text-semibold text-center  text-lg font-semibold m-4">
+                          Diberikan Kepada :
+                        </p>
+                      </div>
+                      <div className="">
+                        <p className="text-3xl font-semibold text-center font-serif mb-5">
+                          {e}
+                        </p>
+                        <p className="text-md font-semibold text-center font-serif w-[300px]  break-words">
+                          {perihal}
+                        </p>
+                      </div>
                     </div>
-                    <div className="">
-                      <p className="text-3xl font-semibold text-center font-serif mb-5">
-                        {e}
+                  </MovedComponents>
+                  <MovedComponents>
+                    <div className="text-xs">
+                      <p className="text-black font-bold">
+                        {kepsek.data.data.user.username}
                       </p>
-                      <p className="text-md font-semibold text-center font-serif">
-                        {perihal}
-                      </p>
+                      <p>Kepala Sekolah</p>
                     </div>
-                  </div>
-                 {/* <div
-  onClick={handleMouseDownSignatureKepsek}
-  onMouseUp={handleMouseUpSignatureKepsek}
-  onMouseMove={handleMouseMoveSignatureKepsek}
-  className="text-xs absolute top-[50%] h-max p-2 left-[50%] -translate-y-[50%] -translate-x-[50%] flex justify-start items-center flex-col"
-  style={inlineStylesKepsek}
->
-  <p>{kepsek.data.data.user.username}</p>
-  <p>Kepala Sekolah</p>
-</div>
-
-{leadEvent && (
-  <div
-    onClick={handleMouseDownSignatureKetuaPelaksana}
-    onMouseUp={handleMouseUpSignatureKetuaPelaksana}
-    onMouseMove={handleMouseMoveSignatureKetuaPelaksana}
-    className="text-xs absolute top-[50%] h-max p-2 left-[50%] -translate-y-[50%] -translate-x-[50%] flex justify-start items-center flex-col"
-    style={inlineStylesKetuaPelaksana}
-  >
-    <p>{leadEvent}</p>
-    <p>Ketua Pelaksana</p>
-  </div>
-)} */}
-
+                  </MovedComponents>
+                  {leadEvent && (
+                    <MovedComponents initialPosition={{ x: 0, y: 100 }}>
+                      <div className="text-xs">
+                        <p className="text-black font-bold">{leadEvent}</p>
+                        <p>Ketua Pelaksana</p>
+                      </div>
+                    </MovedComponents>
+                  )}
+                  {isQrCode && (
+                    <MovedComponents>
+                      <QrCode value={"Testing 123"} size={qrCodeSize} />
+                    </MovedComponents>
+                  )}
                 </>
               )}
             </div>

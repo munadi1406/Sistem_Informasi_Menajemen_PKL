@@ -12,8 +12,10 @@ import MovedComponents from "../../components/MovedComponents";
 const animatedComponents = makeAnimated();
 import QrCode from "../../components/QrCode";
 import { Checkbox, Slider } from "@material-tailwind/react";
-import ButtonCustom from '../../components/ButtonCustom'
+import ButtonCustom from "../../components/ButtonCustom";
 import { useReactToPrint } from "react-to-print";
+import LazyImage from "../../components/LazyImage";
+import generatePDF, { Resolution, Margin } from "react-to-pdf";
 
 export default function KartuPelajar() {
   const [valueSearch, setValueSearch] = useState("");
@@ -23,7 +25,42 @@ export default function KartuPelajar() {
   const [leadEvent, setLeadEvent] = useState("");
   const [isQrCode, setIsQrCode] = useState(false);
   const [qrCodeSize, setQrCodeSize] = useState(30);
+  const optionss = {
+    // default is `save`
+    method: "open",
+    // default is Resolution.MEDIUM = 3, which should be enough, higher values
+    // increases the image quality but also the size of the PDF, so be careful
+    // using values higher than 10 when having multiple pages generated, it
+    // might cause the page to crash or hang.
+    resolution: Resolution.HIGH,
+    page: {
+      // margin is in MM, default is Margin.NONE = 0
+      margin: Margin.SMALL,
+      // default is 'A4'
+      format: "letter",
 
+      orientation: "landscape",
+    },
+    canvas: {
+      mimeType: "image/png",
+      qualityRatio: 1,
+    },
+    // Customize any value passed to the jsPDF instance and html2canvas
+    // function. You probably will not need this and things can break,
+    // so use with caution.
+    overrides: {
+      // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
+      pdf: {
+        compress: true,
+      },
+      // see https://html2canvas.hertzen.com/configuration for more options
+      canvas: {
+        useCORS: false,
+      },
+    },
+  };
+
+  const pdfRef = useRef();
   const { isLoading, data, refetch, isRefetching } = useQuery(
     `listSertifikatGenerate`,
     {
@@ -76,9 +113,7 @@ export default function KartuPelajar() {
     content: () => ref.current,
   });
 
-
-
-const [imageBlob, setImageBlob] = useState(null);
+  const [imageBlob, setImageBlob] = useState(null);
 
   useEffect(() => {
     const imageUrl = `${endpoint}/templateSertifikat/image/${value.template}`;
@@ -91,14 +126,17 @@ const [imageBlob, setImageBlob] = useState(null);
         // Simpan objek Blob ke dalam state
         setImageBlob(blob);
       } catch (error) {
-        console.error('Error fetching image:', error);
+        console.error("Error fetching image:", error);
       }
     };
 
     fetchImage();
   }, [value]);
-
-  if (isLoading) { 
+  const getTargetElement = () => {
+    console.log("running");
+    return document.getElementById("content-id");
+  };
+  if (isLoading) {
     return (
       <>
         <Loader />
@@ -147,69 +185,72 @@ const [imageBlob, setImageBlob] = useState(null);
           onChange={(e) => setQrCodeSize(e.target.value)}
         />
       )}
-      <div className="flex flex-col overflow-auto gap-2" ref={ref}>
-        
-          {splitName.map((e, i) => (
-            <div className="relative flex place-items-center " key={i}>
-              {value.template && (
-                <>
-                  <img
-                    src={URL.createObjectURL(imageBlob)}
-                    className={"h-full"}
-                  />
-                  <MovedComponents  type={""}>
-                    <div>
-                      <div className=" ">
-                        <p className="text-4xl font-semibold text-center font-serif">
-                          {" "}
-                          CERTIFICATE{" "}
-                        </p>
-                        <p className="text-semibold text-center  uppercase ">
-                          {" "}
-                          Penghargaan{" "}
-                        </p>
-                        <p className="text-semibold text-center  text-lg font-semibold m-4">
-                          Diberikan Kepada :
-                        </p>
-                      </div>
-                      <div className="">
-                        <p className="text-3xl font-semibold text-center font-serif mb-5">
-                          {e}
-                        </p>
-                        <p className="text-md font-semibold text-center font-serif w-[300px]  break-words">
-                          {perihal}
-                        </p>
-                      </div>
-                    </div>
-                  </MovedComponents>
-                  <MovedComponents type={"kepsek"}>
-                    <div className="text-xs">
-                      <p className="text-black font-bold">
-                        {kepsek.data.data.user.username}
+      <div
+        className="flex flex-col overflow-auto gap-2"
+        ref={pdfRef}
+        id="content-id"
+      >
+        {splitName.map((e, i) => (
+          <div className="relative flex place-items-center " key={i} ref={ref}>
+            {value.template && (
+              <>
+                <LazyImage src={URL.createObjectURL(imageBlob)} alt={"image"} />
+
+                <MovedComponents type={""}>
+                  <div>
+                    <div className=" ">
+                      <p className="text-4xl font-semibold text-center font-serif">
+                        {" "}
+                        CERTIFICATE{" "}
                       </p>
-                      <p>Kepala Sekolah</p>
+                      <p className="text-semibold text-center  uppercase ">
+                        {" "}
+                        Penghargaan{" "}
+                      </p>
+                      <p className="text-semibold text-center  text-lg font-semibold m-4">
+                        Diberikan Kepada :
+                      </p>
+                    </div>
+                    <div className="">
+                      <p className="text-3xl font-semibold text-center font-serif mb-5">
+                        {e}
+                      </p>
+                      <p className="text-md font-semibold text-center font-serif w-[300px]  break-words">
+                        {perihal}
+                      </p>
+                    </div>
+                  </div>
+                </MovedComponents>
+                <MovedComponents type={"kepsek"}>
+                  <div className="text-xs">
+                    <p className="text-black font-bold">
+                      {kepsek.data.data.user.username}
+                    </p>
+                    <p>Kepala Sekolah</p>
+                  </div>
+                </MovedComponents>
+                {leadEvent && (
+                  <MovedComponents type={"kepel"}>
+                    <div className="text-xs">
+                      <p className="text-black font-bold">{leadEvent}</p>
+                      <p>Ketua Pelaksana</p>
                     </div>
                   </MovedComponents>
-                  {leadEvent && (
-                    <MovedComponents type={"kepel"}>
-                      <div className="text-xs">
-                        <p className="text-black font-bold">{leadEvent}</p>
-                        <p>Ketua Pelaksana</p>
-                      </div>
-                    </MovedComponents>
-                  )}
-                  {isQrCode && (
-                    <MovedComponents type={"qrCode"}>
-                      <QrCode value={"Testing 123"} size={qrCodeSize} />
-                    </MovedComponents>
-                  )}
-                </>
-              )}
-            </div>
-          ))}
-        
+                )}
+                {isQrCode && (
+                  <MovedComponents type={"qrCode"}>
+                    <QrCode value={"Testing 123"} size={qrCodeSize} />
+                  </MovedComponents>
+                )}
+              </>
+            )}
+          </div>
+        ))}
       </div>
-          <ButtonCustom text={"Cetak"} onClick={handlePrint}/>
+      <button onClick={() => generatePDF(getTargetElement, optionss)}>
+        Generate PDF
+      </button>
+      <ButtonCustom text={"Cetak"} onClick={handlePrint} />
     </div>
   );
 }

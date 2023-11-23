@@ -13,10 +13,15 @@
   .card {
     page-break-inside: avoid;
   }
-
   .print-page {
     page-break-before: auto;
   }
+  .certificate {
+    page-break-before: always;
+    margin:0;
+  }
+ 
+
 }
 
 
@@ -29,3 +34,7 @@
   font-family: "CustomFont";
   src: url("./assets/font/Nunito-VariableFont_wght.ttf");
 }
+
+
+
+

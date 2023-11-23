@@ -2,20 +2,21 @@ import { useQuery } from "react-query";
 import Loader from "../../components/Loader";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { useEffect, useState, Suspense, useRef } from "react";
+import { useEffect, useState,  useRef } from "react";
 import { getListTemplateSertifikat } from "../../api/templateSertifkat";
 import { endpoint } from "../../api/users";
 import TextInput from "../../components/TextInput";
 import TextAreaCustom from "../../components/TextAreaCustom";
 import { getDetailKepsek } from "../../api/kepsek";
-import MovedComponents from "../../components/MovedComponents";
+
 const animatedComponents = makeAnimated();
 import QrCode from "../../components/QrCode";
 import { Checkbox, Slider } from "@material-tailwind/react";
 import ButtonCustom from "../../components/ButtonCustom";
 import { useReactToPrint } from "react-to-print";
 import LazyImage from "../../components/LazyImage";
-import generatePDF, { Resolution, Margin } from "react-to-pdf";
+import Draggable from "react-draggable";
+
 
 export default function KartuPelajar() {
   const [valueSearch, setValueSearch] = useState("");
@@ -25,42 +26,9 @@ export default function KartuPelajar() {
   const [leadEvent, setLeadEvent] = useState("");
   const [isQrCode, setIsQrCode] = useState(false);
   const [qrCodeSize, setQrCodeSize] = useState(30);
-  const optionss = {
-    // default is `save`
-    method: "open",
-    // default is Resolution.MEDIUM = 3, which should be enough, higher values
-    // increases the image quality but also the size of the PDF, so be careful
-    // using values higher than 10 when having multiple pages generated, it
-    // might cause the page to crash or hang.
-    resolution: Resolution.HIGH,
-    page: {
-      // margin is in MM, default is Margin.NONE = 0
-      margin: Margin.SMALL,
-      // default is 'A4'
-      format: "letter",
 
-      orientation: "landscape",
-    },
-    canvas: {
-      mimeType: "image/png",
-      qualityRatio: 1,
-    },
-    // Customize any value passed to the jsPDF instance and html2canvas
-    // function. You probably will not need this and things can break,
-    // so use with caution.
-    overrides: {
-      // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
-      pdf: {
-        compress: true,
-      },
-      // see https://html2canvas.hertzen.com/configuration for more options
-      canvas: {
-        useCORS: false,
-      },
-    },
-  };
+  const targetRef = useRef();
 
-  const pdfRef = useRef();
   const { isLoading, data, refetch, isRefetching } = useQuery(
     `listSertifikatGenerate`,
     {
@@ -111,6 +79,11 @@ export default function KartuPelajar() {
 
   const handlePrint = useReactToPrint({
     content: () => ref.current,
+    pageStyle: `
+      @page {
+        size: landscape;
+      }
+    `,
   });
 
   const [imageBlob, setImageBlob] = useState(null);
@@ -132,10 +105,10 @@ export default function KartuPelajar() {
 
     fetchImage();
   }, [value]);
-  const getTargetElement = () => {
-    console.log("running");
-    return document.getElementById("content-id");
-  };
+  const [defaultPosition, setDefaultPosition] = useState({ x: 0, y: 0 });
+  const [defaultPositionKepsek, setDefaultPositionKepsek] = useState({ x: 0, y: 0 });
+  const [defaultPositionKepel, setDefaultPositionKepel] = useState({ x: 0, y: 0 });
+  const [defaultPositionQrCode, setDefaultPositionQrCode] = useState({ x: 0, y: 0 });
   if (isLoading) {
     return (
       <>
@@ -149,8 +122,11 @@ export default function KartuPelajar() {
     value: item.name,
   }));
   return (
-    <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 ">
+    <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 -h-max">
       <h5 className="text-xl text-black font-semibold">Buat Sertifikat </h5>
+      <div className="w-full flex justify-end">
+        <ButtonCustom text={"History Pembuatan Sertifikat"} />
+      </div>
       <Select
         options={options}
         isLoading={isRefetching}
@@ -185,71 +161,67 @@ export default function KartuPelajar() {
           onChange={(e) => setQrCodeSize(e.target.value)}
         />
       )}
+
       <div
-        className="flex flex-col overflow-auto gap-2"
-        ref={pdfRef}
-        id="content-id"
+        className="certificate w-full space-y-2 h-max overflow-auto "
+        ref={ref}
       >
         {splitName.map((e, i) => (
-          <div className="relative flex place-items-center " key={i} ref={ref}>
-            {value.template && (
-              <>
-                <LazyImage src={URL.createObjectURL(imageBlob)} alt={"image"} />
+          <div className="relative flex justify-start w-[842px] h-[595px] t" key={i}> 
+            <>
+              <LazyImage src={URL.createObjectURL(imageBlob)} alt={"image"} />
+              <Draggable position={defaultPosition} onStop={(e, data) => setDefaultPosition({ x: data.x, y: data.y })}>
+                <div className="absolute testing">
+                <div className="w-full">
+                  <p className="text-4xl font-semibold text-center font-serif">
+                    {" "}
+                    CERTIFICATE{" "}
+                  </p>
+                  <p className="text-semibold text-center  uppercase ">
+                    {" "}
+                    Penghargaan{" "}
+                  </p>
+                  <p className="text-semibold text-center  text-lg font-semibold m-4">
+                    Diberikan Kepada :
+                  </p>
+                </div>
+                <div className="">
+                  <p className="text-3xl font-semibold text-center font-serif mb-5">
+                    {e}
+                  </p>
+                  <p className="text-md font-semibold text-center font-serif w-[300px]  break-words">
+                    {perihal}
+                  </p>
+                </div>
+                </div>
+              </Draggable>
 
-                <MovedComponents type={""}>
-                  <div>
-                    <div className=" ">
-                      <p className="text-4xl font-semibold text-center font-serif">
-                        {" "}
-                        CERTIFICATE{" "}
-                      </p>
-                      <p className="text-semibold text-center  uppercase ">
-                        {" "}
-                        Penghargaan{" "}
-                      </p>
-                      <p className="text-semibold text-center  text-lg font-semibold m-4">
-                        Diberikan Kepada :
-                      </p>
-                    </div>
-                    <div className="">
-                      <p className="text-3xl font-semibold text-center font-serif mb-5">
-                        {e}
-                      </p>
-                      <p className="text-md font-semibold text-center font-serif w-[300px]  break-words">
-                        {perihal}
-                      </p>
-                    </div>
+              <Draggable position={defaultPositionKepsek} onStop={(e, data) => setDefaultPositionKepsek({ x: data.x, y: data.y })}>
+                <div className="text-xs w-full">
+                  <p className="text-black font-bold">
+                    {kepsek.data.data.user.username}
+                  </p>
+                  <p>Kepala Sekolah</p>
+                </div>
+              </Draggable>
+              {leadEvent && (
+                 <Draggable position={defaultPositionKepel} onStop={(e, data) => setDefaultPositionKepel({ x: data.x, y: data.y })}>
+                  <div className="text-xs w-full">
+                    <p className="text-black font-bold">{leadEvent}</p>
+                    <p>Ketua Pelaksana</p>
                   </div>
-                </MovedComponents>
-                <MovedComponents type={"kepsek"}>
-                  <div className="text-xs">
-                    <p className="text-black font-bold">
-                      {kepsek.data.data.user.username}
-                    </p>
-                    <p>Kepala Sekolah</p>
-                  </div>
-                </MovedComponents>
-                {leadEvent && (
-                  <MovedComponents type={"kepel"}>
-                    <div className="text-xs">
-                      <p className="text-black font-bold">{leadEvent}</p>
-                      <p>Ketua Pelaksana</p>
-                    </div>
-                  </MovedComponents>
-                )}
-                {isQrCode && (
-                  <MovedComponents type={"qrCode"}>
-                    <QrCode value={"Testing 123"} size={qrCodeSize} />
-                  </MovedComponents>
-                )}
-              </>
-            )}
+                </Draggable>
+              )}
+              {isQrCode && (
+               <Draggable position={defaultPositionQrCode} onStop={(e, data) => setDefaultPositionQrCode({ x: data.x, y: data.y })}>
+                  <QrCode value={"Testing 123"} size={qrCodeSize} />
+                </Draggable>
+              )}
+            </>
           </div>
         ))}
       </div>
-      <button onClick={() => generatePDF(getTargetElement, optionss)}>
-        Generate PDF
-      </button>
+
       <ButtonCustom text={"Cetak"} onClick={handlePrint} />
     </div>
   );

@@ -1,77 +1,73 @@
 import  { useState, useEffect } from "react";
 import { useMoveComponent } from "../store/store";
 
-const MovedComponents = ({
-  children,
-  type,
-}) => {
+const MovedComponents = ({ children, type }) => {
   const [isMove, setIsMove] = useState(false);
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
-  const { setX, setY, setXKepsek, setYKepsek, setYKepel, setXKepel } =
-    useMoveComponent();
-  const { y, x, xKepel, yKepel, xKepsek, yKepsek,xQrCode,setXQrCode,yQrCode,setYQrCode } = useMoveComponent(
-    (state) => state,
-  );
+  const {
+    setX,
+    setY,
+    setXKepsek,
+    setYKepsek,
+    setYKepel,
+    setXKepel,
+  } = useMoveComponent();
+  const {
+    y,
+    x,
+    xKepel,
+    yKepel,
+    xKepsek,
+    yKepsek,
+    xQrCode,
+    setXQrCode,
+    yQrCode,
+    setYQrCode,
+  } = useMoveComponent((state) => state);
 
   const handleMouseDown = (e) => {
     setIsMove(true);
-    if (type === "kepsek") {
-      setStartPosition({
-        x: e.clientX - xKepsek,
-        y: e.clientY - yKepsek,
-      });
-    } else if (type === "kepel") {
-      setStartPosition({
-        x: e.clientX - xKepel,
-        y: e.clientY - yKepel,
-      });
-    } else if(type === 'qrCode'){
-      setStartPosition({
-        x: e.clientX - xQrCode,
-        y: e.clientY - yQrCode,
-      });
-    }
-      else {
-      setStartPosition({
-        x: e.clientX - x,
-        y: e.clientY - y,
-      });
-    }
+    const rect = e.currentTarget.getBoundingClientRect();
+    setStartPosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
     document.body.style.userSelect = "none";
-   
   };
 
   const handleMouseUp = () => {
     setIsMove(false);
     document.body.style.userSelect = "auto";
-  
   };
 
   const handleMouseMove = (e) => {
-    
-
     if (isMove) {
+      const offsetX = e.clientX - startPosition.x;
+      const offsetY = e.clientY - startPosition.y;
+
       if (type === "kepsek") {
-        setXKepsek(e.clientX - startPosition.x);
-        setYKepsek(e.clientY - startPosition.y);
+        setXKepsek(offsetX);
+        setYKepsek(offsetY);
       } else if (type === "kepel") {
-        setXKepel(e.clientX - startPosition.x);
-        setYKepel(e.clientY - startPosition.y);
-      } else if(type === 'qrCode'){
-        setXQrCode(e.clientX - startPosition.x);
-        setYQrCode(e.clientY - startPosition.y);
-      }else {
-        setX(e.clientX - startPosition.x);
-        setY(e.clientY - startPosition.y);
+        setXKepel(offsetX);
+        setYKepel(offsetY);
+      } else if (type === 'qrCode') {
+        setXQrCode(offsetX);
+        setYQrCode(offsetY);
+      } else {
+        setX(offsetX);
+        setY(offsetY);
       }
     }
   };
+
   useEffect(() => {
     return () => {
       document.body.style.userSelect = "auto";
     };
   }, []);
-  const getX = () => (type === "kepsek" ? xKepsek : type === "kepel" ? xKepel  : type === 'qrCode' ? xQrCode : x);
+
+  const getX = () => (type === "kepsek" ? xKepsek : type === "kepel" ? xKepel : type === 'qrCode' ? xQrCode : x);
   const getY = () => (type === "kepsek" ? yKepsek : type === "kepel" ? yKepel : type === 'qrCode' ? yQrCode : y);
 
   const inlineStyles = {
@@ -86,6 +82,7 @@ const MovedComponents = ({
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
       onTouchStart={handleMouseDown}
+      onMouseLeave={()=>setIsMove(false)}
       onTouchEnd={handleMouseUp}
       onTouchMove={handleMouseMove}
       style={inlineStyles}

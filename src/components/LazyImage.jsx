@@ -2,7 +2,7 @@ import LazyLoad from "react-lazy-load";
 
 const LazyImage = ({ src, alt, ...props }) => {
   return (
-    <LazyLoad>
+    <LazyLoad >
       <img src={src} alt={alt} {...props} />
     </LazyLoad>
   );

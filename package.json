@@ -17,6 +17,8 @@
     "apexcharts": "3.35.5",
     "axios": "^1.5.1",
     "boring-avatars": "^1.10.1",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "jwt-decode": "^3.1.2",
     "prop-types": "^15.8.1",
     "qrcode.react": "^3.1.0",

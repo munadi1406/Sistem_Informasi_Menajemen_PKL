@@ -280,7 +280,7 @@ export default function KartuPelajar() {
                   <div className="w-full">
                     <p
                       style={{ fontFamily: fonts[0] }}
-                      className={`text-5xl font-bold text-center mb-2  `}
+                      className={`text-5xl font-bold text-center mb-2  h-max`}
                     >
                       CERTIFICATE
                     </p>

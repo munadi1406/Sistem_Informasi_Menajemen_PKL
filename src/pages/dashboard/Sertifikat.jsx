@@ -129,6 +129,29 @@ export default function KartuPelajar() {
     "CustomFont",
     "Serif",
   ]);
+
+
+  const [imageBlob, setImageBlob] = useState(null);
+
+  useEffect(() => {
+    if (!value.template) return;
+    console.log("running");
+    const imageUrl = `${endpoint}/templateSertifikat/image/${value.template}`;
+
+    const fetchImage = async () => {
+      try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+
+        // Simpan objek Blob ke dalam state
+        setImageBlob(blob);
+      } catch (error) {
+        console.error("Error fetching image:", error);
+      }
+    };
+
+    fetchImage();
+  }, [value]);
  
   if (isLoading) {
     return (
@@ -241,7 +264,7 @@ export default function KartuPelajar() {
           splitName.map((e, i) => (
             <div className="relative  w-full certificate-page" key={i}>
               <LazyImage
-                src={`${endpoint}/templateSertifikat/image/${value.template}`}
+                src={URL.createObjectURL(imageBlob)}
                 alt={"image"}
               />
               <Draggable

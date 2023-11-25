@@ -73,7 +73,6 @@ const Form = ({ handleSubmit, isEdit, dataSurat }) => {
         ? Object.keys(JSON.parse(dataSurat.isi_surat)).filter((key) => {
             const tes = Array.isArray(JSON.parse(dataSurat.isi_surat)[key]);
             const datas = JSON.parse(dataSurat.isi_surat);
-         
             if (tes) {
               jumlahOrangg = { ...jumlahOrangg, [key]: datas[key].length };
             } else {

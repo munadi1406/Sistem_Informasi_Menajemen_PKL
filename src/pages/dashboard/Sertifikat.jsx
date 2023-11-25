@@ -17,6 +17,7 @@ import LazyImage from "../../components/LazyImage";
 import Draggable from "react-draggable";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import Font, { Text } from "react-font";
 
 export default function KartuPelajar() {
   const [valueSearch, setValueSearch] = useState("");
@@ -74,28 +75,6 @@ export default function KartuPelajar() {
   }, [valueSearch]);
   const ref = useRef();
 
-  const [imageBlob, setImageBlob] = useState(null);
-
-  useEffect(() => {
-    if (!value.template) return;
-    console.log("running");
-    const imageUrl = `${endpoint}/templateSertifikat/image/${value.template}`;
-
-    const fetchImage = async () => {
-      try {
-        const response = await fetch(imageUrl);
-        const blob = await response.blob();
-
-        // Simpan objek Blob ke dalam state
-        setImageBlob(blob);
-      } catch (error) {
-        console.error("Error fetching image:", error);
-      }
-    };
-
-    fetchImage();
-  }, [value]);
-
   const [defaultPosition, setDefaultPosition] = useState({ x: 0, y: 0 });
   const [defaultPositionKepsek, setDefaultPositionKepsek] = useState({
     x: 0,
@@ -146,7 +125,12 @@ export default function KartuPelajar() {
     );
     setLoading(false);
   };
-
+  const [fonts, setFonts] = useState([
+    "AnandaBlackPersonalUseRegular",
+    "CustomFont",
+    "Serif",
+  ]);
+ 
   if (isLoading) {
     return (
       <>
@@ -154,11 +138,59 @@ export default function KartuPelajar() {
       </>
     );
   }
+
   const options = data.data.data.map((item) => ({
     label: item.name,
     template: item.template,
     value: item.name,
   }));
+
+  function getRandomFonts() {
+    const fontList = [
+      "AnandaBlackPersonalUseRegular",
+      "AspireDemibold",
+      "AutumnFlowers",
+      "Calligrapher",
+      "ChicanosPersonalUseRegular",
+      "DoveOfPeacePersonalUse",
+      "EmotionalRescuePersonalUseRegular",
+      "FeelfreePersonalUseRegular",
+      "GeraldinePersonalUseItalic",
+      "IndentureEnglishPenmanDemo",
+      "LambencyRegular",
+      "MutalisFashionPersonalUseRegular",
+      "NatureBeautyPersonalUse",
+      "SellenaBrush",
+      "StylishCalligraphyDemo",
+      "SweetHipster",
+      "TheCheese",
+      "WeddingdayPersonalUseRegular",
+    ];
+
+    const getRandomIndex = (excludeIndexes) => {
+      const availableIndexes = fontList
+        .map((_, index) => index)
+        .filter((index) => !excludeIndexes.includes(index));
+
+      const randomIndex = Math.floor(Math.random() * availableIndexes.length);
+      return availableIndexes[randomIndex];
+    };
+
+    const randomIndexes = [];
+    while (randomIndexes.length < 3) {
+      const newIndex = getRandomIndex(randomIndexes);
+      randomIndexes.push(newIndex);
+    }
+
+    const randomFonts = randomIndexes.map((index) => `${fontList[index]}`);
+    return randomFonts;
+  }
+
+  const handleRandomFonts = () => {
+    const fontss = getRandomFonts();
+    setFonts(fontss);
+  };
+
   return (
     <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 -h-max">
       <h5 className="text-xl text-black font-semibold">Buat Sertifikat </h5>
@@ -173,7 +205,7 @@ export default function KartuPelajar() {
         options={options}
         isLoading={isRefetching}
         onChange={(e) => setValue(e)}
-        closeMenuOnSelect={false}
+        closeMenuOnSelect={true}
         components={animatedComponents}
         onInputChange={handleSearch}
         className="relative z-40"
@@ -188,6 +220,7 @@ export default function KartuPelajar() {
         label={"Ketua Pelaksana Jika Ada"}
         onChange={(e) => setLeadEvent(e.target.value)}
       />
+
       <Checkbox
         label="Gunakan QrCode"
         color="blue"
@@ -208,7 +241,10 @@ export default function KartuPelajar() {
         {value.template &&
           splitName.map((e, i) => (
             <div className="relative  w-full certificate-page" key={i}>
-              <LazyImage src={URL.createObjectURL(imageBlob)} alt={"image"} />
+              <LazyImage
+                src={`${endpoint}/templateSertifikat/image/${value.template}`}
+                alt={"image"}
+              />
               <Draggable
                 bounds="parent"
                 position={defaultPosition}
@@ -220,10 +256,13 @@ export default function KartuPelajar() {
                   className={`absolute top-1/2 left-1/2 w-max active:border-2 active:border-dashed active:border-green-600`}
                 >
                   <div className="w-full">
-                    <p className="text-4xl font-semibold text-center font-serif">
-                      {" "}
-                      CERTIFICATE{" "}
+                    <p
+                      style={{ fontFamily: fonts[0] }}
+                      className={`text-5xl font-bold text-center mb-2  `}
+                    >
+                      CERTIFICATE
                     </p>
+
                     <div className="flex justify-center items-center  w-full">
                       <input
                         defaultValue={typeSertifikat}
@@ -236,10 +275,13 @@ export default function KartuPelajar() {
                     </p>
                   </div>
                   <div className="">
-                    <p className="text-3xl font-semibold text-center font-serif mb-5">
+                    <p
+                      style={{ fontFamily: fonts[1] }}
+                      className="text-4xl font-semibold text-center font-serif mb-5"
+                    >
                       {e}
                     </p>
-                    <p className="text-md font-semibold text-center font-serif w-[300px]  break-words">
+                    <p className="text-md font-semibold text-center font-serif w-[300px] m-auto  break-words" style={{ fontFamily: fonts[2] }}>
                       {perihal}
                     </p>
                   </div>
@@ -254,10 +296,12 @@ export default function KartuPelajar() {
                 }
               >
                 <div className="text-xs w-max absolute bottom-0 right-0 active:border-2 active:border-dashed active:border-green-600">
-                  <p className="text-black font-bold">
+                  <p className="text-black font-bold text-base" style={{ fontFamily: fonts[2] }}>
                     {kepsek.data.data.user.username}
                   </p>
-                  <p>Kepala Sekolah</p>
+                  <p className="">
+                    Kepala Sekolah
+                  </p>
                 </div>
               </Draggable>
               <Draggable
@@ -280,7 +324,7 @@ export default function KartuPelajar() {
                   }
                 >
                   <div className="text-xs w-max absolute bottom-0">
-                    <p className="text-black font-bold">{leadEvent}</p>
+                    <p className="text-black font-bold text-base" style={{ fontFamily: fonts[2] }}>{leadEvent}</p>
                     <p>Ketua Pelaksana</p>
                   </div>
                 </Draggable>
@@ -304,16 +348,21 @@ export default function KartuPelajar() {
             </div>
           ))}
       </div>
-
+      <ButtonCustom
+        text={"Random Font"}
+        disabled={loading}
+        onClick={() => handleRandomFonts()}
+      />
       <ButtonCustom
         text={
           <div className="flex gap-2 justify-center items-center ">
-            Download dan Print {loading && <Loader  />}
+            Download dan Print {loading && <Loader />}
           </div>
         }
         disabled={loading}
         onClick={() => generatePDF()}
       />
+      
     </div>
   );
 }

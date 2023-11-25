@@ -89,9 +89,6 @@ dependencies:
   react-to-print:
     specifier: ^2.14.15
     version: 2.14.15(react-dom@18.2.0)(react@18.2.0)
-  react-zoom-pan-pinch:
-    specifier: ^3.3.0
-    version: 3.3.0(react-dom@18.2.0)(react@18.2.0)
   zustand:
     specifier: ^4.4.3
     version: 4.4.6(@types/react@18.2.37)(react@18.2.0)
@@ -3256,17 +3253,6 @@ packages:
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    dev: false
-
-  /react-zoom-pan-pinch@3.3.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-vy1h8aenDzXye+HRqANZaSA8IPHoqOiuDPFBkswoyPUH8uMfsmbeH6gFI4r4BhEJa0xIlcA+FbvhidRWKGUrOg==}
-    engines: {node: '>=8', npm: '>=5'}
-    peerDependencies:
-      react: '*'
-      react-dom: '*'
-    dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false

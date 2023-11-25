@@ -11,9 +11,25 @@ import {
 } from "@material-tailwind/react";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import { useDataUser } from "../../store/store";
+import { logout } from "../../api/users";
+import { useQuery, useMutation } from "react-query";
+import Loader from "../../components/Loader";
+import {useNavigate} from 'react-router-dom'
 
 export function DashboardNavbar() {
-  
+  const navigate = useNavigate()
+  const { mutate, isLoading } = useMutation({
+    mutationFn: async (e) => {
+      e.preventDefault();
+      const isSubmit = await logout();
+      return isSubmit.data;
+    },
+    onSuccess: (data) => {
+      sessionStorage.clear();
+      navigate('/')
+    },
+    onError: (error) => {},
+  });
   const fixedNavbar = true;
   const { pathname } = useLocation();
   const [layout, page] = pathname.split("/").filter((el) => el !== "");
@@ -58,7 +74,9 @@ export function DashboardNavbar() {
               <Link to={"./profile"}>
                 <MenuItem>Account</MenuItem>
               </Link>
-              <MenuItem>Log Out</MenuItem>
+              <MenuItem onClick={mutate}>
+                {isLoading ? <Loader /> : "Logout"}
+              </MenuItem>
             </MenuList>
           </Menu>
         </div>

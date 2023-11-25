@@ -3,11 +3,19 @@ import { useInfiniteQuery, useMutation } from "react-query";
 import { getListUsers, searchUsers } from "../../api/users";
 import { useState } from "react";
 import TableSkeleton from "../../components/skeleton/TableSkeleton";
+import FormChangePassword from "./users/FormChangePassword";
 const DataUsers = lazy(() => import("./users/DataUsers"));
 
 export default function Users() {
   const [dataSearch, setDataSearch] = useState([]);
   const [isSearch, setIsSearch] = useState(false);
+  const [changePassword, setChangePassword] = useState(false);
+  const [currentId, setCurrentId] = useState(0);
+  const handleIsShowChangePassword = (id) => {
+    console.log("running");
+    setChangePassword(!changePassword);
+    setCurrentId(id);
+  };
   const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, data } =
     useInfiniteQuery(`listUsers`, {
       queryFn: async ({ pageParam }) => {
@@ -48,6 +56,12 @@ export default function Users() {
   }
   return (
     <>
+      <FormChangePassword
+        handleOpen={handleIsShowChangePassword}
+        currentId={currentId}
+        open={changePassword}
+        title={"Ganti Password"}
+      />
       <Suspense fallback={<TableSkeleton />}>
         <DataUsers
           data={isSearch ? dataSearch : data.pages[0].data.data}
@@ -55,6 +69,7 @@ export default function Users() {
           hasNextPage={isSearch ? false : hasNextPage}
           isFetchingNextPage={isFetchingNextPage}
           search={search}
+          isChangePassword={handleIsShowChangePassword}
         />
       </Suspense>
     </>

@@ -38,3 +38,30 @@ export const countThisWeek = async () => {
   const data = await axiosJwt.get(`${endpoint}/users/countthisweek`);
   return data;
 };
+
+export const getDetailUsers = async () => {
+  const data = await axiosJwt.get(`${endpoint}/users`);
+  return data;
+};
+
+export const changeUsername = async (payload) => {
+  const data = await axiosJwt.post(`${endpoint}/users/changeUsername`, payload);
+  return data;
+};
+
+export const changePassword = async (payload) => {
+  const data = await axiosJwt.post(`${endpoint}/users/changePassword`, payload);
+  return data;
+};
+export const changePasswordForAdmin = async (payload) => {
+  const data = await axiosJwt.post(
+    `${endpoint}/users/changePasswordForAdmin`,
+    payload,
+  );
+  return data;
+};
+
+export const logout = async (payload) => {
+  const data = await axiosJwt.put(`${endpoint}/logout`);
+  return data;
+};

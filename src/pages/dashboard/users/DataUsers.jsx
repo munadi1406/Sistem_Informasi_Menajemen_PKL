@@ -37,6 +37,7 @@ export default function DataUsers({
   search,
   hasNextPage,
   fetchNextPage,
+  isChangePassword
 }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: async ({ id_users, status }) => {
@@ -191,8 +192,8 @@ export default function DataUsers({
                       </Typography>
                     </td>
                     <td className={classes}>
-                      <Tooltip content="Edit User">
-                        <IconButton variant="text">
+                      <Tooltip content="Ganti Password" >
+                        <IconButton variant="text"  onClick={()=>isChangePassword(id_users)}>
                           <FaPencilAlt className="h-4 w-4" />
                         </IconButton>
                       </Tooltip>

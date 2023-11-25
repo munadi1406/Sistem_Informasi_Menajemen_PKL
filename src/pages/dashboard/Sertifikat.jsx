@@ -285,7 +285,7 @@ export default function KartuPelajar() {
                       CERTIFICATE
                     </p>
 
-                    <div className="flex justify-center items-center  w-full">
+                    <div className="flex justify-center items-center  w-full m-2">
                       <input
                         defaultValue={typeSertifikat}
                         onChange={(e) => setTypeSertifikat(e.target.value)}

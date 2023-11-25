@@ -17,7 +17,6 @@ import LazyImage from "../../components/LazyImage";
 import Draggable from "react-draggable";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import Font, { Text } from "react-font";
 
 export default function KartuPelajar() {
   const [valueSearch, setValueSearch] = useState("");

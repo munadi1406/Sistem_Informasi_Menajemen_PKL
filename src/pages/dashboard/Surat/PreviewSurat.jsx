@@ -2,24 +2,15 @@ import WithContainerModal from "../../../utils/WithContainerModal";
 import Index from "../../../components/templateSuratLayout/Index";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { ArrowTrendingUpIcon } from "@heroicons/react/24/outline";
 
 const PreviewSurat = ({ handleGetDetailSurat }) => {
   const [isiTemplate, setIsiTemplate] = useState("");
 
   function replaceVariables(input, variables) {
-    // const tipeIsi;
-    // const kataYangMengandungIsi = Object.keys(
-    //   JSON.parse(handleGetDetailSurat.data.template.variable),
-    // ).find((key) => key.includes("isi"));
-    // if (kataYangMengandungIsi) {
-    //   const isiValue = JSON.parse(handleGetDetailSurat.data.template.variable);
-
-    // }
     let output = input;
     const isiSurat = JSON.parse(handleGetDetailSurat.data.isi_surat);
-    // console.log(variables)
-
+    
+  
     variables.forEach((variableName) => {
       if (isiSurat[variableName]) {
         const variableRegex = new RegExp(
@@ -88,11 +79,12 @@ const PreviewSurat = ({ handleGetDetailSurat }) => {
       });
 
       const variableArray = Object.keys(variable);
+     
 
       // Replace variables in the input string
       const resultString = replaceVariables(isiTerganti, variableArray);
 
-      //   console.log(resultString);
+       
 
       setIsiTemplate(resultString);
     }

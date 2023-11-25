@@ -85,7 +85,6 @@ const Form = ({ handleSubmit, isEdit, dataSurat }) => {
             );
           })
         : [];
-
       if (isiArrayAttributes.length > 0) {
         // console.log(typeof isiArrayAttributes[0]);
         // console.log({ datas: isiArrayAttributes[0] });

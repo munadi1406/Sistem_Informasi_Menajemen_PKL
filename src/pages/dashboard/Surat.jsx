@@ -22,7 +22,7 @@ import { Typography } from "@material-tailwind/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Spinner } from "@material-tailwind/react";
 import { useState } from "react";
-import Form from "./Surat/Form";
+import Formd from "./Surat/Formd";
 import { useAlertNotification } from "../../store/store";
 import PreviewSurat from "./Surat/PreviewSurat";
 import ModalDeleteSurat from "../../components/ModalDeleteSurat";
@@ -185,7 +185,7 @@ export default function Surat() {
 
   return (
     <>
-      <Form
+      <Formd
         open={openCreateForm || openModalEdit}
         handleOpen={openModalEdit ? handleOpenModalEdit : handleOpenForm}
         title="Buat Surat"

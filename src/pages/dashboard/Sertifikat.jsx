@@ -29,7 +29,10 @@ export default function KartuPelajar() {
   const [leadEvent, setLeadEvent] = useState("");
   const [isQrCode, setIsQrCode] = useState(false);
   const [qrCodeSize, setQrCodeSize] = useState(30);
+  const [isPrint, setIsPrint] = useState(false);
+  const [nomor, setNomor] = useState({});
   
+
   const [typeSertifikat, setTypeSertifikat] = useState("PENGHARGAAN");
   const [loading, setLoading] = useState(false);
   const [certificateValue, setCertificateValue] = useState("CERTIFICATE");
@@ -128,10 +131,9 @@ export default function KartuPelajar() {
 
   const [selecttedComponent, setSelettedComponent] = useState("");
   const generatePDF = async () => {
-    setSelettedComponent(null)
+    setSelettedComponent(null);
     setLoading(!loading);
-    
-    
+
     const pdf = new jsPDF("l", "mm", "a4"); // 'p' for portrait, 'mm' for millimeters
     const pages = document.querySelectorAll(".certificate-page");
 
@@ -162,7 +164,13 @@ export default function KartuPelajar() {
     );
     setLoading(false);
   };
- 
+
+  useEffect(() => {
+    if (isPrint) {
+      generatePDF();
+      setIsPrint(false);
+    }
+  }, [isPrint]);
 
   const [imageBlob, setImageBlob] = useState("");
 
@@ -243,7 +251,7 @@ export default function KartuPelajar() {
   // useEffect(()=>{
   //   console.log(styling)
   // },[styling])
-  
+
   const handleStyleChange = useMemo(
     () => (type, value) => {
       setStyling((prev) => ({
@@ -318,10 +326,6 @@ export default function KartuPelajar() {
     "WUSHINpersonaluse",
   ];
 
-  
-
-  
-
   if (isLoading) return <Loader />;
 
   const options = data.data.data.map((item) => ({
@@ -332,12 +336,12 @@ export default function KartuPelajar() {
   }));
 
   return (
-    <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 -h-max" >
+    <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 -h-max">
       <h5 className="text-xl text-black font-semibold">Buat Sertifikat </h5>
       {/* <div className="w-full flex justify-end">
         <ButtonCustom text={"History Pembuatan Sertifikat"} />
       </div> */}
-      
+
       <Selects
         options={options}
         isLoading={isRefetching}
@@ -374,58 +378,61 @@ export default function KartuPelajar() {
           onChange={(e) => setQrCodeSize(e.target.value)}
         />
       )}
-      
-        <div className={`sticky top-5 grid lg:grid-cols-3 grid-cols-1 z-50 gap-2 bg-white transition-all duration-100 ease-in-out p-2 ${selecttedComponent ? 'opacity-1' : 'opacity-0'}` }>
-          <Select
-            label="Font Family"
-            onChange={(e) => handleStyleChange("family", e)}
-            className="h-full w-full overflow-clip"
-            color="blue"
-            value={`${
-              styling[selecttedComponent]
-                ? styling[selecttedComponent].family
-                : ""
-            }`}
-          >
-            {fontList.map((e, i) => (
-              <Option key={i} value={e}>
-                <p style={{ fontFamily: e }}>{e}</p>
-              </Option>
-            ))}
-          </Select>
-          <TextInput
-            label={"Font Size"}
-            className="h-full"
-            type="number"
-            onChange={(e) => handleStyleChange("font", `${e.target.value}px`)}
-            value={`${
-              styling[selecttedComponent]
-                ? styling[selecttedComponent].font.split("px")[0]
-                : ""
-            }`}
-          />
-          <TextInput
-            label={"Color"}
-            className="h-full"
-            type={"color"}
-            value={`${
-              styling[selecttedComponent]
-                ? styling[selecttedComponent].color
-                : ""
-            }`}
-            onChange={(e) => handleStyleChange("color", `${e.target.value}`)}
-          />
-        </div>
-      
-      <div className="certificate w-full h-max overflow-auto" ref={ref} >
-        {value.template && imageBlob &&
+
+      <div
+        className={`sticky top-5 grid lg:grid-cols-3 grid-cols-1 z-50 gap-2 bg-white transition-all duration-100 ease-in-out p-2 ${
+          selecttedComponent ? "opacity-1" : "opacity-0"
+        }`}
+      >
+        <Select
+          label="Font Family"
+          onChange={(e) => handleStyleChange("family", e)}
+          className="h-full w-full overflow-clip"
+          color="blue"
+          value={`${
+            styling[selecttedComponent]
+              ? styling[selecttedComponent].family
+              : ""
+          }`}
+        >
+          {fontList.map((e, i) => (
+            <Option key={i} value={e}>
+              <p style={{ fontFamily: e }}>{e}</p>
+            </Option>
+          ))}
+        </Select>
+        <TextInput
+          label={"Font Size"}
+          className="h-full"
+          type="number"
+          onChange={(e) => handleStyleChange("font", `${e.target.value}px`)}
+          value={`${
+            styling[selecttedComponent]
+              ? styling[selecttedComponent].font.split("px")[0]
+              : ""
+          }`}
+        />
+        <TextInput
+          label={"Color"}
+          className="h-full"
+          type={"color"}
+          value={`${
+            styling[selecttedComponent] ? styling[selecttedComponent].color : ""
+          }`}
+          onChange={(e) => handleStyleChange("color", `${e.target.value}`)}
+        />
+      </div>
+
+      <div className="certificate w-full h-max overflow-auto" ref={ref}>
+        {value.template &&
+          imageBlob &&
           splitName.map((e, i) => (
             <div className="relative  w-full certificate-page" key={i}>
               <LazyImage
                 src={URL.createObjectURL(imageBlob)}
                 alt={"image"}
                 className="w-full"
-                onClick={()=>setSelettedComponent('')}
+                onClick={() => setSelettedComponent("")}
               />
 
               <Draggable
@@ -436,45 +443,70 @@ export default function KartuPelajar() {
                 }
               >
                 <div
-                  className={`absolute top-1/2 left-1/2 w-max h-max active:border-2 active:border-dashed active:border-green-600`}
+                  className={`absolute top-1/2 left-1/2 w-max h-max active:ouline-2 active:outline-blue-400 active:outline-dashed`}
                 >
-                  <div className="w-full h-max border-2 border-red-600">
-                    <input
-                      value={certificateValue}
-                      onChange={(e) => setCertificateValue(e.target.value)}
-                      style={{
-                        fontFamily: styling.sertifikat.family,
-                        fontSize: styling.sertifikat.font,
-                        color: `${styling.sertifikat.color}`,
-                      }}
-                      
-                      onClick={() => setSelettedComponent("sertifikat")}
-                      className={`bg-white/0 min-h-max outline-none  text-center w-full ${
-                        selecttedComponent === "sertifikat" &&
-                        "border-2 border-dashed border-green-400"
-                      }`}
-                    />
-
-                    <div className="flex justify-center items-center  w-full m-2">
+                  <div className="w-max h-max ">
+                    {!isPrint ? (
                       <input
-                        defaultValue={typeSertifikat}
-                        onChange={(e) => setTypeSertifikat(e.target.value)}
+                        value={certificateValue}
+                        onChange={(e) => setCertificateValue(e.target.value)}
                         style={{
-                          fontFamily: styling.penghargaan.family,
-                          fontSize: styling.penghargaan.font,
-                          color: styling.penghargaan.color,
+                          fontFamily: styling.sertifikat.family,
+                          fontSize: styling.sertifikat.font,
+                          color: `${styling.sertifikat.color}`,
                         }}
-                        onClick={() => setSelettedComponent("penghargaan")}
-                        className={`bg-white/0   outline-none text-center w-full ${
-                          selecttedComponent === "penghargaan" &&
-                          "border-2 border-dashed border-green-400"
+                        onClick={() => setSelettedComponent("sertifikat")}
+                        className={`bg-white/0 min-h-max outline-none  text-center w-full ${
+                          selecttedComponent === "sertifikat" &&
+                          "outline-2 outline-green-400 outline-dashed"
                         }`}
                       />
+                    ) : (
+                      <div
+                        className="text-center min-w-[399px]"
+                        style={{
+                          fontFamily: styling.sertifikat.family,
+                          fontSize: styling.sertifikat.font,
+                          color: `${styling.sertifikat.color}`,
+                        }}
+                      >
+                        {certificateValue}
+                      </div>
+                    )}
+
+                    <div className="flex justify-center items-center  w-full my-2">
+                      {!isPrint ? (
+                        <input
+                          value={typeSertifikat}
+                          onChange={(e) => setTypeSertifikat(e.target.value)}
+                          style={{
+                            fontFamily: styling.penghargaan.family,
+                            fontSize: styling.penghargaan.font,
+                            color: styling.penghargaan.color,
+                          }}
+                          onClick={() => setSelettedComponent("penghargaan")}
+                          className={`bg-white/0   outline-none text-center w-full ${
+                            selecttedComponent === "penghargaan" &&
+                            "outline-2 outline-green-400 outline-dashed"
+                          }`}
+                        />
+                      ) : (
+                        <div
+                          className="text-center min-w-[399px]"
+                          style={{
+                            fontFamily: styling.penghargaan.family,
+                            fontSize: styling.penghargaan.font,
+                            color: styling.penghargaan.color,
+                          }}
+                        >
+                          {typeSertifikat}
+                        </div>
+                      )}
                     </div>
                     <p
                       className={`text-semibold text-center  text-lg font-semibold m-4 ${
                         selecttedComponent === "kepada" &&
-                        "border-2 border-dashed border-green-400"
+                        "outline-2 outline-green-400 outline-dashed"
                       }`}
                       style={{
                         fontFamily: styling.kepada.family,
@@ -496,7 +528,7 @@ export default function KartuPelajar() {
                       onClick={() => setSelettedComponent("name")}
                       className={`font-semibold text-center  mb-5 ${
                         selecttedComponent === "name" &&
-                        "border-2 border-dashed border-green-400"
+                        "outline-2 outline-green-400 outline-dashed"
                       }`}
                     >
                       {e}
@@ -504,7 +536,7 @@ export default function KartuPelajar() {
                     <p
                       className={`font-semibold text-center  w-[3 00px] m-auto  break-words ${
                         selecttedComponent === "perihal" &&
-                        "border-2 border-dashed border-green-400"
+                        "outline-2 outline-green-400 outline-dashed"
                       }`}
                       style={{
                         fontFamily: styling.perihal.family,
@@ -526,11 +558,11 @@ export default function KartuPelajar() {
                   setDefaultPositionKepsek({ x: data.x, y: data.y })
                 }
               >
-                <div className="text-xs w-max absolute bottom-0 right-0 active:border-2 active:border-dashed active:border-green-600">
+                <div className="text-xs w-max absolute bottom-0 right-0 active:ouline-2 active:outline-blue-400 active:outline-dashed">
                   <p
                     className={` font-bold text-base ${
                       selecttedComponent === "kepsek" &&
-                      "border-2 border-dashed border-green-400"
+                      "outline-2 outline-green-400 outline-dashed"
                     }`}
                     style={{
                       fontFamily: styling.kepsek.family,
@@ -541,16 +573,20 @@ export default function KartuPelajar() {
                   >
                     {kepsek.data.data.user.username}
                   </p>
-                  <p className={`${
-                        selecttedComponent === "ketKepsek" &&
-                        "border-2 border-dashed border-green-400"
-                      }`}
-                      style={{
-                        fontFamily: styling.ketKepsek.family,
-                        fontSize: styling.ketKepsek.font,
-                        color: styling.ketKepsek.color,
-                      }}
-                      onClick={() => setSelettedComponent("ketKepsek")}>Kepala Sekolah</p>
+                  <p
+                    className={`${
+                      selecttedComponent === "ketKepsek" &&
+                      "outline-2 outline-green-400 outline-dashed"
+                    }`}
+                    style={{
+                      fontFamily: styling.ketKepsek.family,
+                      fontSize: styling.ketKepsek.font,
+                      color: styling.ketKepsek.color,
+                    }}
+                    onClick={() => setSelettedComponent("ketKepsek")}
+                  >
+                    Kepala Sekolah
+                  </p>
                 </div>
               </Draggable>
               <Draggable
@@ -560,21 +596,41 @@ export default function KartuPelajar() {
                   setDefaultPositionNomor({ x: data.x, y: data.y })
                 }
               >
-                <div className="text-xs w-max absolute left-1/2 top-4 active:border-2 active:border-dashed active:border-green-600">
-                  <input
-                    defaultValue={"Nomor Sertifikat"}
-                    onChange={(e) => setTypeSertifikat(e.target.value)}
-                    style={{
-                      fontFamily: styling.nomor.family,
-                      fontSize: styling.nomor.font,
-                      color: styling.nomor.color,
-                    }}
-                    onClick={() => setSelettedComponent("nomor")}
-                    className={`bg-white/0   outline-none text-center w-full ${
-                      selecttedComponent === "nomor" &&
-                      "border-2 border-dashed border-green-400"
-                    }`}
-                  />
+                <div className="text-xs min-w-[300px] flex justify-center  absolute left-1/2 top-4 active:ouline-2 active:outline-blue-400 active:outline-dashed">
+                  {!isPrint ? (
+                    <input
+                      value={nomor[`nomor${i}`] ? nomor[`nomor${i}`] : ''}
+                      placeholder="nomor sertifikat"
+                      onChange={(e) => {
+                        setNomor((prev) => ({
+                          ...prev,
+                          [`nomor${i}`]: e.target.value,
+                        }));
+                      }}
+                      style={{
+                        fontFamily: styling.nomor.family,
+                        fontSize: styling.nomor.font,
+                        color: styling.nomor.color,
+                      }}
+                      onClick={() => setSelettedComponent("nomor")}
+                      className={`bg-white/0   outline-none text-center w-full   ${
+                        selecttedComponent === "nomor" &&
+                        "outline-2 outline-green-400 outline-dashed"
+                      }`}
+                    />
+                  ) : (
+                    <div
+                      className="min-w-max text-center"
+                      style={{
+                        fontFamily: styling.nomor.family,
+                        fontSize: styling.nomor.font,
+                        color: styling.nomor.color,
+                      }}
+                    >
+                      {nomor[`nomor${i}`]}
+                    </div>
+                  )}
+                 
                 </div>
               </Draggable>
               {leadEvent && (
@@ -589,7 +645,7 @@ export default function KartuPelajar() {
                     <p
                       className={` font-bold text-base ${
                         selecttedComponent === "kepel" &&
-                        "border-2 border-dashed border-green-400"
+                        "outline-2 outline-green-400 outline-dashed"
                       }`}
                       style={{
                         fontFamily: styling.kepel.family,
@@ -603,7 +659,7 @@ export default function KartuPelajar() {
                     <p
                       className={`  ${
                         selecttedComponent === "ketKepel" &&
-                        "border-2 border-dashed border-green-400"
+                        "outline-2 outline-green-400 outline-dashed"
                       }`}
                       style={{
                         fontFamily: styling.ketKepel.family,
@@ -625,7 +681,7 @@ export default function KartuPelajar() {
                     setDefaultPositionQrCode({ x: data.x, y: data.y })
                   }
                 >
-                  <div className="absolute top-1/2 left-1/2 w-max active:border-2 active:border-dashed active:border-green-600">
+                  <div className="absolute top-1/2 left-1/2 w-max active:ouline-2 active:outline-blue-400 active:outline-dashed">
                     <QrCode
                       value={`SERTIFIKAT INI DI KELUARKAN OLEH SMAN 1 KARANG INTAN UNTUK  ${e} atas ${perihal} dan sertifikat ini di keluarkan pada ${new Date().toLocaleString()}`}
                       size={qrCodeSize}
@@ -636,7 +692,7 @@ export default function KartuPelajar() {
             </div>
           ))}
       </div>
-      
+
       {/* <ButtonCustom
         text={
           <div className="flex gap-2 justify-center items-center ">
@@ -653,7 +709,8 @@ export default function KartuPelajar() {
           </div>
         }
         disabled={loading}
-        onClick={() => generatePDF()}
+        // onClick={() => generatePDF()}
+        onClick={() => setIsPrint(true)}
       />
     </div>
   );

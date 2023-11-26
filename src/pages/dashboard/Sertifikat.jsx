@@ -126,7 +126,7 @@ export default function KartuPelajar() {
     y: 0,
   });
 
-  const [selecttedComponent, setSelettedComponent] = useState("sertifikat");
+  const [selecttedComponent, setSelettedComponent] = useState("");
   const generatePDF = async () => {
     setSelettedComponent(null)
     setLoading(!loading);
@@ -160,13 +160,8 @@ export default function KartuPelajar() {
       `${splitName.join("-")}-${perihal}-${new Date().toLocaleString()}.pdf`,
     );
     setLoading(false);
-    setSelettedComponent("sertifikat")
   };
-  const [fonts, setFonts] = useState([
-    "AnandaBlackPersonalUseRegular",
-    "CustomFont",
-    "Serif",
-  ]);
+ 
 
   const [imageBlob, setImageBlob] = useState("");
 
@@ -322,30 +317,9 @@ export default function KartuPelajar() {
     "WUSHINpersonaluse",
   ];
 
-  function getRandomFonts() {
-    const getRandomIndex = (excludeIndexes) => {
-      const availableIndexes = fontList
-        .map((_, index) => index)
-        .filter((index) => !excludeIndexes.includes(index));
+  
 
-      const randomIndex = Math.floor(Math.random() * availableIndexes.length);
-      return availableIndexes[randomIndex];
-    };
-
-    const randomIndexes = [];
-    while (randomIndexes.length < 3) {
-      const newIndex = getRandomIndex(randomIndexes);
-      randomIndexes.push(newIndex);
-    }
-
-    const randomFonts = randomIndexes.map((index) => `${fontList[index]}`);
-    return randomFonts;
-  }
-
-  const handleRandomFonts = () => {
-    const fontss = getRandomFonts();
-    setFonts(fontss);
-  };
+  
 
   if (isLoading) return <Loader />;
 
@@ -357,7 +331,7 @@ export default function KartuPelajar() {
   }));
 
   return (
-    <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 -h-max">
+    <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 -h-max" >
       <h5 className="text-xl text-black font-semibold">Buat Sertifikat </h5>
       {/* <div className="w-full flex justify-end">
         <ButtonCustom text={"History Pembuatan Sertifikat"} />
@@ -402,12 +376,13 @@ export default function KartuPelajar() {
           onChange={(e) => setQrCodeSize(e.target.value)}
         />
       )}
-      {value.template && (
-        <div className="sticky top-5 grid md:grid-cols-3 grid-cols-1 z-50 gap-2 bg-white p-2">
+      
+        <div className={`sticky top-5 grid lg:grid-cols-3 grid-cols-1 z-50 gap-2 bg-white transition-all duration-100 ease-in-out p-2 ${selecttedComponent ? 'opacity-1' : 'opacity-0'}` }>
           <Select
             label="Font Family"
             onChange={(e) => handleStyleChange("family", e)}
-            className="h-full overflow-clip"
+            className="h-full w-full overflow-clip"
+            color="blue"
             value={`${
               styling[selecttedComponent]
                 ? styling[selecttedComponent].family
@@ -423,6 +398,7 @@ export default function KartuPelajar() {
           <TextInput
             label={"Font Size"}
             className="h-full"
+            type="number"
             onChange={(e) => handleStyleChange("font", `${e.target.value}px`)}
             value={`${
               styling[selecttedComponent]
@@ -442,8 +418,8 @@ export default function KartuPelajar() {
             onChange={(e) => handleStyleChange("color", `${e.target.value}`)}
           />
         </div>
-      )}
-      <div className="certificate w-full h-max overflow-auto " ref={ref}>
+      
+      <div className="certificate w-full h-max overflow-auto" ref={ref} >
         {value.template &&
           splitName.map((e, i) => (
             <div className="relative  w-full certificate-page" key={i}>
@@ -451,6 +427,7 @@ export default function KartuPelajar() {
                 src={URL.createObjectURL(imageBlob)}
                 alt={"image"}
                 className="w-full"
+                onClick={()=>setSelettedComponent('')}
               />
 
               <Draggable
@@ -474,7 +451,10 @@ export default function KartuPelajar() {
                       }}
                       
                       onClick={() => setSelettedComponent("sertifikat")}
-                      className="border-0 bg-white/0 text-blue-gray  text-center w-max font-bold  mb-2  h-max"
+                      className={`bg-white/0   outline-none text-center w-full ${
+                        selecttedComponent === "sertifikat" &&
+                        "border-2 border-dashed border-green-400"
+                      }`}
                     />
 
                     <div className="flex justify-center items-center  w-full m-2">
@@ -487,7 +467,10 @@ export default function KartuPelajar() {
                           color: styling.penghargaan.color,
                         }}
                         onClick={() => setSelettedComponent("penghargaan")}
-                        className="border-0 bg-white/0 text-blue-gray  text-center w-full"
+                        className={`bg-white/0   outline-none text-center w-full ${
+                          selecttedComponent === "penghargaan" &&
+                          "border-2 border-dashed border-green-400"
+                        }`}
                       />
                     </div>
                     <p
@@ -589,7 +572,10 @@ export default function KartuPelajar() {
                       color: styling.nomor.color,
                     }}
                     onClick={() => setSelettedComponent("nomor")}
-                    className="border-0 bg-white/0 text-blue-gray  text-center w-max"
+                    className={`bg-white/0   outline-none text-center w-full ${
+                      selecttedComponent === "nomor" &&
+                      "border-2 border-dashed border-green-400"
+                    }`}
                   />
                 </div>
               </Draggable>
@@ -652,11 +638,7 @@ export default function KartuPelajar() {
             </div>
           ))}
       </div>
-      <ButtonCustom
-        text={"Random Font"}
-        disabled={loading}
-        onClick={() => handleRandomFonts()}
-      />
+      
       {/* <ButtonCustom
         text={
           <div className="flex gap-2 justify-center items-center ">

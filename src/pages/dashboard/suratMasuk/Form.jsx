@@ -97,7 +97,7 @@ const Form = ({ handleOpen, isEdit, dataSuratMasuk, currentId, refetch }) => {
       }
       mutate();
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

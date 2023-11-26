@@ -80,7 +80,7 @@ const Form = ({ handleOpen, isEdit, dataTemplate, currentId, refetch }) => {
       }
       mutate();
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
   

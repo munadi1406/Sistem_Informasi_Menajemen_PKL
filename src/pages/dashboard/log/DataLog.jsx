@@ -3,6 +3,7 @@ import { Typography } from "@material-tailwind/react";
 import PropTypes from "prop-types";
 const TABLE_HEAD = [
   "Ip Address",
+  "Username",
   "Sistem Operasi",
   "Browser",
   "URL",
@@ -41,7 +42,7 @@ export default function DataLog({ data }) {
               {
                 ipAddress,
                 osVersion,
-
+                user,
                 browserVersion,
                 visitedURL,
 
@@ -63,6 +64,15 @@ export default function DataLog({ data }) {
                       className="font-normal"
                     >
                       {ipAddress}
+                    </Typography>
+                  </td>
+                  <td className={classes}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {user.username}
                     </Typography>
                   </td>
                   <td className={classes}>

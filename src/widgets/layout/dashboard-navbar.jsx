@@ -39,7 +39,7 @@ export function DashboardNavbar() {
   return (
     <Navbar
       color={fixedNavbar ? "white" : "transparent"}
-      className={`rounded-xl transition-all sticky top-4 z-40 py-3 shadow-md shadow-blue-gray-500/5
+      className={`rounded-xl transition-all  z-40 py-3 shadow-md shadow-blue-gray-500/5
           
       `}
       fullWidth

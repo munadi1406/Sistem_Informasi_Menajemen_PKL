@@ -12,7 +12,7 @@ export default function Users() {
   const [changePassword, setChangePassword] = useState(false);
   const [currentId, setCurrentId] = useState(0);
   const handleIsShowChangePassword = (id) => {
-    console.log("running");
+   
     setChangePassword(!changePassword);
     setCurrentId(id);
   };

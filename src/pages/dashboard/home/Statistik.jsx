@@ -43,30 +43,26 @@ export default function Statistik({result}) {
           desc={" Surat"}
           color={"bg-orange-400"}
         />
+        <div className={"lg:col-span-full"}>
         <CardStat
           icon={<BiCertification />}
-          count={result[6]?.data}
+          count={result[5]?.data}
           desc={"Template Sertifikat"}
           color={"bg-pink-400"}
+          
         />
-        <div className="lg:col-span-2  col-span-full">
-          <CardStat
-            icon={<FaCertificate />}
-            count={result[5]?.data?.totalSertifikat}
-            desc={"Sertifikat"}
-            color={"bg-pink-400"}
-          />
         </div>
+        
         <div className="lg:col-span-3 sm:col-span-full  grid sm:grid-cols-2 grid-cols-1 w-full gap-2">
           <CardStat
             icon={<IoEnterOutline />}
-            count={result[7]?.data}
+            count={result[6]?.data}
             desc={" Surat Masuk"}
             color={"bg-teal-400"}
           />
           <CardStat
             icon={<BiLogOut />}
-            count={result[8]?.data}
+            count={result[7]?.data}
             desc={" Surat Keluar"}
             color={"bg-indigo-400"}
           />
@@ -206,56 +202,7 @@ export default function Statistik({result}) {
             </>
           )}
         </div>
-        <div className="bg-white rounded-lg shadow-sm col-span-2 flex flex-col gap-2 p-2 overflow-auto w-full">
-          {result[9]?.isLoading ? (
-            <Loader />
-          ) : (
-            <>
-            <Charts
-              type="bar"
-              options={{
-                chart: {
-                height: 350,
-                type: 'bar',
-                
-              },
-              plotOptions: {
-                bar: {
-                  columnWidth: '45%',
-                  distributed: true,
-                }
-              },
-              dataLabels: {
-                enabled: false
-              },
-              legend: {
-                show: false
-              },
-              xaxis: {
-                categories: result[5]?.data?.byName.map(
-                    (item) => item.nama,
-                  ),
-                labels: {
-                  style: {
-                    
-                    fontSize: '12px'
-                  }
-                }
-              
-              }}
-              }
-              series={[
-                {
-                  data: result[5]?.data?.byName.map(
-                    (item) => item.count,
-                  ),
-                },
-              ]}
-              height={350}
-            />
-            </>
-          )}
-        </div>
+       
       </div>
     </>
   )

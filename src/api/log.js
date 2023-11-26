@@ -12,3 +12,8 @@ export const getListLog = async (id) => {
   const data = await axiosJwt.get(`${endpoint}/log/list/${id}`);
   return data;
 };
+
+export const deleteAllLog = async (id) => {
+  const data = await axiosJwt.delete(`${endpoint}/log`);
+  return data;
+};

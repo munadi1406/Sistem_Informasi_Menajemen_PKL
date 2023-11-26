@@ -54,14 +54,7 @@ export function Home() {
       staleTime:10000,
     },
     {
-      queryKey: ['sertifikatCount', 6], queryFn: async () => {
-        const datas = await getSertifikatStat();
-        return datas.data.data;
-      },
-      staleTime:10000,
-    },
-    {
-      queryKey: ['templateSertifikatCount', 7], queryFn: async () => {
+      queryKey: ['templateSertifikatCount', 6], queryFn: async () => {
         const datas = await getTemplateSertifikatStat();
         return datas.data.data;
       },
@@ -69,14 +62,14 @@ export function Home() {
     },
 
     {
-      queryKey: ['suratIn', 8], queryFn: async () => {
+      queryKey: ['suratIn', 7], queryFn: async () => {
         const datas = await getSuratMasukStat();
         return datas.data.data;
       },
       staleTime:10000,
     },
     {
-      queryKey: ['suratOut', 9], queryFn: async () => {
+      queryKey: ['suratOut', 8], queryFn: async () => {
         const datas = await getSuratKeluarStat();
         return datas.data.data;
       },
@@ -85,7 +78,7 @@ export function Home() {
 
 
     {
-      queryKey: ['logStat', 10], queryFn: async () => {
+      queryKey: ['logStat', 9], queryFn: async () => {
         const datas = await getLogStat();
         return datas.data.data;
       },

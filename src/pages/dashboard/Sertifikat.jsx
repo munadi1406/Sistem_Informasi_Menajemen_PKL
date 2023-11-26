@@ -29,7 +29,7 @@ export default function KartuPelajar() {
   const [leadEvent, setLeadEvent] = useState("");
   const [isQrCode, setIsQrCode] = useState(false);
   const [qrCodeSize, setQrCodeSize] = useState(30);
-  const [nomorSertifikat, setNomorSertifikat] = useState();
+  
   const [typeSertifikat, setTypeSertifikat] = useState("PENGHARGAAN");
   const [loading, setLoading] = useState(false);
   const [certificateValue, setCertificateValue] = useState("CERTIFICATE");
@@ -336,10 +336,7 @@ export default function KartuPelajar() {
       {/* <div className="w-full flex justify-end">
         <ButtonCustom text={"History Pembuatan Sertifikat"} />
       </div> */}
-      <TextInput
-        label={"Nomor Sertifikat"}
-        onChange={(e) => setNomorSertifikat(e.target.value)}
-      />
+      
       <Selects
         options={options}
         isLoading={isRefetching}
@@ -564,7 +561,7 @@ export default function KartuPelajar() {
               >
                 <div className="text-xs w-max absolute left-1/2 top-4 active:border-2 active:border-dashed active:border-green-600">
                   <input
-                    defaultValue={"Testing 123"}
+                    defaultValue={"Nomor Sertifikat"}
                     onChange={(e) => setTypeSertifikat(e.target.value)}
                     style={{
                       fontFamily: styling.nomor.family,

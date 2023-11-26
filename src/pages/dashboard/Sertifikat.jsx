@@ -403,7 +403,7 @@ export default function KartuPelajar() {
         />
       )}
       {value.template && (
-        <div className="sticky top-5 grid ld:grid-cols-3 grid-cols-1 z-50 gap-2 bg-white p-2">
+        <div className="sticky top-5 grid md:grid-cols-3 grid-cols-1 z-50 gap-2 bg-white p-2">
           <Select
             label="Font Family"
             onChange={(e) => handleStyleChange("family", e)}

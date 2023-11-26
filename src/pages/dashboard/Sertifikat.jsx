@@ -472,7 +472,7 @@ export default function KartuPelajar() {
                         fontSize: styling.sertifikat.font,
                         color: `${styling.sertifikat.color}`,
                       }}
-                      className={` `}
+                      
                       onClick={() => setSelettedComponent("sertifikat")}
                       className="border-0 bg-white/0 text-blue-gray  text-center w-max font-bold  mb-2  h-max"
                     />

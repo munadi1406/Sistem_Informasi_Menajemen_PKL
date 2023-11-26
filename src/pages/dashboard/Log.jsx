@@ -78,7 +78,7 @@ export default function Log() {
                   disabled={handleDeleteAllLog.isLoading}
                   onClick={handleDeleteAllLog.mutate}
                 />
-              </div>,
+              </div>
             )}
         </div>
       </CardHeader>

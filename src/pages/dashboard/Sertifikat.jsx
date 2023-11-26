@@ -131,6 +131,7 @@ export default function KartuPelajar() {
     setSelettedComponent(null)
     setLoading(!loading);
     
+    
     const pdf = new jsPDF("l", "mm", "a4"); // 'p' for portrait, 'mm' for millimeters
     const pages = document.querySelectorAll(".certificate-page");
 
@@ -417,7 +418,7 @@ export default function KartuPelajar() {
         </div>
       
       <div className="certificate w-full h-max overflow-auto" ref={ref} >
-        {value.template &&
+        {value.template && imageBlob &&
           splitName.map((e, i) => (
             <div className="relative  w-full certificate-page" key={i}>
               <LazyImage
@@ -435,9 +436,9 @@ export default function KartuPelajar() {
                 }
               >
                 <div
-                  className={`absolute top-1/2 left-1/2 w-max active:border-2 active:border-dashed active:border-green-600`}
+                  className={`absolute top-1/2 left-1/2 w-max h-max active:border-2 active:border-dashed active:border-green-600`}
                 >
-                  <div className="w-full">
+                  <div className="w-full h-max border-2 border-red-600">
                     <input
                       value={certificateValue}
                       onChange={(e) => setCertificateValue(e.target.value)}
@@ -448,7 +449,7 @@ export default function KartuPelajar() {
                       }}
                       
                       onClick={() => setSelettedComponent("sertifikat")}
-                      className={`bg-white/0   outline-none text-center w-full ${
+                      className={`bg-white/0 min-h-max outline-none  text-center w-full ${
                         selecttedComponent === "sertifikat" &&
                         "border-2 border-dashed border-green-400"
                       }`}

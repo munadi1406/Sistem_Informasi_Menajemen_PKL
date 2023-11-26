@@ -27,7 +27,7 @@ import { useDataUser } from "../store/store";
 import { FiActivity } from "react-icons/fi";
 
 export default function MobileNav() {
-    const idUsers = useDataUser((state) => state.role);
+  const idUsers = useDataUser((state) => state.role);
   const labelProps = {
     variant: "small",
     color: "blue-gray",
@@ -111,7 +111,7 @@ export default function MobileNav() {
             </button>
           </SpeedDialHandler>
           <SpeedDialContent className="-translate-y-5 text-blue-700">
-          <NavLink to={"./surat"}>
+            <NavLink to={"./surat"}>
               <SpeedDialAction className="h-16 w-16  border-1 border-blue-300">
                 <IoCreate className="h-5 w-5" />
                 <Typography
@@ -156,40 +156,40 @@ export default function MobileNav() {
             </button>
           </SpeedDialHandler>
           <SpeedDialContent>
-          {idUsers !== 3 && (
-             <NavLink to={"./users"}>
-            <SpeedDialAction className="relative">
-              <FaUsers className="h-5 w-5" />
-              <Typography {...labelProps}>Users</Typography>
-            </SpeedDialAction>
-            </NavLink>
+            {idUsers !== 3 && (
+              <NavLink to={"./users"}>
+                <SpeedDialAction className="relative">
+                  <FaUsers className="h-5 w-5" />
+                  <Typography {...labelProps}>Users</Typography>
+                </SpeedDialAction>
+              </NavLink>
             )}
             <NavLink to={"./kartu-pelajar"}>
-            <SpeedDialAction className="relative">
-              <FaIdCard className="h-5 w-5" />
-              <Typography {...labelProps}>Kartu Pelajar</Typography>
-            </SpeedDialAction>
+              <SpeedDialAction className="relative">
+                <FaIdCard className="h-5 w-5" />
+                <Typography {...labelProps}>Kartu Pelajar</Typography>
+              </SpeedDialAction>
             </NavLink>
-             <NavLink to={"./sertifikat"}>
-            <SpeedDialAction className="relative">
-              <TbCertificate className="h-5 w-5" />
-              <Typography {...labelProps}>Sertifikat</Typography>
-            </SpeedDialAction>
-             </NavLink>
-             {idUsers === 0 || idUsers === 1 ? (
-                 <NavLink to={"./log"}>
-            <SpeedDialAction className="relative">
-              <FiActivity className="h-5 w-5" />
-              <Typography {...labelProps}>Log</Typography>
-            </SpeedDialAction>
+            <NavLink to={"./sertifikat"}>
+              <SpeedDialAction className="relative">
+                <TbCertificate className="h-5 w-5" />
+                <Typography {...labelProps}>Sertifikat</Typography>
+              </SpeedDialAction>
             </NavLink>
-            ):(<></>)}
-            <NavLink to={"./dokumentasi"}>
+            {idUsers === 0 || idUsers === 1 ? (
+              <NavLink to={"./log"}>
+                <SpeedDialAction className="relative">
+                  <FiActivity className="h-5 w-5" />
+                  <Typography {...labelProps}>Log</Typography>
+                </SpeedDialAction>
+              </NavLink>
+            ) : (<></>)}
+            {/* <NavLink to={"./dokumentasi"}>
             <SpeedDialAction className="relative">
               <LuBadgeHelp className="h-5 w-5" />
               <Typography {...labelProps}>Dokumentasi</Typography>
             </SpeedDialAction>
-          </NavLink>
+          </NavLink> */}
           </SpeedDialContent>
         </SpeedDial>
       </div>

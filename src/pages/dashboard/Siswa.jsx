@@ -152,7 +152,7 @@ export default function Siswa() {
       <Form
         open={openCreateForm || openModalEdit}
         handleOpen={openModalEdit ? handleOpenModalEdit : handleOpenForm}
-        title="Tambah Data Siswa"
+        title={openModalEdit ? 'Edit Data Siswa' : 'Tambah Data Siswa'}
         currentNis={currentNis}
         isEdit={openModalEdit}
         refetch={refetch}

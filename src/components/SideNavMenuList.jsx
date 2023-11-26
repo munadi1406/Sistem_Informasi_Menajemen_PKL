@@ -152,14 +152,14 @@ export default function SideNavMenuList() {
       ) : (
         <></>
       )}
-       <NavLink to={"./dokumentasi"}>
+       {/* <NavLink to={"./dokumentasi"}>
         <ListItem>
           <ListItemPrefix>
             <TiDocumentText className="h-5 w-5" />
           </ListItemPrefix>
           Dokumentasi
         </ListItem>
-      </NavLink>
+      </NavLink> */}
     </List>
   );
 }

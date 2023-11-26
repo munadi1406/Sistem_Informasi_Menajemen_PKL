@@ -31,7 +31,6 @@ export default function KartuPelajar() {
   const [qrCodeSize, setQrCodeSize] = useState(30);
   const [isPrint, setIsPrint] = useState(false);
   const [nomor, setNomor] = useState({});
-  
 
   const [typeSertifikat, setTypeSertifikat] = useState("PENGHARGAAN");
   const [loading, setLoading] = useState(false);
@@ -446,34 +445,35 @@ export default function KartuPelajar() {
                   className={`absolute top-1/2 left-1/2 w-max h-max active:ouline-2 active:outline-blue-400 active:outline-dashed`}
                 >
                   <div className="w-max h-max ">
-                    {!isPrint ? (
-                      <input
-                        value={certificateValue}
-                        onChange={(e) => setCertificateValue(e.target.value)}
-                        style={{
-                          fontFamily: styling.sertifikat.family,
-                          fontSize: styling.sertifikat.font,
-                          color: `${styling.sertifikat.color}`,
-                        }}
-                        onClick={() => setSelettedComponent("sertifikat")}
-                        className={`bg-white/0 min-h-max outline-none  text-center w-full ${
-                          selecttedComponent === "sertifikat" &&
-                          "outline-2 outline-green-400 outline-dashed"
-                        }`}
-                      />
-                    ) : (
-                      <div
-                        className="text-center min-w-[399px]"
-                        style={{
-                          fontFamily: styling.sertifikat.family,
-                          fontSize: styling.sertifikat.font,
-                          color: `${styling.sertifikat.color}`,
-                        }}
-                      >
-                        {certificateValue}
-                      </div>
-                    )}
-
+                    <div className="flex justify-center w-[600px] mb-7 ">
+                      {!isPrint ? (
+                        <input
+                          value={certificateValue}
+                          onChange={(e) => setCertificateValue(e.target.value)}
+                          style={{
+                            fontFamily: styling.sertifikat.family,
+                            fontSize: styling.sertifikat.font,
+                            color: `${styling.sertifikat.color}`,
+                          }}
+                          onClick={() => setSelettedComponent("sertifikat")}
+                          className={`bg-white/0 min-h-max outline-none  text-center w-full ${
+                            selecttedComponent === "sertifikat" &&
+                            "outline-2 outline-green-400 outline-dashed"
+                          }`}
+                        />
+                      ) : (
+                        <div
+                          className="text-center w-full"
+                          style={{
+                            fontFamily: styling.sertifikat.family,
+                            fontSize: styling.sertifikat.font,
+                            color: `${styling.sertifikat.color}`,
+                          }}
+                        >
+                          {certificateValue}
+                        </div>
+                      )}
+                    </div>
                     <div className="flex justify-center items-center  w-full my-2">
                       {!isPrint ? (
                         <input
@@ -599,7 +599,7 @@ export default function KartuPelajar() {
                 <div className="text-xs min-w-[300px] flex justify-center  absolute left-1/2 top-4 active:ouline-2 active:outline-blue-400 active:outline-dashed">
                   {!isPrint ? (
                     <input
-                      value={nomor[`nomor${i}`] ? nomor[`nomor${i}`] : ''}
+                      value={nomor[`nomor${i}`] ? nomor[`nomor${i}`] : ""}
                       placeholder="nomor sertifikat"
                       onChange={(e) => {
                         setNomor((prev) => ({
@@ -630,7 +630,6 @@ export default function KartuPelajar() {
                       {nomor[`nomor${i}`]}
                     </div>
                   )}
-                 
                 </div>
               </Draggable>
               {leadEvent && (

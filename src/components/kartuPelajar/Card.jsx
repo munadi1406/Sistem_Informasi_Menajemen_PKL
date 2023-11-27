@@ -64,7 +64,7 @@ export default function Card({
           </div>
         </div>
         <div className="pl-2">
-          <div className="w-full  grid grid-cols-3 pl-2 py-2">
+          <div className="w-full  grid grid-cols-3 pl-2 py-2 ">
             <div className=" col-span-2 ">
               <div
                 className={`text-start ${textColorBody} capitalize text-[12px] font-bold font-['Nunito Sans']`}
@@ -105,11 +105,11 @@ export default function Card({
               )}
             </div>
           </div>
-          <div className="grid grid-cols-2">
-            <div className="ml-2 w-full h-full">
-              <div className="bg-white h-[60px] p-2 flex flex-col overflow-clip justify-end h-full items-start w-max rounded-sm  relative">
+          <div className="grid grid-cols-2 ">
+            <div className="ml-2 w-full h-full ">
+              <div className="bg-white h-[60px] p-2 flex flex-col overflow-clip justify-end  items-start w-max rounded-sm  relative">
                 <div className="absolute top-4 left-0 z-0">
-                  <BarcodeComponent value={"Testing"} />
+                  <BarcodeComponent value={cardData.nisn} />
                 </div>
                 <div
                   className={`text-start text-black  text-[7px] font-bold font-['Nunito Sans'] relative z-10`}
@@ -118,25 +118,27 @@ export default function Card({
                 </div>
               </div>
             </div>
-            <div className="flex justify-between items-end flex-col pr-3">
+            <div className="flex justify-start  items-end  flex-col pr-3">
               <div
-                className={`h-[60px] p-2 bg-white rounded-sm relative flex justify-between items-center flex-col`}
+                className={`h-full p-2 bg-white rounded-sm relative flex justify-between items-start flex-col`}
               >
                 <div
-                  className={`text-center text-black  text-[8px] font-bold font-['Nunito Sans'] z-10 relative`}
+                  className={`text-start text-black w-full  text-[8px] font-bold font-['Nunito Sans'] z-10 relative`}
                 >
                   Kepala Sekolah
                 </div>
+
                 <img
                   src={`${endpoint}/kepsek/${data.data.tanda_tangan}`}
                   alt="Kepsek Signature"
                   width={40}
-                  className="absolute top-[50%] left-[50%] translate-x-[-50%] z-0 translate-y-[-50%]"
+                  className="top-4 left-0 z-0  "
                 />
-                <div
-                  className={`text-center text-black text-[8px] font-bold font-['Nunito Sans'] z-10 relative`}
+                <div 
+                  className={`text-center text-black text-[8px] flex flex-col items-start font-bold font-['Nunito Sans'] z-10 relative`}
                 >
-                  {data.data.user.username}
+                  <p>{data.data.user.username}</p>
+                  <p>{`NIP: ${data.data.nip}`}</p>
                 </div>
               </div>
             </div>
@@ -152,28 +154,15 @@ export default function Card({
           src={LogoSekolah}
         />
         <div
-          className={`w-full ${textColorBody} text-[9.4px] font-bold font-['Nunito Sans']`}
+          className={`w-full ${textColorBody}  font-bold font-['Nunito Sans']`}
         >
-          <ul className="list-decimal pl-6 py-3">
+          <ul className="list-decimal pl-6 py-3 text-[12px] upercase">
+            <li>Terwujudnya Peserta Didik Yang Disiplin</li>
+            <li>IMTAQ (Iman & Taqwa)</li>
+            <li>Prestasi Unggul, Peduli Lingkungan </li>
             <li>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-              molestiae esse, ut, ad quod nostrum unde optio nihil nesciunt
-            </li>
-            <li>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-              molestiae esse,
-            </li>
-            <li>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-              molestiae esse, ut, ad quod nostrum unde optio nihil nesciunt
-              harum ipsa, veniam voluptas natus facere ex officiis quasi velit
-              totam.
-            </li>
-            <li>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-              molestiae esse, ut, ad quod nostrum unde optio nihil nesciunt
-              harum ipsa, veniam voluptas natus facere ex officiis quasi velit
-              totam.
+              Akhlakul Kariman Dan Adil Dengan Berlandaskan Profil Pelajar
+              Pancasila
             </li>
           </ul>
         </div>

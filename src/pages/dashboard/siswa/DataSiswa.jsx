@@ -112,7 +112,7 @@ export default function DataSiswa({
                     <Typography
                       variant="small"
                       color="blue-gray"
-                      className="font-normal"
+                      className="font-normal break-all w-[250px]"
                     >
                       {alamat}
                     </Typography>

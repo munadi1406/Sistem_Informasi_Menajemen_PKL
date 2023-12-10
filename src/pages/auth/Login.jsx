@@ -66,7 +66,7 @@ export default function Login() {
             </div>
             <div className='lg:w-full lg:h-full flex flex-col justify-center items-center h-max lg:rounded-none lg:shadow-none rounded-md shadow-xl'>
                 <div className='w-full  flex flex-col justify-center items-center gap-2 lg:p-2 p-4'>
-                    <img src={logoSma1} className='w-32' width="100%" height="100%" placeholder='Logo Sma' />
+                    <img src={logoSma1} className='w-32' width="100%" height="100%" alt='Logo Sma' />
                     <h1 className='font-bold text-3xl text-center'>
                         SIMASAN
                     </h1>

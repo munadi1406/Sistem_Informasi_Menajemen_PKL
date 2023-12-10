@@ -10,14 +10,13 @@ import TextAreaCustom from "../../components/TextAreaCustom";
 import { getDetailKepsek } from "../../api/kepsek";
 const animatedComponents = makeAnimated();
 import QrCode from "../../components/QrCode";
-import { Checkbox, Slider } from "@material-tailwind/react";
+import { Checkbox, Slider,Select, Option } from "@material-tailwind/react";
 import ButtonCustom from "../../components/ButtonCustom";
 import { useReactToPrint } from "react-to-print";
 import LazyImage from "../../components/LazyImage";
 import Draggable from "react-draggable";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import { Select, Option } from "@material-tailwind/react";
 // import {storeSertifikat} from '../../api/sertifikat'
 // import { useAlertNotification, useDataUser } from "../../store/store";
 

@@ -1,10 +1,10 @@
-import { useState,lazy,Suspense } from 'react';
-import logoSma1 from '../../assets/logosma1.png'
-import smaImage from '../../assets/sman.jpg'
+import { useState, lazy, Suspense } from 'react';
+import logoSma1 from '../../assets/logosma1.webp'
+import smaImage from '../../assets/sman.webp'
 import TextInput from '../../components/TextInput';
-const Register = lazy(()=>import( './Register'));
+const Register = lazy(() => import('./Register'));
 import { useNavigate } from 'react-router-dom';
-import { DialogBody, DialogHeader, Dialog, Checkbox ,Spinner} from '@material-tailwind/react';
+import { DialogBody, DialogHeader, Dialog, Checkbox, Spinner } from '@material-tailwind/react';
 import ButtonCustom from '../../components/ButtonCustom';
 import { useMutation } from 'react-query';
 import { auth } from '../../api/authRegister';
@@ -16,8 +16,8 @@ export default function Login() {
     const navigate = useNavigate()
     const [email, setEmail] = useState();
     const [password, setPassword] = useState()
-    const [msg,setMsg] = useState();
-   
+    const [msg, setMsg] = useState();
+
 
     const { mutate, isLoading } = useMutation({
         mutationFn: async (e) => {
@@ -25,11 +25,11 @@ export default function Login() {
             const login = await auth(email, password)
             return login
         },
-        onSuccess:(data)=>{
+        onSuccess: (data) => {
             navigate('/dashboard')
-            sessionStorage.setItem('at',data.data.data.accessToken)
-            sessionStorage.setItem('rt',data.data.data.refreshToken)
-        },onError:(error)=>{
+            sessionStorage.setItem('at', data.data.data.accessToken)
+            sessionStorage.setItem('rt', data.data.data.refreshToken)
+        }, onError: (error) => {
             setMsg(error.response.data.message)
         }
     })
@@ -38,13 +38,20 @@ export default function Login() {
             <Dialog open={open} handler={handleOpen} >
                 <DialogHeader>Register</DialogHeader>
                 <DialogBody>
-                <Suspense fallback={<div className='w-full h-56 bg-gray-600 animate-pulse rounded-md'/>}>
-                    <Register />
-                </Suspense>
+                    <Suspense fallback={<div className='w-full h-56 bg-gray-600 animate-pulse rounded-md' />}>
+                        <Register />
+                    </Suspense>
                 </DialogBody>
             </Dialog>
             <div className='relative lg:block hidden'>
-                <img src={smaImage} className='h-screen object-cover relative z-0' />
+                <img
+                    src={smaImage}
+                    loading='lazy'
+                    alt="Deskripsi alternatif gambar"
+                    className='h-screen object-cover relative z-0'
+                    width="100%"
+                    height="100%"
+                />
                 <div className='bg-black/50 top-0 left-0 absolute z-10 w-full h-full'></div>
                 <div className='absolute top-0 left-0 z-20 text-white h-full w-full p-2 flex justify-start items-center'>
                     <div className='flex flex-col gap-2 w-full'>
@@ -59,7 +66,7 @@ export default function Login() {
             </div>
             <div className='lg:w-full lg:h-full flex flex-col justify-center items-center h-max lg:rounded-none lg:shadow-none rounded-md shadow-xl'>
                 <div className='w-full  flex flex-col justify-center items-center gap-2 lg:p-2 p-4'>
-                    <img src={logoSma1} className='w-32' />
+                    <img src={logoSma1} className='w-32' width="100%" height="100%" placeholder='Logo Sma' />
                     <h1 className='font-bold text-3xl text-center'>
                         SIMASAN
                     </h1>
@@ -69,12 +76,12 @@ export default function Login() {
                     <p className='text-sm font-semibold text-red-500'>{msg}</p>
                     <form className='w-full flex flex-col gap-2 justify-center items-start' onSubmit={mutate} >
                         <TextInput label='Email' type='email' required onChange={(e) => setEmail(e.target.value)} />
-                        <TextInput label="Password" type={`${showPassword ? 'text' : 'password'}`} onChange={(e) => setPassword(e.target.value)} required/>
+                        <TextInput label="Password" type={`${showPassword ? 'text' : 'password'}`} onChange={(e) => setPassword(e.target.value)} required />
                         <p className='lg:hidden block text-sm cursor-pointer font-semibold text-blue-600 underline' onClick={handleOpen}>Register</p>
                         <div>
                             <Checkbox label="Show Password ?" color='blue' onChange={() => setShowPassword(!showPassword)} />
                         </div>
-                        <ButtonCustom text={isLoading ? <Spinner /> : 'Login'} className={"w-full"} type="submit" disabled={isLoading && true}/>
+                        <ButtonCustom text={isLoading ? <Spinner /> : 'Login'} className={"w-full"} type="submit" disabled={isLoading && true} />
                     </form>
                 </div>
             </div>

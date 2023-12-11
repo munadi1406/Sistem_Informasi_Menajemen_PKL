@@ -38,8 +38,9 @@
     "react-router-dom": "^6.16.0",
     "react-select": "^5.7.7",
     "react-to-print": "^2.14.15",
+    "web-worker": "^1.2.0",
     "zustand": "^4.4.3"
-  }, 
+  },
   "devDependencies": {
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",

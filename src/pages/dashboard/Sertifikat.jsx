@@ -169,61 +169,65 @@ export default function KartuPelajar() {
   // };
 
   const generatePDF = async () => {
-    setSelettedComponent(null);
-    setLoading(true);
+    try {
+      setSelettedComponent(null);
+      setLoading(true);
 
-    const pages = document.querySelector(".certificate-page");
-    const url = new URL("../../services/worker.js", import.meta.url);
-    const worker = new Worker(url, {
-      type: "module",
-    });
+      const pages = document.querySelector(".certificate-page");
+      const url = new URL("../../services/worker.js", import.meta.url);
+      const worker = new Worker(url, {
+        type: "module",
+      });
 
-    const promises = splitName.map(async (name, i) => {
-      // Tangkap elemen dengan ID "kepada"
+      const promises = splitName.map(async (name, i) => {
+        // Tangkap elemen dengan ID "kepada"
 
-      const kepadaElement = pages.querySelector("#kepada");
+        const kepadaElement = pages.querySelector("#kepada");
 
-      // Pastikan elemen dengan ID "kepada" ditemukan sebelum mengganti innerHTML
-      if (kepadaElement) {
-        // Lakukan penggantian innerHTML
-        kepadaElement.innerHTML = name;
-      }
+        // Pastikan elemen dengan ID "kepada" ditemukan sebelum mengganti innerHTML
+        if (kepadaElement) {
+          // Lakukan penggantian innerHTML
+          kepadaElement.innerHTML = name;
+        }
 
-      // Lanjutkan dengan proses html2canvas
-      const canvas = await html2canvas(pages, { scale: 4 });
-      const imageData = canvas.toDataURL("image/jpeg");
-      return { index: i, data: imageData };
-    });
+        // Lanjutkan dengan proses html2canvas
+        const canvas = await html2canvas(pages, { scale: 4 });
+        const imageData = canvas.toDataURL("image/jpeg");
+        return { index: i, data: imageData };
+      });
 
-    const screenshots = await Promise.all(promises);
-    worker.addEventListener("message", (event) => {
-      const { pdfName, pdfData } = event.data;
-      setLoading(false);
+      const screenshots = await Promise.all(promises);
+      worker.addEventListener("message", (event) => {
+        const { pdfName, pdfData } = event.data;
+        setLoading(false);
 
-      // Membuat objek URL dari Blob
-      const pdfUrl = URL.createObjectURL(pdfData);
+        // Membuat objek URL dari Blob
+        const pdfUrl = URL.createObjectURL(pdfData);
 
-      // Membuat elemen <a> untuk link unduhan
-      const downloadLink = document.createElement("a");
-      downloadLink.href = pdfUrl;
-      downloadLink.download = pdfName;
+        // Membuat elemen <a> untuk link unduhan
+        const downloadLink = document.createElement("a");
+        downloadLink.href = pdfUrl;
+        downloadLink.download = pdfName;
 
-      // Menyematkan elemen <a> ke dokumen dan mengkliknya untuk memicu unduhan
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
+        // Menyematkan elemen <a> ke dokumen dan mengkliknya untuk memicu unduhan
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
 
-      // Membersihkan elemen <a> setelah unduhan selesai
-      document.body.removeChild(downloadLink);
+        // Membersihkan elemen <a> setelah unduhan selesai
+        document.body.removeChild(downloadLink);
 
-      // Membersihkan objek URL
-      URL.revokeObjectURL(pdfUrl);
-    });
+        // Membersihkan objek URL
+        URL.revokeObjectURL(pdfUrl);
+      });
 
-    worker.postMessage({
-      screenshots,
-      splitName,
-      perihal,
-    });
+      worker.postMessage({
+        screenshots,
+        splitName,
+        perihal,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {

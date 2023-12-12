@@ -15,9 +15,10 @@ import ButtonCustom from "../../components/ButtonCustom";
 
 import LazyImage from "../../components/LazyImage";
 import Draggable from "react-draggable";
-import jsPDF from "jspdf";
+// import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Workerurl from "@/services/worker?worker&url";
+import { wrap } from "comlink";
 // import Worker from "web-worker";
 // import "../../font.css";
 // import {storeSertifikat} from '../../api/sertifikat'
@@ -173,60 +174,45 @@ export default function KartuPelajar() {
     try {
       setSelettedComponent(null);
       setLoading(true);
-      console.log(import.meta.url);
       const pages = document.querySelector(".certificate-page");
 
-      const worker = new Worker(new URL(Workerurl, import.meta.url), {
-        type: "module",
-      });
-      console.log(worker);
+      const worker = new Worker(Workerurl, { type: "module" });
+      const workerApi = wrap(worker);
 
       const promises = splitName.map(async (name, i) => {
-        // Tangkap elemen dengan ID "kepada"
-
         const kepadaElement = pages.querySelector("#kepada");
 
-        // Pastikan elemen dengan ID "kepada" ditemukan sebelum mengganti innerHTML
         if (kepadaElement) {
-          // Lakukan penggantian innerHTML
           kepadaElement.innerHTML = name;
         }
 
-        // Lanjutkan dengan proses html2canvas
         const canvas = await html2canvas(pages, { scale: 4 });
         const imageData = canvas.toDataURL("image/jpeg");
         return { index: i, data: imageData };
       });
 
       const screenshots = await Promise.all(promises);
-      worker.addEventListener("message", (event) => {
-        const { pdfName, pdfData } = event.data;
-        setLoading(false);
 
-        // Membuat objek URL dari Blob
-        const pdfUrl = URL.createObjectURL(pdfData);
-
-        // Membuat elemen <a> untuk link unduhan
-        const downloadLink = document.createElement("a");
-        downloadLink.href = pdfUrl;
-        downloadLink.download = pdfName;
-
-        // Menyematkan elemen <a> ke dokumen dan mengkliknya untuk memicu unduhan
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-
-        // Membersihkan elemen <a> setelah unduhan selesai
-        document.body.removeChild(downloadLink);
-
-        // Membersihkan objek URL
-        URL.revokeObjectURL(pdfUrl);
-      });
-
-      worker.postMessage({
+      // Panggil fungsi generatePDF dari workerApi
+      const { pdfName, pdfData } = await workerApi.generatePDF({
         screenshots,
         splitName,
         perihal,
       });
+
+      setLoading(false);
+
+      const pdfUrl = URL.createObjectURL(pdfData);
+
+      const downloadLink = document.createElement("a");
+      downloadLink.href = pdfUrl;
+      downloadLink.download = pdfName;
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+
+      URL.revokeObjectURL(pdfUrl);
     } catch (error) {
       console.log(error);
     }

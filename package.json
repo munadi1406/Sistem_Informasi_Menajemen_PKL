@@ -17,6 +17,7 @@
     "apexcharts": "3.35.5",
     "axios": "^1.5.1",
     "boring-avatars": "^1.10.1",
+    "comlink": "^4.4.1",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "jwt-decode": "^3.1.2",
@@ -39,6 +40,7 @@
     "react-router-dom": "^6.16.0",
     "react-select": "^5.7.7",
     "react-to-print": "^2.14.15",
+    "vite-plugin-comlink": "^3.0.5",
     "web-worker": "^1.2.0",
     "worker-plugin": "^5.0.1",
     "zustand": "^4.4.3"

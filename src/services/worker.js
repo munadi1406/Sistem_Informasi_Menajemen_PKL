@@ -37,6 +37,7 @@ onmessage = (data) => {
 
     postMessage({ pdfName, pdfData });
   }
-
-  generatePDF();
+  if (screenshots) {
+    generatePDF();
+  }
 };

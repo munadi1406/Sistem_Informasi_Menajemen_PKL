@@ -168,17 +168,6 @@ export default function KartuPelajar() {
   //   setLoading(false);
   // };
 
-  useEffect(() => {
-    const link = document.createElement("link");
-    link.href = "./src/font.css";
-    link.rel = "stylesheet";
-    document.head.appendChild(link);
-
-    return () => {
-      // Membersihkan elemen <link> jika komponen di-unmount
-      document.head.removeChild(link);
-    };
-  }, []);
   const generatePDF = async () => {
     setSelettedComponent(null);
     setLoading(true);

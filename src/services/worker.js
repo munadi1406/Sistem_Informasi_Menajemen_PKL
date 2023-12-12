@@ -7,27 +7,34 @@ import jsPDF from "jspdf";
 // import html2canvas from "../../node_modules/html2canvas/dist/html2canvas.js";
 
 // Menanggapi pesan dari utama
-onmessage = (data) => {
+onmessage = ({ data }) => {
   console.log(data);
 
   // Fungsi generatePDF
   async function generatePDF() {
-    const { screenshots, perihal } = data.data;
+    const { screenshots, perihal } =
+      data && data.data ? data.data : { screenshots: [], perihal: "" };
     console.log("worker running");
+
     const pdf = new jsPDF("l", "mm", "a4");
-    let image = screenshots || [];
-    image.forEach((screenshot, i) => {
+    let images = screenshots || [];
+
+    images.forEach((screenshot, i) => {
       if (i > 0) {
         pdf.addPage();
       }
-      pdf.addImage(
-        screenshot.data,
-        "JPEG",
-        0,
-        0,
-        pdf.internal.pageSize.width,
-        pdf.internal.pageSize.height,
-      );
+
+      // Periksa apakah screenshot.data memiliki nilai sebelum digunakan
+      if (screenshot && screenshot.data) {
+        pdf.addImage(
+          screenshot.data,
+          "JPEG",
+          0,
+          0,
+          pdf.internal.pageSize.width,
+          pdf.internal.pageSize.height,
+        );
+      }
     });
 
     pdf.autoPrint();

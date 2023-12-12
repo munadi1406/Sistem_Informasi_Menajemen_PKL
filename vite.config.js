@@ -7,7 +7,4 @@ export default defineConfig({
   resolve: {
     alias: [{ find: "@", replacement: "/src" }],
   },
-  worker: {
-    format: "es",
-  },
 });

@@ -217,7 +217,6 @@ export default function KartuPelajar() {
   useEffect(() => {
     if (isPrint) {
       generatePDF();
-      setIsPrint(false);
     }
   }, [isPrint]);
 

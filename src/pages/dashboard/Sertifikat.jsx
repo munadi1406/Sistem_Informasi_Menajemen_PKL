@@ -18,6 +18,7 @@ import Draggable from "react-draggable";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Worker from "web-worker";
+import urlWorker from "../../services/worker.js";
 // import "../../font.css";
 // import {storeSertifikat} from '../../api/sertifikat'
 // import { useAlertNotification, useDataUser } from "../../store/store";
@@ -174,7 +175,7 @@ export default function KartuPelajar() {
       setLoading(true);
       console.log(import.meta.url);
       const pages = document.querySelector(".certificate-page");
-      const url = new URL("../../services/worker.js", import.meta.url);
+      const url = new URL(urlWorker, import.meta.url);
       const worker = new Worker(url, {
         type: "module",
       });

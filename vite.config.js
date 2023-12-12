@@ -7,4 +7,12 @@ export default defineConfig({
   resolve: {
     alias: [{ find: "@", replacement: "/src" }],
   },
+  build: {
+    rollupOptions: {
+      input: {
+        main: "./src/index.html",
+        worker: "./src/services/worker.js", // Path ke file Web Worker
+      },
+    },
+  },
 });

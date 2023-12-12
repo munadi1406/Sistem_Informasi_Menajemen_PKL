@@ -200,19 +200,19 @@ export default function KartuPelajar() {
         splitName,
         perihal,
       });
+      console.log(pdfData);
+      // const pdfUrl = URL.createObjectURL(pdfData);
 
-      const pdfUrl = URL.createObjectURL(pdfData);
+      // const downloadLink = document.createElement("a");
+      // downloadLink.href = pdfUrl;
+      // downloadLink.download = pdfName;
 
-      const downloadLink = document.createElement("a");
-      downloadLink.href = pdfUrl;
-      downloadLink.download = pdfName;
+      // document.body.appendChild(downloadLink);
+      // downloadLink.click();
+      // document.body.removeChild(downloadLink);
 
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-
-      URL.revokeObjectURL(pdfUrl);
-      worker.terminate();
+      // URL.revokeObjectURL(pdfUrl);
+      // worker.terminate();
     } catch (error) {
       console.log(error);
     }

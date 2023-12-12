@@ -7,4 +7,13 @@ export default defineConfig({
   resolve: {
     alias: [{ find: "@", replacement: "/src" }],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        worker: {
+          format: "es",
+        },
+      },
+    },
+  },
 });

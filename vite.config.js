@@ -10,7 +10,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        worker: "./src/services/worker.js",
+        main: "./index.html",
+        worker: "./src/services/worker.js", // Path ke file Web Worker
       },
     },
   },

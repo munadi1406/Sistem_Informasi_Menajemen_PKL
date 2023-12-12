@@ -15,7 +15,7 @@ onmessage = (data) => {
   async function generatePDF() {
     console.log("worker running");
     const pdf = new jsPDF("l", "mm", "a4");
-    let image = screenshots ?? [];
+    let image = screenshots || [];
     image.forEach((screenshot, i) => {
       if (i > 0) {
         pdf.addPage();

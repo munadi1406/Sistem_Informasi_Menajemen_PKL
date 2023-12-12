@@ -17,7 +17,7 @@ import LazyImage from "../../components/LazyImage";
 import Draggable from "react-draggable";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import workerUrl from "../../services/worker?worker&url";
+import workerUrl from "../../services/worker?worker&inline";
 // import "../../font.css";
 // import {storeSertifikat} from '../../api/sertifikat'
 // import { useAlertNotification, useDataUser } from "../../store/store";

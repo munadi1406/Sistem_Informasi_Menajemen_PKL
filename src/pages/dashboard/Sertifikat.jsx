@@ -203,15 +203,15 @@ export default function KartuPelajar() {
 
       // Buat objek Blob dari data PDF
       const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
+      console.log(pdfBlob);
+      // // Alternatif 1: Buka jendela baru untuk menampilkan PDF
+      // window.open(URL.createObjectURL(pdfBlob), "_blank");
 
-      // Alternatif 1: Buka jendela baru untuk menampilkan PDF
-      window.open(URL.createObjectURL(pdfBlob), "_blank");
+      // // Alternatif 2: Alihkan pengguna ke URL objek Blob
+      // // window.location.href = URL.createObjectURL(pdfBlob);
 
-      // Alternatif 2: Alihkan pengguna ke URL objek Blob
-      // window.location.href = URL.createObjectURL(pdfBlob);
-
-      // Cleanup
-      URL.revokeObjectURL(URL.createObjectURL(pdfBlob));
+      // // Cleanup
+      // URL.revokeObjectURL(URL.createObjectURL(pdfBlob));
       worker.terminate();
     } catch (error) {
       console.log(error);

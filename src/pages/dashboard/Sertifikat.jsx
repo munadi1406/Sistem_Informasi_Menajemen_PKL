@@ -177,6 +177,7 @@ export default function KartuPelajar() {
       const pages = document.querySelector(".certificate-page");
 
       const workers = new Worker();
+      console.log(workers);
 
       const promises = splitName.map(async (name, i) => {
         // Tangkap elemen dengan ID "kepada"
@@ -219,7 +220,7 @@ export default function KartuPelajar() {
         URL.revokeObjectURL(pdfUrl);
       });
 
-      worker.postMessage({
+      workers.postMessage({
         screenshots,
         splitName,
         perihal,

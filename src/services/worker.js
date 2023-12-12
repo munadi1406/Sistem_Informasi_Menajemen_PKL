@@ -7,8 +7,9 @@ import jsPDF from "jspdf";
 // import html2canvas from "../../node_modules/html2canvas/dist/html2canvas.js";
 
 // Menanggapi pesan dari utama
-addEventListener("message", async (event) => {
-  const { screenshots, splitName, perihal } = event.data;
+onmessage = (data) => {
+  console.log(data);
+  const { screenshots, splitName, perihal } = data.data;
 
   // Fungsi generatePDF
   async function generatePDF() {
@@ -38,4 +39,4 @@ addEventListener("message", async (event) => {
   }
 
   generatePDF();
-});
+};

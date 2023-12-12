@@ -12,6 +12,7 @@ addEventListener("message", async (event) => {
 
   // Fungsi generatePDF
   async function generatePDF() {
+    console.log("worker running");
     const pdf = new jsPDF("l", "mm", "a4");
 
     screenshots.forEach((screenshot, i) => {

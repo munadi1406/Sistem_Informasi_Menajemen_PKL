@@ -17,7 +17,7 @@ import LazyImage from "../../components/LazyImage";
 import Draggable from "react-draggable";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import Worker from "@/services/worker?worker&inline";
+import Workerurl from "@/services/worker?worker&url";
 // import Worker from "web-worker";
 // import "../../font.css";
 // import {storeSertifikat} from '../../api/sertifikat'
@@ -176,8 +176,8 @@ export default function KartuPelajar() {
       console.log(import.meta.url);
       const pages = document.querySelector(".certificate-page");
 
-      const workers = new Worker();
-      console.log(workers);
+      const worker = new Worker(new URL(Workerurl, import.meta.url));
+      console.log(worker);
 
       const promises = splitName.map(async (name, i) => {
         // Tangkap elemen dengan ID "kepada"
@@ -197,7 +197,7 @@ export default function KartuPelajar() {
       });
 
       const screenshots = await Promise.all(promises);
-      workers.addEventListener("message", (event) => {
+      worker.addEventListener("message", (event) => {
         const { pdfName, pdfData } = event.data;
         setLoading(false);
 
@@ -220,7 +220,7 @@ export default function KartuPelajar() {
         URL.revokeObjectURL(pdfUrl);
       });
 
-      workers.postMessage({
+      worker.postMessage({
         screenshots,
         splitName,
         perihal,

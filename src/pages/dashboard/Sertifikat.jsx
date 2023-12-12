@@ -209,16 +209,17 @@ export default function KartuPelajar() {
       document.body.removeChild(downloadLink);
 
       URL.revokeObjectURL(pdfUrl);
+      worker.terminate();
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    if (isPrint) {
-      generatePDF();
-    }
-  }, [isPrint]);
+  // useEffect(() => {
+  //   if (isPrint) {
+  //     generatePDF();
+  //   }
+  // }, [isPrint]);
 
   const [imageBlob, setImageBlob] = useState("");
 
@@ -753,8 +754,8 @@ export default function KartuPelajar() {
           </div>
         }
         disabled={loading}
-        // onClick={() => generatePDF()}
-        onClick={() => setIsPrint(true)}
+        onClick={() => generatePDF()}
+        // onClick={() => setIsPrint(true)}
       />
     </div>
   );

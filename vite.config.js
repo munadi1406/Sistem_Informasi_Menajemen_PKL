@@ -4,7 +4,7 @@ import ViteWorkerPlugin from "worker-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), new ViteWorkerPlugin()],
+  plugins: [react(), ViteWorkerPlugin()],
   resolve: {
     alias: [{ find: "@", replacement: "/src" }],
   },

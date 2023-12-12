@@ -200,19 +200,21 @@ export default function KartuPelajar() {
         splitName,
         perihal,
       });
-      console.log(pdfData);
-      // const pdfUrl = URL.createObjectURL(pdfData);
 
-      // const downloadLink = document.createElement("a");
-      // downloadLink.href = pdfUrl;
-      // downloadLink.download = pdfName;
+      // Buat objek Blob dari data PDF
+      const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
 
-      // document.body.appendChild(downloadLink);
-      // downloadLink.click();
-      // document.body.removeChild(downloadLink);
+      // Buat elemen <a> untuk menautkan ke objek Blob
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(pdfBlob);
+      downloadLink.download = pdfName;
 
-      // URL.revokeObjectURL(pdfUrl);
-      // worker.terminate();
+      // Simpan referensi downloadLink dan klik secara manual
+      downloadLink.click();
+
+      // Cleanup
+      URL.revokeObjectURL(downloadLink.href);
+      worker.terminate();
     } catch (error) {
       console.log(error);
     }

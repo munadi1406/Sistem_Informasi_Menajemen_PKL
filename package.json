@@ -40,6 +40,7 @@
     "react-select": "^5.7.7",
     "react-to-print": "^2.14.15",
     "web-worker": "^1.2.0",
+    "worker-plugin": "^5.0.1",
     "zustand": "^4.4.3"
   },
   "devDependencies": {
@@ -54,7 +55,6 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.3",
-    "vite": "^4.4.5",
-    "worker-plugin": "^5.0.1"
+    "vite": "^4.4.5"
   }
 }

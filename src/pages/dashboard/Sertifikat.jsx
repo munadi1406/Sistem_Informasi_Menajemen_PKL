@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import Loader from "../../components/Loader";
 import Selects from "react-select";
 import makeAnimated from "react-select/animated";
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { getListTemplateSertifikat } from "../../api/templateSertifkat";
 import { endpoint } from "../../api/users";
 import TextInput from "../../components/TextInput";
@@ -170,7 +170,7 @@ export default function KartuPelajar() {
   //   setLoading(false);
   // };
 
-  const generatePDF = useCallback(async () => {
+  const generatePDF = async () => {
     try {
       const pages = document.querySelector(".certificate-page");
 
@@ -184,10 +184,7 @@ export default function KartuPelajar() {
           kepadaElement.innerHTML = name;
         }
 
-        const canvas = await html2canvas(pages, {
-          scale: 4,
-          foreignObjectRendering: false,
-        });
+        const canvas = await html2canvas(pages, { scale: 4 });
         const imageData = canvas.toDataURL("image/jpeg");
         return { index: i, data: imageData };
       });
@@ -200,29 +197,29 @@ export default function KartuPelajar() {
         splitName,
         perihal,
       });
+      console.log(pdfData);
+      // const pdfUrl = URL.createObjectURL(pdfData);
 
-      // Buat objek Blob dari data PDF
-      const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
-      console.log(pdfBlob);
-      // // Alternatif 1: Buka jendela baru untuk menampilkan PDF
-      // window.open(URL.createObjectURL(pdfBlob), "_blank");
+      // const downloadLink = document.createElement("a");
+      // downloadLink.href = pdfUrl;
+      // downloadLink.download = pdfName;
 
-      // // Alternatif 2: Alihkan pengguna ke URL objek Blob
-      // // window.location.href = URL.createObjectURL(pdfBlob);
+      // document.body.appendChild(downloadLink);
+      // downloadLink.click();
+      // document.body.removeChild(downloadLink);
 
-      // // Cleanup
-      // URL.revokeObjectURL(URL.createObjectURL(pdfBlob));
+      // URL.revokeObjectURL(pdfUrl);
       worker.terminate();
     } catch (error) {
       console.log(error);
     }
-  }, [splitName, perihal]);
+  };
 
-  // useEffect(() => {
-  //   if (isPrint) {
-  //     generatePDF();
-  //   }
-  // }, [isPrint]);
+  useEffect(() => {
+    if (isPrint) {
+      generatePDF();
+    }
+  }, [isPrint]);
 
   const [imageBlob, setImageBlob] = useState("");
 
@@ -757,8 +754,8 @@ export default function KartuPelajar() {
           </div>
         }
         disabled={loading}
-        onClick={() => generatePDF()}
-        // onClick={() => setIsPrint(true)}
+        // onClick={() => generatePDF()}
+        onClick={() => setIsPrint(true)}
       />
     </div>
   );

@@ -10,13 +10,15 @@ import TextAreaCustom from "../../components/TextAreaCustom";
 import { getDetailKepsek } from "../../api/kepsek";
 const animatedComponents = makeAnimated();
 import QrCode from "../../components/QrCode";
-import { Checkbox, Slider,Select, Option } from "@material-tailwind/react";
+import { Checkbox, Slider, Select, Option } from "@material-tailwind/react";
 import ButtonCustom from "../../components/ButtonCustom";
 
 import LazyImage from "../../components/LazyImage";
 import Draggable from "react-draggable";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import Worker from "web-worker";
+// import "../../font.css";
 // import {storeSertifikat} from '../../api/sertifikat'
 // import { useAlertNotification, useDataUser } from "../../store/store";
 
@@ -128,39 +130,111 @@ export default function KartuPelajar() {
   });
 
   const [selecttedComponent, setSelettedComponent] = useState("");
+
+  // const pages = Array.from(document.querySelectorAll(".certificate-page")).map(
+  //   (page) => page.outerHTML,
+  // );
+  // const generatePDF = async () => {
+  //   setSelettedComponent(null);
+  //   setLoading(true);
+
+  //   const pdf = new jsPDF("l", "mm", "a4"); // 'p' for portrait, 'mm' for millimeters
+
+  //   const promises = Array.from(pages).map(async (page, i) => {
+  //     const canvas = await html2canvas(page, { scale: 4 });
+  //     const imageData = canvas.toDataURL("image/jpeg");
+  //     return { index: i, data: imageData };
+  //   });
+
+  //   const screenshots = await Promise.all(promises);
+
+  //   screenshots.forEach((screenshot, i) => {
+  //     if (i > 0) {
+  //       pdf.addPage();
+  //     }
+  //     pdf.addImage(
+  //       screenshot.data,
+  //       "JPEG",
+  //       0,
+  //       0,
+  //       pdf.internal.pageSize.width,
+  //       pdf.internal.pageSize.height,
+  //     );
+  //   });
+  //   pdf.autoPrint();
+  //   pdf.save(
+  //     `${splitName.join("-")}-${perihal}-${new Date().toLocaleString()}.pdf`,
+  //   );
+  //   setLoading(false);
+  // };
+
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.href = "./src/font.css";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+
+    return () => {
+      // Membersihkan elemen <link> jika komponen di-unmount
+      document.head.removeChild(link);
+    };
+  }, []);
   const generatePDF = async () => {
     setSelettedComponent(null);
-    setLoading(!loading);
+    setLoading(true);
 
-    const pdf = new jsPDF("l", "mm", "a4"); // 'p' for portrait, 'mm' for millimeters
-    const pages = document.querySelectorAll(".certificate-page");
+    const pages = document.querySelector(".certificate-page");
+    const url = new URL("../../services/worker.js", import.meta.url);
+    const worker = new Worker(url, {
+      type: "module",
+    });
 
-    const promises = Array.from(pages).map(async (page, i) => {
-      const canvas = await html2canvas(page, { scale: 4 });
+    const promises = splitName.map(async (name, i) => {
+      // Tangkap elemen dengan ID "kepada"
+
+      const kepadaElement = pages.querySelector("#kepada");
+
+      // Pastikan elemen dengan ID "kepada" ditemukan sebelum mengganti innerHTML
+      if (kepadaElement) {
+        // Lakukan penggantian innerHTML
+        kepadaElement.innerHTML = name;
+      }
+
+      // Lanjutkan dengan proses html2canvas
+      const canvas = await html2canvas(pages, { scale: 4 });
       const imageData = canvas.toDataURL("image/jpeg");
       return { index: i, data: imageData };
     });
 
     const screenshots = await Promise.all(promises);
+    worker.addEventListener("message", (event) => {
+      const { pdfName, pdfData } = event.data;
+      setLoading(false);
 
-    screenshots.forEach((screenshot, i) => {
-      if (i > 0) {
-        pdf.addPage();
-      }
-      pdf.addImage(
-        screenshot.data,
-        "JPEG",
-        0,
-        0,
-        pdf.internal.pageSize.width,
-        pdf.internal.pageSize.height,
-      );
+      // Membuat objek URL dari Blob
+      const pdfUrl = URL.createObjectURL(pdfData);
+
+      // Membuat elemen <a> untuk link unduhan
+      const downloadLink = document.createElement("a");
+      downloadLink.href = pdfUrl;
+      downloadLink.download = pdfName;
+
+      // Menyematkan elemen <a> ke dokumen dan mengkliknya untuk memicu unduhan
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+
+      // Membersihkan elemen <a> setelah unduhan selesai
+      document.body.removeChild(downloadLink);
+
+      // Membersihkan objek URL
+      URL.revokeObjectURL(pdfUrl);
     });
-    pdf.autoPrint();
-    pdf.save(
-      `${splitName.join("-")}-${perihal}-${new Date().toLocaleString()}.pdf`,
-    );
-    setLoading(false);
+
+    worker.postMessage({
+      screenshots,
+      splitName,
+      perihal,
+    });
   };
 
   useEffect(() => {
@@ -421,273 +495,270 @@ export default function KartuPelajar() {
       </div>
 
       <div className="certificate w-full h-max overflow-auto" ref={ref}>
-        {value.template &&
-          imageBlob &&
-          splitName.map((e, i) => (
-            <div className="relative  w-full certificate-page" key={i}>
-              <LazyImage
-                src={URL.createObjectURL(imageBlob)}
-                alt={"image"}
-                className="w-full"
-                onClick={() => setSelettedComponent("")}
-              />
+        {value.template && imageBlob && splitName && (
+          <div className="relative  w-full certificate-page">
+            <LazyImage
+              src={URL.createObjectURL(imageBlob)}
+              alt={"image"}
+              className="w-full"
+              onClick={() => setSelettedComponent("")}
+            />
 
-              <Draggable
-                bounds="parent"
-                position={defaultPosition}
-                onStop={(e, data) =>
-                  setDefaultPosition({ x: data.x, y: data.y })
-                }
+            <Draggable
+              bounds="parent"
+              position={defaultPosition}
+              onStop={(e, data) => setDefaultPosition({ x: data.x, y: data.y })}
+            >
+              <div
+                className={`absolute top-1/2 left-1/2 w-max h-max active:ouline-2 active:outline-blue-400 active:outline-dashed`}
               >
-                <div
-                  className={`absolute top-1/2 left-1/2 w-max h-max active:ouline-2 active:outline-blue-400 active:outline-dashed`}
-                >
-                  <div className="w-max h-max ">
-                    <div className="flex justify-center w-[600px] mb-7 ">
-                      {!isPrint ? (
-                        <input
-                          value={certificateValue}
-                          onChange={(e) => setCertificateValue(e.target.value)}
-                          style={{
-                            fontFamily: styling.sertifikat.family,
-                            fontSize: styling.sertifikat.font,
-                            color: `${styling.sertifikat.color}`,
-                          }}
-                          onClick={() => setSelettedComponent("sertifikat")}
-                          className={`bg-white/0 min-h-max outline-none  text-center w-full ${
-                            selecttedComponent === "sertifikat" &&
-                            "outline-2 outline-green-400 outline-dashed"
-                          }`}
-                        />
-                      ) : (
-                        <div
-                          className="text-center w-full"
-                          style={{
-                            fontFamily: styling.sertifikat.family,
-                            fontSize: styling.sertifikat.font,
-                            color: `${styling.sertifikat.color}`,
-                          }}
-                        >
-                          {certificateValue}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex justify-center items-center  w-full my-2">
-                      {!isPrint ? (
-                        <input
-                          value={typeSertifikat}
-                          onChange={(e) => setTypeSertifikat(e.target.value)}
-                          style={{
-                            fontFamily: styling.penghargaan.family,
-                            fontSize: styling.penghargaan.font,
-                            color: styling.penghargaan.color,
-                          }}
-                          onClick={() => setSelettedComponent("penghargaan")}
-                          className={`bg-white/0   outline-none text-center w-full ${
-                            selecttedComponent === "penghargaan" &&
-                            "outline-2 outline-green-400 outline-dashed"
-                          }`}
-                        />
-                      ) : (
-                        <div
-                          className="text-center min-w-[399px]"
-                          style={{
-                            fontFamily: styling.penghargaan.family,
-                            fontSize: styling.penghargaan.font,
-                            color: styling.penghargaan.color,
-                          }}
-                        >
-                          {typeSertifikat}
-                        </div>
-                      )}
-                    </div>
-                    <p
-                      className={`text-semibold text-center  text-lg font-semibold m-4 ${
-                        selecttedComponent === "kepada" &&
-                        "outline-2 outline-green-400 outline-dashed"
-                      }`}
-                      style={{
-                        fontFamily: styling.kepada.family,
-                        fontSize: styling.kepada.font,
-                        color: styling.kepada.color,
-                      }}
-                      onClick={() => setSelettedComponent("kepada")}
-                    >
-                      Diberikan Kepada :
-                    </p>
+                <div className="w-max h-max ">
+                  <div className="flex justify-center w-[600px] mb-7 ">
+                    {!isPrint ? (
+                      <input
+                        value={certificateValue}
+                        onChange={(e) => setCertificateValue(e.target.value)}
+                        style={{
+                          fontFamily: styling.sertifikat.family,
+                          fontSize: styling.sertifikat.font,
+                          color: `${styling.sertifikat.color}`,
+                        }}
+                        onClick={() => setSelettedComponent("sertifikat")}
+                        className={`bg-white/0 min-h-max outline-none  text-center w-full  ${
+                          selecttedComponent === "sertifikat" &&
+                          "outline-2 outline-green-400 outline-dashed"
+                        }`}
+                      />
+                    ) : (
+                      <div
+                        className="text-center w-full"
+                        style={{
+                          fontFamily: styling.sertifikat.family,
+                          fontSize: styling.sertifikat.font,
+                          color: `${styling.sertifikat.color}`,
+                        }}
+                      >
+                        {certificateValue}
+                      </div>
+                    )}
                   </div>
-                  <div className="">
-                    <p
-                      style={{
-                        fontFamily: styling.name.family,
-                        fontSize: styling.name.font,
-                        color: styling.name.color,
-                      }}
-                      onClick={() => setSelettedComponent("name")}
-                      className={`font-semibold text-center  mb-5 ${
-                        selecttedComponent === "name" &&
-                        "outline-2 outline-green-400 outline-dashed"
-                      }`}
-                    >
-                      {e}
-                    </p>
-                    <p
-                      className={`font-semibold text-center  w-[3 00px] m-auto  break-words ${
-                        selecttedComponent === "perihal" &&
-                        "outline-2 outline-green-400 outline-dashed"
-                      }`}
-                      style={{
-                        fontFamily: styling.perihal.family,
-                        fontSize: styling.perihal.font,
-                        color: styling.perihal.color,
-                      }}
-                      onClick={() => setSelettedComponent("perihal")}
-                    >
-                      {perihal}
-                    </p>
+                  <div className="flex justify-center items-center  w-full my-2">
+                    {!isPrint ? (
+                      <input
+                        value={typeSertifikat}
+                        onChange={(e) => setTypeSertifikat(e.target.value)}
+                        style={{
+                          fontFamily: styling.penghargaan.family,
+                          fontSize: styling.penghargaan.font,
+                          color: styling.penghargaan.color,
+                        }}
+                        onClick={() => setSelettedComponent("penghargaan")}
+                        className={`bg-white/0   outline-none text-center w-full ${
+                          selecttedComponent === "penghargaan" &&
+                          "outline-2 outline-green-400 outline-dashed"
+                        }`}
+                      />
+                    ) : (
+                      <div
+                        className="text-center min-w-[399px]"
+                        style={{
+                          fontFamily: styling.penghargaan.family,
+                          fontSize: styling.penghargaan.font,
+                          color: styling.penghargaan.color,
+                        }}
+                      >
+                        {typeSertifikat}
+                      </div>
+                    )}
                   </div>
+                  <p
+                    className={`text-semibold text-center  text-lg font-semibold m-4 ${
+                      selecttedComponent === "kepada" &&
+                      "outline-2 outline-green-400 outline-dashed"
+                    }`}
+                    style={{
+                      fontFamily: styling.kepada.family,
+                      fontSize: styling.kepada.font,
+                      color: styling.kepada.color,
+                    }}
+                    onClick={() => setSelettedComponent("kepada")}
+                  >
+                    Diberikan Kepada :
+                  </p>
                 </div>
-              </Draggable>
+                <div className="">
+                  <p
+                    style={{
+                      fontFamily: styling.name.family,
+                      fontSize: styling.name.font,
+                      color: styling.name.color,
+                    }}
+                    id="kepada"
+                    onClick={() => setSelettedComponent("name")}
+                    className={`font-semibold text-center  mb-5 ${
+                      selecttedComponent === "name" &&
+                      "outline-2 outline-green-400 outline-dashed"
+                    }`}
+                  >
+                    {splitName[0]}
+                  </p>
+                  <p
+                    className={`font-semibold text-center  w-[3 00px] m-auto  break-words ${
+                      selecttedComponent === "perihal" &&
+                      "outline-2 outline-green-400 outline-dashed"
+                    }`}
+                    style={{
+                      fontFamily: styling.perihal.family,
+                      fontSize: styling.perihal.font,
+                      color: styling.perihal.color,
+                    }}
+                    onClick={() => setSelettedComponent("perihal")}
+                  >
+                    {perihal}
+                  </p>
+                </div>
+              </div>
+            </Draggable>
 
+            <Draggable
+              bounds="parent"
+              position={defaultPositionKepsek}
+              onStop={(e, data) =>
+                setDefaultPositionKepsek({ x: data.x, y: data.y })
+              }
+            >
+              <div className="text-xs w-max absolute bottom-0 right-0 active:ouline-2 active:outline-blue-400 active:outline-dashed">
+                <p
+                  className={` font-bold text-base ${
+                    selecttedComponent === "kepsek" &&
+                    "outline-2 outline-green-400 outline-dashed"
+                  }`}
+                  style={{
+                    fontFamily: styling.kepsek.family,
+                    fontSize: styling.kepsek.font,
+                    color: styling.kepsek.color,
+                  }}
+                  onClick={() => setSelettedComponent("kepsek")}
+                >
+                  {kepsek.data.data.user.username}
+                </p>
+                <p
+                  className={`${
+                    selecttedComponent === "ketKepsek" &&
+                    "outline-2 outline-green-400 outline-dashed"
+                  }`}
+                  style={{
+                    fontFamily: styling.ketKepsek.family,
+                    fontSize: styling.ketKepsek.font,
+                    color: styling.ketKepsek.color,
+                  }}
+                  onClick={() => setSelettedComponent("ketKepsek")}
+                >
+                  Kepala Sekolah
+                </p>
+              </div>
+            </Draggable>
+            <Draggable
+              bounds="parent"
+              position={defaultPositionNomor}
+              onStop={(e, data) =>
+                setDefaultPositionNomor({ x: data.x, y: data.y })
+              }
+            >
+              <div className="text-xs min-w-[300px] flex justify-center  absolute left-1/2 top-4 active:ouline-2 active:outline-blue-400 active:outline-dashed">
+                {!isPrint ? (
+                  <input
+                    value={nomor[`nomor`] ? nomor[`nomor`] : ""}
+                    placeholder="nomor sertifikat"
+                    onChange={(e) => {
+                      setNomor((prev) => ({
+                        ...prev,
+                        [`nomor`]: e.target.value,
+                      }));
+                    }}
+                    style={{
+                      fontFamily: styling.nomor.family,
+                      fontSize: styling.nomor.font,
+                      color: styling.nomor.color,
+                    }}
+                    onClick={() => setSelettedComponent("nomor")}
+                    className={`bg-white/0   outline-none text-center w-full   ${
+                      selecttedComponent === "nomor" &&
+                      "outline-2 outline-green-400 outline-dashed"
+                    }`}
+                  />
+                ) : (
+                  <div
+                    className="min-w-max text-center"
+                    style={{
+                      fontFamily: styling.nomor.family,
+                      fontSize: styling.nomor.font,
+                      color: styling.nomor.color,
+                    }}
+                  >
+                    {nomor[`nomor`]}
+                  </div>
+                )}
+              </div>
+            </Draggable>
+            {leadEvent && (
               <Draggable
                 bounds="parent"
-                position={defaultPositionKepsek}
+                position={defaultPositionKepel}
                 onStop={(e, data) =>
-                  setDefaultPositionKepsek({ x: data.x, y: data.y })
+                  setDefaultPositionKepel({ x: data.x, y: data.y })
                 }
               >
-                <div className="text-xs w-max absolute bottom-0 right-0 active:ouline-2 active:outline-blue-400 active:outline-dashed">
+                <div className="text-xs w-max absolute bottom-0">
                   <p
                     className={` font-bold text-base ${
-                      selecttedComponent === "kepsek" &&
+                      selecttedComponent === "kepel" &&
                       "outline-2 outline-green-400 outline-dashed"
                     }`}
                     style={{
-                      fontFamily: styling.kepsek.family,
-                      fontSize: styling.kepsek.font,
-                      color: styling.kepsek.color,
+                      fontFamily: styling.kepel.family,
+                      fontSize: styling.kepel.font,
+                      color: styling.kepel.color,
                     }}
-                    onClick={() => setSelettedComponent("kepsek")}
+                    onClick={() => setSelettedComponent("kepel")}
                   >
-                    {kepsek.data.data.user.username}
+                    {leadEvent}
                   </p>
                   <p
-                    className={`${
-                      selecttedComponent === "ketKepsek" &&
+                    className={`  ${
+                      selecttedComponent === "ketKepel" &&
                       "outline-2 outline-green-400 outline-dashed"
                     }`}
                     style={{
-                      fontFamily: styling.ketKepsek.family,
-                      fontSize: styling.ketKepsek.font,
-                      color: styling.ketKepsek.color,
+                      fontFamily: styling.ketKepel.family,
+                      fontSize: styling.ketKepel.font,
+                      color: styling.ketKepel.color,
                     }}
-                    onClick={() => setSelettedComponent("ketKepsek")}
+                    onClick={() => setSelettedComponent("ketKepel")}
                   >
-                    Kepala Sekolah
+                    Ketua Pelaksana
                   </p>
                 </div>
               </Draggable>
+            )}
+            {isQrCode && (
               <Draggable
                 bounds="parent"
-                position={defaultPositionNomor}
+                position={defaultPositionQrCode}
                 onStop={(e, data) =>
-                  setDefaultPositionNomor({ x: data.x, y: data.y })
+                  setDefaultPositionQrCode({ x: data.x, y: data.y })
                 }
               >
-                <div className="text-xs min-w-[300px] flex justify-center  absolute left-1/2 top-4 active:ouline-2 active:outline-blue-400 active:outline-dashed">
-                  {!isPrint ? (
-                    <input
-                      value={nomor[`nomor${i}`] ? nomor[`nomor${i}`] : ""}
-                      placeholder="nomor sertifikat"
-                      onChange={(e) => {
-                        setNomor((prev) => ({
-                          ...prev,
-                          [`nomor${i}`]: e.target.value,
-                        }));
-                      }}
-                      style={{
-                        fontFamily: styling.nomor.family,
-                        fontSize: styling.nomor.font,
-                        color: styling.nomor.color,
-                      }}
-                      onClick={() => setSelettedComponent("nomor")}
-                      className={`bg-white/0   outline-none text-center w-full   ${
-                        selecttedComponent === "nomor" &&
-                        "outline-2 outline-green-400 outline-dashed"
-                      }`}
-                    />
-                  ) : (
-                    <div
-                      className="min-w-max text-center"
-                      style={{
-                        fontFamily: styling.nomor.family,
-                        fontSize: styling.nomor.font,
-                        color: styling.nomor.color,
-                      }}
-                    >
-                      {nomor[`nomor${i}`]}
-                    </div>
-                  )}
+                <div className="absolute top-1/2 left-1/2 w-max active:ouline-2 active:outline-blue-400 active:outline-dashed">
+                  <QrCode
+                    value={`SERTIFIKAT INI DI KELUARKAN OLEH SMAN 1 KARANG INTAN UNTUK  atas ${perihal} dan sertifikat ini di keluarkan pada ${new Date().toLocaleString()}`}
+                    size={qrCodeSize}
+                  />
                 </div>
               </Draggable>
-              {leadEvent && (
-                <Draggable
-                  bounds="parent"
-                  position={defaultPositionKepel}
-                  onStop={(e, data) =>
-                    setDefaultPositionKepel({ x: data.x, y: data.y })
-                  }
-                >
-                  <div className="text-xs w-max absolute bottom-0">
-                    <p
-                      className={` font-bold text-base ${
-                        selecttedComponent === "kepel" &&
-                        "outline-2 outline-green-400 outline-dashed"
-                      }`}
-                      style={{
-                        fontFamily: styling.kepel.family,
-                        fontSize: styling.kepel.font,
-                        color: styling.kepel.color,
-                      }}
-                      onClick={() => setSelettedComponent("kepel")}
-                    >
-                      {leadEvent}
-                    </p>
-                    <p
-                      className={`  ${
-                        selecttedComponent === "ketKepel" &&
-                        "outline-2 outline-green-400 outline-dashed"
-                      }`}
-                      style={{
-                        fontFamily: styling.ketKepel.family,
-                        fontSize: styling.ketKepel.font,
-                        color: styling.ketKepel.color,
-                      }}
-                      onClick={() => setSelettedComponent("ketKepel")}
-                    >
-                      Ketua Pelaksana
-                    </p>
-                  </div>
-                </Draggable>
-              )}
-              {isQrCode && (
-                <Draggable
-                  bounds="parent"
-                  position={defaultPositionQrCode}
-                  onStop={(e, data) =>
-                    setDefaultPositionQrCode({ x: data.x, y: data.y })
-                  }
-                >
-                  <div className="absolute top-1/2 left-1/2 w-max active:ouline-2 active:outline-blue-400 active:outline-dashed">
-                    <QrCode
-                      value={`SERTIFIKAT INI DI KELUARKAN OLEH SMAN 1 KARANG INTAN UNTUK  ${e} atas ${perihal} dan sertifikat ini di keluarkan pada ${new Date().toLocaleString()}`}
-                      size={qrCodeSize}
-                    />
-                  </div>
-                </Draggable>
-              )}
-            </div>
-          ))}
+            )}
+          </div>
+        )}
       </div>
 
       {/* <ButtonCustom

@@ -2,10 +2,10 @@
 
 ::-webkit-scrollbar {
   width: 6px;
-  height:6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #78909c; 
+  background-color: #78909c;
   border-radius: 20px;
 }
 /* CSS */
@@ -18,14 +18,9 @@
   }
   .certificate {
     page-break-before: always;
-    margin:0;
+    margin: 0;
   }
- 
-
 }
-
-
-
 
 @tailwind components;
 @tailwind utilities;
@@ -34,215 +29,3 @@
   font-family: "CustomFont";
   src: url("./assets/font/Nunito-VariableFont_wght.ttf");
 }
-
-
-@font-face {
-  font-family: "AnandaBlackPersonalUseRegular";
-  src: url("./assets/font/AnandaBlackPersonalUseRegular-rg9Rx.ttf");
-}
-@font-face {
-  font-family: "AspireDemibold";
-  src: url("./assets/font/AspireDemibold-YaaO.ttf");
-}
-@font-face {
-  font-family: "AutumnFlowers";
-  src: url("./assets/font/AutumnFlowers-9YVZK.otf");
-}
-@font-face {
-  font-family: "Calligrapher";
-  src: url("./assets/font/Calligrapher-JRxaE.ttf");
-}
-@font-face {
-  font-family: "ChicanosPersonalUseRegular";
-  src: url("./assets/font/ChicanosPersonalUseRegular-qZDw5.ttf");
-}
-@font-face {
-  font-family: "DoveOfPeacePersonalUse";
-  src: url("./assets/font/DoveOfPeacePersonalUse-RpEpv.ttf");
-}
-@font-face {
-  font-family: "EmotionalRescuePersonalUseRegular";
-  src: url("./assets/font/EmotionalRescuePersonalUseRegular-PKY87.ttf");
-}
-@font-face {
-  font-family: "FeelfreePersonalUseRegular";
-  src: url("./assets/font/FeelfreePersonalUseRegular-lg2Bw.ttf");
-}
-@font-face {
-  font-family: "GeraldinePersonalUseItalic";
-  src: url("./assets/font/GeraldinePersonalUseItalic-PK12m.ttf");
-}
-@font-face {
-  font-family: "IndentureEnglishPenmanDemo";
-  src: url("./assets/font/IndentureEnglishPenmanDemo-Xdyj.ttf");
-}
-@font-face {
-  font-family: "LambencyRegular";
-  src: url("./assets/font/LambencyRegular-eZLZe.ttf");
-}
-@font-face {
-  font-family: "MutalisFashionPersonalUseRegular";
-  src: url("./assets/font/MutalisFashionPersonalUseRegular-w1p7P.otf");
-}
-@font-face {
-  font-family: "NatureBeautyPersonalUse";
-  src: url("./assets/font/NatureBeautyPersonalUse-9Y2DK.ttf");
-}
-@font-face {
-  font-family: "SellenaBrush";
-  src: url("./assets/font/SellenaBrush-x3JyK.ttf");
-}
-@font-face {
-  font-family: "StylishCalligraphyDemo";
-  src: url("./assets/font/StylishCalligraphyDemo-XPZZ.ttf");
-}
-@font-face {
-  font-family: "SweetHipster";
-  src: url("./assets/font/SweetHipster-PzlE.ttf");
-}
-@font-face {
-  font-family: "SweetHipster";
-  src: url("./assets/font/TheCheese-1GKEM.ttf");
-}
-
-@font-face {
-  font-family: "WeddingdayPersonalUseRegular";
-  src: url("./assets/font/WeddingdayPersonalUseRegular-1Gvo0.ttf");
-}
-
-@font-face {
-  font-family: "AdorabelleFreePersonalUseRg";
-  src: url("./assets/font/AdorabelleFreePersonalUseRg-rgBXO.ttf");
-}
-@font-face {
-  font-family: "Amandez TTF Personal";
-  src: url("./assets/font/Amandez TTF Personal.ttf");
-}
-@font-face {
-  font-family: "Baletta";
-  src: url("./assets/font/Baletta-2OwRv.ttf");
-}
-@font-face {
-  font-family: "BeautifulPeoplePersonalUse";
-  src: url("./assets/font/BeautifulPeoplePersonalUse-dE0g.ttf");
-}
-@font-face {
-  font-family: "Bulgathi";
-  src: url("./assets/font/Bulgathi-4B8Vx.tff");
-}
-@font-face {
-  font-family: "CalisshascriptRegular";
-  src: url("./assets/font/CalisshascriptRegular-3zv58.ttf");
-}
-@font-face {
-  font-family: "ChristmasCalligraphyPersonal";
-  src: url("./assets/font/ChristmasCalligraphyPersonal-3zGlM.ttf");
-}
-@font-face {
-  font-family: "Dharma";
-  src: url("./assets/font/Dharma-OVa93.ttf");
-}
-@font-face {
-  font-family: "DramaQueenFreePersonalUseS";
-  src: url("./assets/font/DramaQueenFreePersonalUseS-d96mK.ttf");
-}
-@font-face {
-  font-family: "Flicker";
-  src: url("./assets/font/Flicker-JR61a.ttf");
-}
-@font-face {
-  font-family: "GoldyearpersonalUseRegular";
-  src: url("./assets/font/GoldyearpersonalUseRegular-3z6lz.otf");
-}
-@font-face {
-  font-family: "HaniyaFreeTrial";
-  src: url("./assets/font/HaniyaFreeTrial-1GVgL.ttf");
-}
-@font-face {
-  font-family: "Haydena";
-  src: url("./assets/font/Haydena-6Yz7Y.otf");
-}
-@font-face {
-  font-family: "Kagokpersonal";
-  src: url("./assets/font/Kagokpersonal.otf");
-}
-@font-face {
-  font-family: "KameliascriptRegular";
-  src: url("./assets/font/KameliascriptRegular-eZ6gn.ttf");
-}
-@font-face {
-  font-family: "Kastela";
-  src: url("./assets/font/Kastela-MV6zw.ttf");
-}
-@font-face {
-  font-family: "Krinahpersonal";
-  src: url("./assets/font/Krinahpersonal.otf");
-}
-@font-face {
-  font-family: "LemonJellyPersonalUse";
-  src: url("./assets/font/LemonJellyPersonalUse-dEqR.ttf");
-}
-@font-face {
-  font-family: "LoveSeed";
-  src: url("./assets/font/LoveSeed-z8EVX.ttf");
-}
-@font-face {
-  font-family: "Matchalatte";
-  src: url("./assets/font/Matchalatte-w1KV8.ttf");
-}
-@font-face {
-  font-family: "MuthiaraDemoVersion";
-  src: url("./assets/font/MuthiaraDemoVersion-8MwGg.ttf");
-}
-@font-face {
-  font-family: "QIUBApersonal";
-  src: url("./assets/font/QIUBApersonal use.otf");
-}
-@font-face {
-  font-family: "Rengkoxpersonal";
-  src: url("./assets/font/Rengkoxpersonal.otf");
-}
-@font-face {
-  font-family: "RisalahCinta";
-  src: url("./assets/font/RisalahCinta-ywnWY.ttf");
-}
-@font-face {
-  font-family: "ROBACKpersonal";
-  src: url("./assets/font/ROBACKpersonal.otf");
-}
-@font-face {
-  font-family: "Rostina";
-  src: url("./assets/font/Rostina-axrAg.ttf");
-}
-@font-face {
-  font-family: "ShawtyRegular";
-  src: url("./assets/font/ShawtyRegular-3zvjz.ttf");
-}
-@font-face {
-  font-family: "ShogekingOniki";
-  src: url("./assets/font/ShogekingOniki-GOerP.otf");
-}
-@font-face {
-  font-family: "Silentha";
-  src: url("./assets/font/Silentha OT.ttf");
-}
-@font-face {
-  font-family: "Sketsaramadhan";
-  src: url("./assets/font/Sketsaramadhan-nRLAO.otf");
-}
-@font-face {
-  font-family: "SpookyZombie";
-  src: url("./assets/font/SpookyZombie-nROvO.ttf");
-}
-@font-face {
-  font-family: "SpringSeasonPersonalUseRegular";
-  src: url("./assets/font/SpringSeasonPersonalUseRegular-51zgG.ttf");
-}
-@font-face {
-  font-family: "WUSHINpersonaluse";
-  src: url("./assets/font/WUSHINpersonaluse.otf");
-}
-
-
-
-

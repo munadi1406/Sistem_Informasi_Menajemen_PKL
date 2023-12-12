@@ -4,16 +4,15 @@ import App from "./App";
 import { HashRouter } from "react-router-dom";
 // import { ThemeProvider } from "@material-tailwind/react";
 import { MaterialTailwindControllerProvider } from "@/context";
-import './index.css'
+import "./index.css";
+// import "./font.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <HashRouter>
-      
-        <MaterialTailwindControllerProvider>
-          <App />
-        </MaterialTailwindControllerProvider>
-     
+      <MaterialTailwindControllerProvider>
+        <App />
+      </MaterialTailwindControllerProvider>
     </HashRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

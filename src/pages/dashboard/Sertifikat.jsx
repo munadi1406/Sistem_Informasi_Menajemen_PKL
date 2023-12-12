@@ -18,7 +18,7 @@ import Draggable from "react-draggable";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Worker from "web-worker";
-import urlWorker from "../../services/worker.js";
+import urlWorker from "../../services/worker.js?worker";
 // import "../../font.css";
 // import {storeSertifikat} from '../../api/sertifikat'
 // import { useAlertNotification, useDataUser } from "../../store/store";

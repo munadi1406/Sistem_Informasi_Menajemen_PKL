@@ -1,21 +1,23 @@
+/* global importScripts */
+
 // generatePDFWorker.js
 
+self.importScripts('../../node_modules/jspdf/dist/jspdf.umd.min.js');
+self.importScripts('../../node_modules/html2canvas/dist/html2canvas.js');
+
 // Menanggapi pesan dari utama
-addEventListener("message", (event) => {
-  const { pages, splitName, perihal, jsPDFSource, html2canvasSource } =
-    event.data;
-
-  // Evaluasi sumber kode jsPDF dan html2canvas
-  const jsPDF = new Function(jsPDFSource)();
-  const html2canvas = new Function(html2canvasSource)();
-
+addEventListener('message', async (event) => {
+  const { pages, splitName, perihal } = event.data;
+  // const jsPDF = new Function('return this.jsPDF')();  
+  // Evaluasi sumber kode html2canvas
+  const html2canvas = new Function('return this.html2canvas')(); 
   // Fungsi generatePDF
   async function generatePDF() {
-    const pdf = new jsPDF("l", "mm", "a4");
+    const pdf = new jsPDF('l', 'mm', 'a4');
 
     const promises = pages.map(async (page, i) => {
       const canvas = await html2canvas(page, { scale: 4 });
-      const imageData = canvas.toDataURL("image/jpeg");
+      const imageData = canvas.toDataURL('image/jpeg');
       return { index: i, data: imageData };
     });
 
@@ -27,7 +29,7 @@ addEventListener("message", (event) => {
       }
       pdf.addImage(
         screenshot.data,
-        "JPEG",
+        'JPEG',
         0,
         0,
         pdf.internal.pageSize.width,
@@ -36,9 +38,7 @@ addEventListener("message", (event) => {
     });
 
     pdf.autoPrint();
-    const pdfName = `${splitName.join(
-      "-",
-    )}-${perihal}-${new Date().toLocaleString()}.pdf`;
+    const pdfName = `${splitName.join('-')}-${perihal}-${new Date().toLocaleString()}.pdf`;
     pdf.save(pdfName);
 
     postMessage({ pdfName });

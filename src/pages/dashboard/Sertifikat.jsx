@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "react-query";
+import { useQuery } from "react-query";
 import Loader from "../../components/Loader";
 import Selects from "react-select";
 import makeAnimated from "react-select/animated";
@@ -10,13 +10,13 @@ import TextAreaCustom from "../../components/TextAreaCustom";
 import { getDetailKepsek } from "../../api/kepsek";
 const animatedComponents = makeAnimated();
 import QrCode from "../../components/QrCode";
-import { Checkbox, Slider, Select, Option } from "@material-tailwind/react";
+import { Checkbox, Slider,Select, Option } from "@material-tailwind/react";
 import ButtonCustom from "../../components/ButtonCustom";
+
 import LazyImage from "../../components/LazyImage";
 import Draggable from "react-draggable";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import Worker from "web-worker";
 // import {storeSertifikat} from '../../api/sertifikat'
 // import { useAlertNotification, useDataUser } from "../../store/store";
 
@@ -129,38 +129,39 @@ export default function KartuPelajar() {
 
   const [selecttedComponent, setSelettedComponent] = useState("");
   const generatePDF = async () => {
-    const url = new URL("../../services/worker.js", import.meta.url);
-    const worker = new Worker(url);
     setSelettedComponent(null);
     setLoading(!loading);
 
-    // const pdf = new jsPDF("l", "mm", "a4"); // 'p' for portrait, 'mm' for millimeters
-    const pages = Array.from(
-      document.querySelectorAll(".certificate-page"),
-    ).map((page) => page.outerHTML);
-    worker.addEventListener("message", (event) => {
-      const { pdfName } = event.data;
-      setLoading(false);
-      console.log(`PDF generated and saved as ${pdfName}`);
+    const pdf = new jsPDF("l", "mm", "a4"); // 'p' for portrait, 'mm' for millimeters
+    const pages = document.querySelectorAll(".certificate-page");
+
+    const promises = Array.from(pages).map(async (page, i) => {
+      const canvas = await html2canvas(page, { scale: 4 });
+      const imageData = canvas.toDataURL("image/jpeg");
+      return { index: i, data: imageData };
     });
 
-    worker.postMessage({
-      pages: pages,
-      splitName,
-      perihal,
-    });
+    const screenshots = await Promise.all(promises);
 
+    screenshots.forEach((screenshot, i) => {
+      if (i > 0) {
+        pdf.addPage();
+      }
+      pdf.addImage(
+        screenshot.data,
+        "JPEG",
+        0,
+        0,
+        pdf.internal.pageSize.width,
+        pdf.internal.pageSize.height,
+      );
+    });
+    pdf.autoPrint();
+    pdf.save(
+      `${splitName.join("-")}-${perihal}-${new Date().toLocaleString()}.pdf`,
+    );
     setLoading(false);
   };
-
-  // const url = new URL("../../services/worker.js", import.meta.url);
-  // const worker = new Worker(url);
-
-  // worker.addEventListener("message", (e) => {
-  //   console.log(e.data); // "hiya!"
-  // });
-
-  // worker.postMessage("hello");
 
   useEffect(() => {
     if (isPrint) {
@@ -192,7 +193,6 @@ export default function KartuPelajar() {
     fetchImage();
   }, [value]);
 
-  const [fontStyle, setFontStyle] = useState("");
   const [styling, setStyling] = useState({
     sertifikat: {
       family: "AnandaBlackPersonalUseRegular",

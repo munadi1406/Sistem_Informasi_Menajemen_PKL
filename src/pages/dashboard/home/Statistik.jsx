@@ -1,5 +1,6 @@
-import { FaCertificate, FaChild, FaMailBulk, FaUser, FaUsers } from "react-icons/fa";
-import CardStat from "../../../components/CardStat";
+import { FaChild, FaMailBulk, FaUser, FaUsers } from "react-icons/fa";
+import {lazy} from 'react'
+const CardStat =lazy(()=>import( "../../../components/CardStat"));
 import { AiFillMail } from "react-icons/ai";
 import { BiCertification, BiLogOut } from "react-icons/bi";
 import { IoEnterOutline } from "react-icons/io5";
@@ -52,7 +53,6 @@ export default function Statistik({result}) {
           
         />
         </div>
-        
         <div className="lg:col-span-3 sm:col-span-full  grid sm:grid-cols-2 grid-cols-1 w-full gap-2">
           <CardStat
             icon={<IoEnterOutline />}

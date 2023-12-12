@@ -172,8 +172,6 @@ export default function KartuPelajar() {
 
   const generatePDF = async () => {
     try {
-      setSelettedComponent(null);
-      setLoading(true);
       const pages = document.querySelector(".certificate-page");
 
       const worker = new Worker(Workerurl, { type: "module" });
@@ -199,8 +197,6 @@ export default function KartuPelajar() {
         splitName,
         perihal,
       });
-
-      setLoading(false);
 
       const pdfUrl = URL.createObjectURL(pdfData);
 

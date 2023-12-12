@@ -175,6 +175,7 @@ export default function KartuPelajar() {
       console.log(import.meta.url);
       const pages = document.querySelector(".certificate-page");
       const url = new URL("../../services/worker.js", import.meta.url);
+      console.log({ url });
       const worker = new Worker(url, {
         type: "module",
       });

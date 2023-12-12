@@ -184,7 +184,10 @@ export default function KartuPelajar() {
           kepadaElement.innerHTML = name;
         }
 
-        const canvas = await html2canvas(pages, { scale: 4 });
+        const canvas = await html2canvas(pages, {
+          scale: 4,
+          foreignObjectRendering: false,
+        });
         const imageData = canvas.toDataURL("image/jpeg");
         return { index: i, data: imageData };
       });

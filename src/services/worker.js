@@ -9,10 +9,10 @@ import jsPDF from "jspdf";
 // Menanggapi pesan dari utama
 onmessage = (data) => {
   console.log(data);
-  const { screenshots, perihal } = data.data;
 
   // Fungsi generatePDF
   async function generatePDF() {
+    const { screenshots, perihal } = data.data;
     console.log("worker running");
     const pdf = new jsPDF("l", "mm", "a4");
     let image = screenshots || [];
@@ -37,7 +37,6 @@ onmessage = (data) => {
 
     postMessage({ pdfName, pdfData });
   }
-  if (screenshots) {
-    generatePDF();
-  }
+
+  generatePDF();
 };

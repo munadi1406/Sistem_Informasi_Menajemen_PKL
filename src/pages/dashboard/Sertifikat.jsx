@@ -170,22 +170,23 @@ export default function KartuPelajar() {
   //   setLoading(false);
   // };
 
-  const worker = new Worker(Workerurl, { type: "module" });
-  const workerApi = wrap(worker);
   const generatePDF = async () => {
     try {
       setSelettedComponent(null);
       setLoading(true);
       const pages = document.querySelector(".certificate-page");
+      const worker = new Worker(Workerurl, { type: "module" });
+      const workerApi = wrap(worker);
 
       const promises = splitName.map(async (name, i) => {
-        const kepadaElement = pages.querySelector("#kepada");
+        const clonedPages = pages.cloneNode(true);
+        const kepadaElement = clonedPages.querySelector("#kepada");
 
         if (kepadaElement) {
           kepadaElement.innerHTML = name;
         }
 
-        const canvas = await html2canvas(pages, { scale: 4 });
+        const canvas = await html2canvas(clonedPages, { scale: 4 });
         const imageData = canvas.toDataURL("image/jpeg");
         return { index: i, data: imageData };
       });
@@ -199,9 +200,9 @@ export default function KartuPelajar() {
         perihal,
       });
       console.log(pdfData);
-      // const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
+      const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
 
-      // window.open(URL.createObjectURL(pdfBlob), "_blank");
+      window.open(URL.createObjectURL(pdfBlob), "_blank");
 
       setLoading(false);
       setIsPrint(false);

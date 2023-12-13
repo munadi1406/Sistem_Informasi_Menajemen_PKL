@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import Loader from "../../components/Loader";
 import Selects from "react-select";
 import makeAnimated from "react-select/animated";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { getListTemplateSertifikat } from "../../api/templateSertifkat";
 import { endpoint } from "../../api/users";
 import TextInput from "../../components/TextInput";
@@ -24,7 +24,7 @@ import { wrap } from "comlink";
 // import {storeSertifikat} from '../../api/sertifikat'
 // import { useAlertNotification, useDataUser } from "../../store/store";
 
-export default function Sertifikat() {
+export default function KartuPelajar() {
   const [valueSearch, setValueSearch] = useState("");
   const [value, setValue] = useState({});
   const [perihal, setPerihal] = useState("");
@@ -170,62 +170,55 @@ export default function Sertifikat() {
   //   setLoading(false);
   // };
   const pagesRef = useRef();
-  const memoizedGeneratePDF = useMemo(() => {
-    console.log("Component rendered");
-    const generatePDF = async () => {
-      try {
-        setSelettedComponent(null);
-        setLoading(true);
 
-        const worker = new Worker(Workerurl, { type: "module" });
-        const workerApi = wrap(worker);
-
-        const promises = splitName.map(async (name, i) => {
-          const kepadaElement = pagesRef.current.querySelector("#kepada");
-          console.log({ kepadaElement });
-
-          if (kepadaElement) {
-            kepadaElement.value = name;
-          }
-
-          const canvas = await html2canvas(pagesRef.current, {
-            scale: 4,
-            logging: false,
-          });
-          console.log("run2");
-          const imageData = canvas.toDataURL("image/jpeg");
-          return { index: i, data: imageData };
-        });
-
-        const screenshots = await Promise.all(promises);
-
-        // Panggil fungsi generatePDF dari workerApi
-        const { pdfData } = await workerApi.generatePDF({
-          screenshots,
-          splitName,
-          perihal,
-        });
-        console.log(pdfData);
-        const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
-
-        window.open(URL.createObjectURL(pdfBlob), "_blank");
-
-        setLoading(false);
-        setIsPrint(false);
-        worker.terminate();
-      } catch (error) {
-        console.log(error);
+  const generatePDF = useCallback(async () => {
+    try {
+      if (!isPrint) {
+        return;
       }
-    };
+      setSelettedComponent(null);
+      setLoading(true);
 
-    return generatePDF;
-  }, [splitName, perihal]); // Tidak memasukkan splitName ke dalam array dependensi karena splitName tidak digunakan dalam generatePDF
+      const worker = new Worker(Workerurl, { type: "module" });
+      const workerApi = wrap(worker);
 
-  useEffect(() => {
-    if (isPrint) {
-      memoizedGeneratePDF();
+      const promises = splitName.map(async (name, i) => {
+        const kepadaElement = pagesRef.current.querySelector("#kepada");
+        console.log({ kepadaElement });
+
+        if (kepadaElement) {
+          kepadaElement.value = name;
+        }
+
+        const canvas = await html2canvas(pagesRef.current, {
+          scale: 4,
+          logging: false,
+        });
+        console.log("run2");
+        const imageData = canvas.toDataURL("image/jpeg");
+        return { index: i, data: imageData };
+      });
+
+      const screenshots = await Promise.all(promises);
+
+      // Panggil fungsi generatePDF dari workerApi
+      const { pdfData } = await workerApi.generatePDF({
+        screenshots,
+        splitName,
+        perihal,
+      });
+      console.log(pdfData);
+      const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
+
+      window.open(URL.createObjectURL(pdfBlob), "_blank");
+
+      setLoading(false);
+      setIsPrint(false);
+      worker.terminate();
+    } catch (error) {
+      console.log(error);
     }
-  }, [isPrint]);
+  }, [splitName, perihal, isPrint]);
 
   const [imageBlob, setImageBlob] = useState("");
 
@@ -760,8 +753,11 @@ export default function Sertifikat() {
           </div>
         }
         disabled={loading}
-        // onClick={() => generatePDF()}
-        onClick={() => setIsPrint(true)}
+        onClick={() => {
+          setIsPrint(true);
+          generatePDF();
+        }}
+        // onClick={() => setIsPrint(true)}
       />
     </div>
   );

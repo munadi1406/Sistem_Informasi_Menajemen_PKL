@@ -24,7 +24,7 @@ import { wrap } from "comlink";
 // import {storeSertifikat} from '../../api/sertifikat'
 // import { useAlertNotification, useDataUser } from "../../store/store";
 
-export default function KartuPelajar() {
+export default function Sertifikat() {
   const [valueSearch, setValueSearch] = useState("");
   const [value, setValue] = useState({});
   const [perihal, setPerihal] = useState("");
@@ -171,6 +171,7 @@ export default function KartuPelajar() {
   // };
   const pagesRef = useRef();
   const memoizedGeneratePDF = useMemo(() => {
+    console.log("Component rendered");
     const generatePDF = async () => {
       try {
         setSelettedComponent(null);

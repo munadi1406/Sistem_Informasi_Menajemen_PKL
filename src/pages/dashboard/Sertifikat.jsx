@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import Loader from "../../components/Loader";
 import Selects from "react-select";
 import makeAnimated from "react-select/animated";
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { getListTemplateSertifikat } from "../../api/templateSertifkat";
 import { endpoint } from "../../api/users";
 import TextInput from "../../components/TextInput";
@@ -170,7 +170,7 @@ export default function KartuPelajar() {
   //   setLoading(false);
   // };
   const pagesRef = useRef();
-  const generatePDF = useCallback(async () => {
+  const generatePDF = useMemo(async () => {
     try {
       setSelettedComponent(null);
       setLoading(true);
@@ -214,16 +214,7 @@ export default function KartuPelajar() {
     } catch (error) {
       console.log(error);
     }
-  }, [
-    setSelettedComponent,
-    setLoading,
-    setIsPrint,
-    pagesRef.current,
-    splitName,
-    perihal,
-    Workerurl,
-    html2canvas,
-  ]);
+  }, [pagesRef.current]);
 
   useEffect(() => {
     if (isPrint) {

@@ -174,18 +174,23 @@ export default function KartuPelajar() {
     try {
       setSelettedComponent(null);
       setLoading(true);
-      const pages = pagesRef.current;
+
       const worker = new Worker(Workerurl, { type: "module" });
       const workerApi = wrap(worker);
 
       const promises = splitName.map(async (name, i) => {
-        const kepadaElement = pages.querySelector("#kepada");
+        const kepadaElement = pagesRef.current.querySelector("#kepada");
+        console.log({ kepadaElement });
 
         if (kepadaElement) {
-          kepadaElement.innerHTML = name;
+          kepadaElement.value = name;
         }
 
-        const canvas = await html2canvas(pages, { scale: 4 });
+        const canvas = await html2canvas(pagesRef.current, {
+          scale: 4,
+          logging: false,
+        });
+        console.log("run2");
         const imageData = canvas.toDataURL("image/jpeg");
         return { index: i, data: imageData };
       });

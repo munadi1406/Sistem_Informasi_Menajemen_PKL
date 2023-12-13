@@ -170,7 +170,7 @@ export default function KartuPelajar() {
   //   setLoading(false);
   // };
   const pagesRef = useRef();
-  const generatePDF = useMemo(async () => {
+  const generatePDF = useCallback(async () => {
     try {
       setSelettedComponent(null);
       setLoading(true);
@@ -214,7 +214,16 @@ export default function KartuPelajar() {
     } catch (error) {
       console.log(error);
     }
-  }, [pagesRef.current, splitName]);
+  }, [
+    setSelettedComponent,
+    setLoading,
+    setIsPrint,
+    pagesRef.current,
+    splitName,
+    perihal,
+    Workerurl,
+    html2canvas,
+  ]);
 
   useEffect(() => {
     if (isPrint) {

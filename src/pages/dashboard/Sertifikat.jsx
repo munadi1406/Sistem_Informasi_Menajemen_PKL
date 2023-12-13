@@ -198,16 +198,15 @@ export default function KartuPelajar() {
         perihal,
       });
       console.log(pdfData);
-      const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
+      // const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
 
-      // Alternatif 1: Buka jendela baru untuk menampilkan PDF
-      window.open(URL.createObjectURL(pdfBlob), "_blank");
+     
+      // window.open(URL.createObjectURL(pdfBlob), "_blank");
 
-      // Alternatif 2: Alihkan pengguna ke URL objek Blob
-      // window.location.href = URL.createObjectURL(pdfBlob);
+     
 
       // Cleanup
-      URL.revokeObjectURL(URL.createObjectURL(pdfBlob));
+      // URL.revokeObjectURL(URL.createObjectURL(pdfBlob));
       // const pdfUrl = URL.createObjectURL(pdfData);
 
       // const downloadLink = document.createElement("a");

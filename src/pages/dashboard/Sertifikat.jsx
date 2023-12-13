@@ -170,14 +170,13 @@ export default function KartuPelajar() {
   //   setLoading(false);
   // };
 
+  const worker = new Worker(Workerurl, { type: "module" });
+  const workerApi = wrap(worker);
   const generatePDF = async () => {
     try {
       setSelettedComponent(null);
       setLoading(true);
       const pages = document.querySelector(".certificate-page");
-
-      const worker = new Worker(Workerurl, { type: "module" });
-      const workerApi = wrap(worker);
 
       const promises = splitName.map(async (name, i) => {
         const kepadaElement = pages.querySelector("#kepada");
@@ -204,19 +203,6 @@ export default function KartuPelajar() {
 
       // window.open(URL.createObjectURL(pdfBlob), "_blank");
 
-      // Cleanup
-      // URL.revokeObjectURL(URL.createObjectURL(pdfBlob));
-      // const pdfUrl = URL.createObjectURL(pdfData);
-
-      // const downloadLink = document.createElement("a");
-      // downloadLink.href = pdfUrl;
-      // downloadLink.download = pdfName;
-
-      // document.body.appendChild(downloadLink);
-      // downloadLink.click();
-      // document.body.removeChild(downloadLink);
-
-      // URL.revokeObjectURL(pdfUrl);
       setLoading(false);
       setIsPrint(false);
       worker.terminate();

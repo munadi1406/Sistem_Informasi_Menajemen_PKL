@@ -200,9 +200,9 @@ export default function KartuPelajar() {
         perihal,
       });
       console.log(pdfData);
-      // const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
+      const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
 
-      // window.open(URL.createObjectURL(pdfBlob), "_blank");
+      window.open(URL.createObjectURL(pdfBlob), "_blank");
 
       // Cleanup
       // URL.revokeObjectURL(URL.createObjectURL(pdfBlob));

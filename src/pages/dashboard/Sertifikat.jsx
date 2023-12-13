@@ -169,24 +169,23 @@ export default function KartuPelajar() {
   //   );
   //   setLoading(false);
   // };
-
+  const pagesRef = useRef();
   const generatePDF = async () => {
     try {
       setSelettedComponent(null);
       setLoading(true);
-      const pages = document.querySelector(".certificate-page");
+      const pages = pagesRef.current;
       const worker = new Worker(Workerurl, { type: "module" });
       const workerApi = wrap(worker);
 
       const promises = splitName.map(async (name, i) => {
-        const clonedPages = pages.cloneNode(true);
-        const kepadaElement = clonedPages.querySelector("#kepada");
+        const kepadaElement = pages.querySelector("#kepada");
 
         if (kepadaElement) {
           kepadaElement.innerHTML = name;
         }
 
-        const canvas = await html2canvas(clonedPages, { scale: 4 });
+        const canvas = await html2canvas(pages, { scale: 4 });
         const imageData = canvas.toDataURL("image/jpeg");
         return { index: i, data: imageData };
       });
@@ -470,7 +469,7 @@ export default function KartuPelajar() {
 
       <div className="certificate w-full h-max overflow-auto" ref={ref}>
         {value.template && imageBlob && splitName && (
-          <div className="relative  w-full certificate-page">
+          <div className="relative  w-full certificate-page" ref={pagesRef}>
             <LazyImage
               src={URL.createObjectURL(imageBlob)}
               alt={"image"}

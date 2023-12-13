@@ -170,55 +170,59 @@ export default function KartuPelajar() {
   //   setLoading(false);
   // };
   const pagesRef = useRef();
-  const generatePDF = useMemo(async () => {
-    try {
-      setSelettedComponent(null);
-      setLoading(true);
+  const memoizedGeneratePDF = useMemo(() => {
+    const generatePDF = async () => {
+      try {
+        setSelettedComponent(null);
+        setLoading(true);
 
-      const worker = new Worker(Workerurl, { type: "module" });
-      const workerApi = wrap(worker);
+        const worker = new Worker(Workerurl, { type: "module" });
+        const workerApi = wrap(worker);
 
-      const promises = splitName.map(async (name, i) => {
-        const kepadaElement = pagesRef.current.querySelector("#kepada");
-        console.log({ kepadaElement });
+        const promises = splitName.map(async (name, i) => {
+          const kepadaElement = pagesRef.current.querySelector("#kepada");
+          console.log({ kepadaElement });
 
-        if (kepadaElement) {
-          kepadaElement.value = name;
-        }
+          if (kepadaElement) {
+            kepadaElement.value = name;
+          }
 
-        const canvas = await html2canvas(pagesRef.current, {
-          scale: 4,
-          logging: false,
+          const canvas = await html2canvas(pagesRef.current, {
+            scale: 4,
+            logging: false,
+          });
+          console.log("run2");
+          const imageData = canvas.toDataURL("image/jpeg");
+          return { index: i, data: imageData };
         });
-        console.log("run2");
-        const imageData = canvas.toDataURL("image/jpeg");
-        return { index: i, data: imageData };
-      });
 
-      const screenshots = await Promise.all(promises);
+        const screenshots = await Promise.all(promises);
 
-      // Panggil fungsi generatePDF dari workerApi
-      const { pdfData } = await workerApi.generatePDF({
-        screenshots,
-        splitName,
-        perihal,
-      });
-      console.log(pdfData);
-      const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
+        // Panggil fungsi generatePDF dari workerApi
+        const { pdfData } = await workerApi.generatePDF({
+          screenshots,
+          splitName,
+          perihal,
+        });
+        console.log(pdfData);
+        const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
 
-      window.open(URL.createObjectURL(pdfBlob), "_blank");
+        window.open(URL.createObjectURL(pdfBlob), "_blank");
 
-      setLoading(false);
-      setIsPrint(false);
-      worker.terminate();
-    } catch (error) {
-      console.log(error);
-    }
-  }, [pagesRef.current]);
+        setLoading(false);
+        setIsPrint(false);
+        worker.terminate();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    return generatePDF;
+  }, [splitName, perihal]); // Tidak memasukkan splitName ke dalam array dependensi karena splitName tidak digunakan dalam generatePDF
 
   useEffect(() => {
     if (isPrint) {
-      generatePDF();
+      memoizedGeneratePDF();
     }
   }, [isPrint]);
 

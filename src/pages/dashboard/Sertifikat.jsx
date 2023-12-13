@@ -172,6 +172,8 @@ export default function KartuPelajar() {
 
   const generatePDF = async () => {
     try {
+      setSelettedComponent(null);
+      setLoading(true);
       const pages = document.querySelector(".certificate-page");
 
       const worker = new Worker(Workerurl, { type: "module" });
@@ -192,7 +194,7 @@ export default function KartuPelajar() {
       const screenshots = await Promise.all(promises);
 
       // Panggil fungsi generatePDF dari workerApi
-      const { pdfName, pdfData } = await workerApi.generatePDF({
+      const { pdfData } = await workerApi.generatePDF({
         screenshots,
         splitName,
         perihal,
@@ -200,10 +202,7 @@ export default function KartuPelajar() {
       console.log(pdfData);
       // const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
 
-     
       // window.open(URL.createObjectURL(pdfBlob), "_blank");
-
-     
 
       // Cleanup
       // URL.revokeObjectURL(URL.createObjectURL(pdfBlob));
@@ -218,6 +217,7 @@ export default function KartuPelajar() {
       // document.body.removeChild(downloadLink);
 
       // URL.revokeObjectURL(pdfUrl);
+      setLoading(false);
       worker.terminate();
     } catch (error) {
       console.log(error);

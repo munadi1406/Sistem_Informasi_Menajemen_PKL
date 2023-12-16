@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import Loader from "../../components/Loader";
 import Selects from "react-select";
 import makeAnimated from "react-select/animated";
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { getListTemplateSertifikat } from "../../api/templateSertifkat";
 import { endpoint } from "../../api/users";
 import TextInput from "../../components/TextInput";
@@ -12,17 +12,12 @@ const animatedComponents = makeAnimated();
 import QrCode from "../../components/QrCode";
 import { Checkbox, Slider, Select, Option } from "@material-tailwind/react";
 import ButtonCustom from "../../components/ButtonCustom";
-
 import LazyImage from "../../components/LazyImage";
 import Draggable from "react-draggable";
-// import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import Workerurl from "@/services/worker?worker&url";
 import { wrap } from "comlink";
-// import Worker from "web-worker";
-// import "../../font.css";
-// import {storeSertifikat} from '../../api/sertifikat'
-// import { useAlertNotification, useDataUser } from "../../store/store";
+import EditContent from "../../components/EditContent";
+import { fontList } from "../../utils/fontList";
 
 export default function KartuPelajar() {
   const [valueSearch, setValueSearch] = useState("");
@@ -33,11 +28,9 @@ export default function KartuPelajar() {
   const [isQrCode, setIsQrCode] = useState(false);
   const [qrCodeSize, setQrCodeSize] = useState(30);
   const [isPrint, setIsPrint] = useState(false);
-  const [nomor, setNomor] = useState({});
 
-  const [typeSertifikat, setTypeSertifikat] = useState("PENGHARGAAN");
   const [loading, setLoading] = useState(false);
-  const [certificateValue, setCertificateValue] = useState("CERTIFICATE");
+
   // const { setOpen, setStatus, setMsg } = useAlertNotification((state) => state);
 
   const { isLoading, data, refetch, isRefetching } = useQuery(
@@ -57,34 +50,6 @@ export default function KartuPelajar() {
     },
     staleTime: 5000,
   });
-
-  // const handleStoreSertifikat = useMutation({
-  //   mutationFn: async (payload) => {
-
-  //     const isSubmit = await storeSertifikat(payload);
-  //     return isSubmit.data;
-  //   },
-  //   onSuccess: (data) => {
-  //     setOpen(true);
-  //     setStatus(true);
-  //     setMsg(data.message);
-  //   },
-  //   onError: (error) => {
-  //     setOpen(true);
-  //     setStatus(false);
-  //     setMsg(error.response.data.message);
-  //   },
-  // });
-
-  // const handleSubmit = async ()=>{
-  //   try {
-  //     splitName.map((e)=>(
-  //       handleStoreSertifikat.mutate({nomorSertifikat,idTemplateSertifikat:value.id,nama:e,isi:perihal})
-  //     ))
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
 
   let searchTimeOut;
   const handleSearch = (e) => {
@@ -113,99 +78,60 @@ export default function KartuPelajar() {
   }, [valueSearch]);
   const ref = useRef();
 
-  const [defaultPosition, setDefaultPosition] = useState({ x: 0, y: 0 });
-  const [defaultPositionKepsek, setDefaultPositionKepsek] = useState({
-    x: 0,
-    y: 0,
-  });
-  const [defaultPositionKepel, setDefaultPositionKepel] = useState({
-    x: 0,
-    y: 0,
-  });
-  const [defaultPositionQrCode, setDefaultPositionQrCode] = useState({
-    x: 0,
-    y: 0,
-  });
-  const [defaultPositionNomor, setDefaultPositionNomor] = useState({
-    x: 0,
-    y: 0,
-  });
+  const [selecttedComponent, setSelettedComponent] = useState();
 
-  const [selecttedComponent, setSelettedComponent] = useState("");
-
-  // const pages = Array.from(document.querySelectorAll(".certificate-page")).map(
-  //   (page) => page.outerHTML,
-  // );
-  // const generatePDF = async () => {
-  //   setSelettedComponent(null);
-  //   setLoading(true);
-
-  //   const pdf = new jsPDF("l", "mm", "a4"); // 'p' for portrait, 'mm' for millimeters
-
-  //   const promises = Array.from(pages).map(async (page, i) => {
-  //     const canvas = await html2canvas(page, { scale: 4 });
-  //     const imageData = canvas.toDataURL("image/jpeg");
-  //     return { index: i, data: imageData };
-  //   });
-
-  //   const screenshots = await Promise.all(promises);
-
-  //   screenshots.forEach((screenshot, i) => {
-  //     if (i > 0) {
-  //       pdf.addPage();
-  //     }
-  //     pdf.addImage(
-  //       screenshot.data,
-  //       "JPEG",
-  //       0,
-  //       0,
-  //       pdf.internal.pageSize.width,
-  //       pdf.internal.pageSize.height,
-  //     );
-  //   });
-  //   pdf.autoPrint();
-  //   pdf.save(
-  //     `${splitName.join("-")}-${perihal}-${new Date().toLocaleString()}.pdf`,
-  //   );
-  //   setLoading(false);
-  // };
-  const pagesRef = useRef();
-
-  const generatePDF = useCallback(async () => {
+  const [imageBlob, setImageBlob] = useState("");
+  const [textObjects, setTextObjects] = useState([
+    {
+      text: "SERTIFIKAT",
+      style: {
+        fontSize: "48px",
+        fontFamily: "AnandaBlackPersonalUseRegular",
+      },
+      position: { x: 10, y: 10 },
+    },
+    {
+      text: "Penghargaan",
+      style: {
+        fontSize: "20px",
+        fontFamily: "arial",
+      },
+      position: { x: 50, y: 50 },
+    },
+    {
+      text: "Dalam Rangka ",
+      style: {
+        fontSize: "20px",
+        fontFamily: "arial",
+      },
+      position: { x: 50, y: 50 },
+    },
+    {
+      text: "Oke Bray",
+      style: {
+        fontSize: "20px",
+        fontFamily: "arial",
+      },
+      position: { x: 50, y: 50 },
+    },
+  ]);
+  useEffect(() => {
+    console.table(textObjects[0].position);
+  }, [textObjects]);
+  const generatePDFDua = async () => {
     try {
-      if (!isPrint) {
-        return;
-      }
       setSelettedComponent(null);
       setLoading(true);
 
       const worker = new Worker(Workerurl, { type: "module" });
       const workerApi = wrap(worker);
 
-      const promises = splitName.map(async (name, i) => {
-        const kepadaElement = pagesRef.current.querySelector("#kepada");
-        console.log({ kepadaElement });
-
-        if (kepadaElement) {
-          kepadaElement.value = name;
-        }
-
-        const canvas = await html2canvas(pagesRef.current, {
-          scale: 4,
-          logging: false,
-        });
-        console.log("run2");
-        const imageData = canvas.toDataURL("image/jpeg");
-        return { index: i, data: imageData };
-      });
-
-      const screenshots = await Promise.all(promises);
-
       // Panggil fungsi generatePDF dari workerApi
       const { pdfData } = await workerApi.generatePDF({
-        screenshots,
+        imageBlob,
         splitName,
         perihal,
+        textObjects,
       });
       console.log(pdfData);
       const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
@@ -218,9 +144,7 @@ export default function KartuPelajar() {
     } catch (error) {
       console.log(error);
     }
-  }, [splitName, perihal, isPrint]);
-
-  const [imageBlob, setImageBlob] = useState("");
+  };
 
   useEffect(() => {
     if (!value.template) return;
@@ -243,135 +167,20 @@ export default function KartuPelajar() {
     fetchImage();
   }, [value]);
 
-  const [styling, setStyling] = useState({
-    sertifikat: {
-      family: "AnandaBlackPersonalUseRegular",
-      font: "32px",
-      color: "black",
-    },
-    name: {
-      family: "AnandaBlackPersonalUseRegular",
-      font: "20px",
-      color: "black",
-    },
-    perihal: {
-      family: "Arial",
-      font: "18px",
-      color: "black",
-    },
-    kepsek: {
-      family: "Arial",
-      font: "18px",
-      color: "black",
-    },
-    kepel: {
-      family: "Arial",
-      font: "18px",
-      color: "black",
-    },
-    penghargaan: {
-      family: "Arial",
-      font: "18px",
-      color: "black",
-    },
-    kepada: {
-      family: "Arial",
-      font: "18px",
-      color: "black",
-    },
-    nomor: {
-      family: "Arial",
-      font: "18px",
-      color: "black",
-    },
-    ketKepel: {
-      family: "Arial",
-      font: "14px",
-      color: "black",
-    },
-    ketKepsek: {
-      family: "Arial",
-      font: "14px",
-      color: "black",
-    },
-  });
-  // useEffect(()=>{
-  //   console.log(styling)
-  // },[styling])
+  const handleStyleChange = (type, value) => {
+    setTextObjects((prev) => {
+      const copyStyle = [...prev];
+      copyStyle[selecttedComponent] = {
+        ...prev[selecttedComponent],
+        [type]: value,
+      };
+      return copyStyle;
+    });
+  };
 
-  const handleStyleChange = useMemo(
-    () => (type, value) => {
-      setStyling((prev) => ({
-        ...prev,
-        [selecttedComponent]: {
-          ...prev[selecttedComponent],
-          [type]: value,
-        },
-      }));
-    },
-    [selecttedComponent],
-  );
-
-  const fontList = [
-    "AnandaBlackPersonalUseRegular",
-    "AspireDemibold",
-    "AutumnFlowers",
-    "Calligrapher",
-    "ChicanosPersonalUseRegular",
-    "DoveOfPeacePersonalUse",
-    "EmotionalRescuePersonalUseRegular",
-    "FeelfreePersonalUseRegular",
-    "GeraldinePersonalUseItalic",
-    "IndentureEnglishPenmanDemo",
-    "LambencyRegular",
-    "MutalisFashionPersonalUseRegular",
-    "NatureBeautyPersonalUse",
-    "SellenaBrush",
-    "StylishCalligraphyDemo",
-    "SweetHipster",
-    "TheCheese",
-    "WeddingdayPersonalUseRegular",
-    "Arial",
-    "Helvetica",
-    "Tahoma",
-    "Times New Roman",
-    "Georgia",
-    "Courier New",
-    "Monaco",
-    "AdorabelleFreePersonalUseRg",
-    "Amandez TTF Personal",
-    "Baletta",
-    "BeautifulPeoplePersonalUse",
-    "Bulgathi",
-    "CalisshascriptRegular",
-    "ChristmasCalligraphyPersonal",
-    "Dharma",
-    "DramaQueenFreePersonalUseS",
-    "Flicker",
-    "GoldyearpersonalUseRegular",
-    "HaniyaFreeTrial",
-    "Haydena",
-    "Kagokpersonal",
-    "KameliascriptRegular",
-    "Kastela",
-    "Krinahpersonal",
-    "LemonJellyPersonalUse",
-    "LoveSeed",
-    "Matchalatte",
-    "MuthiaraDemoVersion",
-    "QIUBApersonal",
-    "Rengkoxpersonal",
-    "RisalahCinta",
-    "ROBACKpersonal",
-    "Rostina",
-    "ShawtyRegular",
-    "ShogekingOniki",
-    "Silentha",
-    "Sketsaramadhan",
-    "SpookyZombie",
-    "SpringSeasonPersonalUseRegular",
-    "WUSHINpersonaluse",
-  ];
+  useEffect(() => {
+    console.log({ selecttedComponent });
+  }, [selecttedComponent]);
 
   if (isLoading) return <Loader />;
 
@@ -385,9 +194,6 @@ export default function KartuPelajar() {
   return (
     <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 -h-max">
       <h5 className="text-xl text-black font-semibold">Buat Sertifikat </h5>
-      {/* <div className="w-full flex justify-end">
-        <ButtonCustom text={"History Pembuatan Sertifikat"} />
-      </div> */}
 
       <Selects
         options={options}
@@ -428,7 +234,7 @@ export default function KartuPelajar() {
 
       <div
         className={`sticky top-5 grid lg:grid-cols-3 grid-cols-1 z-50 gap-2 bg-white transition-all duration-100 ease-in-out p-2 ${
-          selecttedComponent ? "opacity-1" : "opacity-0"
+          selecttedComponent >= 0 ? "opacity-1" : "opacity-0"
         }`}
       >
         <Select
@@ -436,11 +242,6 @@ export default function KartuPelajar() {
           onChange={(e) => handleStyleChange("family", e)}
           className="h-full w-full overflow-clip"
           color="blue"
-          value={`${
-            styling[selecttedComponent]
-              ? styling[selecttedComponent].family
-              : ""
-          }`}
         >
           {fontList.map((e, i) => (
             <Option key={i} value={e}>
@@ -453,299 +254,77 @@ export default function KartuPelajar() {
           className="h-full"
           type="number"
           onChange={(e) => handleStyleChange("font", `${e.target.value}px`)}
-          value={`${
-            styling[selecttedComponent]
-              ? styling[selecttedComponent].font.split("px")[0]
-              : ""
-          }`}
         />
         <TextInput
           label={"Color"}
           className="h-full"
           type={"color"}
-          value={`${
-            styling[selecttedComponent] ? styling[selecttedComponent].color : ""
-          }`}
           onChange={(e) => handleStyleChange("color", `${e.target.value}`)}
         />
       </div>
 
-      <div className="certificate w-full h-max overflow-auto" ref={ref}>
+      <div
+        className="certificate w-full relative h-max border-red-600 border-2"
+        ref={ref}
+      >
         {value.template && imageBlob && splitName && (
-          <div className="relative  w-full certificate-page" ref={pagesRef}>
+          <>
             <LazyImage
               src={URL.createObjectURL(imageBlob)}
               alt={"image"}
-              className="w-full"
+              className="w-full border-blue-600 border-2"
+              style={{ height: `calc(100vw * ${210 / 297})` }}
               onClick={() => setSelettedComponent("")}
             />
-
-            <Draggable
-              bounds="parent"
-              position={defaultPosition}
-              onStop={(e, data) => setDefaultPosition({ x: data.x, y: data.y })}
-            >
-              <div
-                className={`absolute top-1/2 left-1/2 w-max h-max active:ouline-2 active:outline-blue-400 active:outline-dashed`}
-              >
-                <div className="w-max h-max ">
-                  <div className="flex justify-center w-[600px] mb-7 ">
-                    {!isPrint ? (
-                      <input
-                        value={certificateValue}
-                        onChange={(e) => setCertificateValue(e.target.value)}
-                        style={{
-                          fontFamily: styling.sertifikat.family,
-                          fontSize: styling.sertifikat.font,
-                          color: `${styling.sertifikat.color}`,
-                        }}
-                        onClick={() => setSelettedComponent("sertifikat")}
-                        className={`bg-white/0 min-h-max outline-none  text-center w-full  ${
-                          selecttedComponent === "sertifikat" &&
-                          "outline-2 outline-green-400 outline-dashed"
-                        }`}
-                      />
-                    ) : (
-                      <div
-                        className="text-center w-full"
-                        style={{
-                          fontFamily: styling.sertifikat.family,
-                          fontSize: styling.sertifikat.font,
-                          color: `${styling.sertifikat.color}`,
-                        }}
-                      >
-                        {certificateValue}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex justify-center items-center  w-full my-2">
-                    {!isPrint ? (
-                      <input
-                        value={typeSertifikat}
-                        onChange={(e) => setTypeSertifikat(e.target.value)}
-                        style={{
-                          fontFamily: styling.penghargaan.family,
-                          fontSize: styling.penghargaan.font,
-                          color: styling.penghargaan.color,
-                        }}
-                        onClick={() => setSelettedComponent("penghargaan")}
-                        className={`bg-white/0   outline-none text-center w-full ${
-                          selecttedComponent === "penghargaan" &&
-                          "outline-2 outline-green-400 outline-dashed"
-                        }`}
-                      />
-                    ) : (
-                      <div
-                        className="text-center min-w-[399px]"
-                        style={{
-                          fontFamily: styling.penghargaan.family,
-                          fontSize: styling.penghargaan.font,
-                          color: styling.penghargaan.color,
-                        }}
-                      >
-                        {typeSertifikat}
-                      </div>
-                    )}
-                  </div>
-                  <p
-                    className={`text-semibold text-center  text-lg font-semibold m-4 ${
-                      selecttedComponent === "kepada" &&
-                      "outline-2 outline-green-400 outline-dashed"
-                    }`}
-                    style={{
-                      fontFamily: styling.kepada.family,
-                      fontSize: styling.kepada.font,
-                      color: styling.kepada.color,
-                    }}
-                    onClick={() => setSelettedComponent("kepada")}
-                  >
-                    Diberikan Kepada :
-                  </p>
-                </div>
-                <div className="">
-                  <p
-                    style={{
-                      fontFamily: styling.name.family,
-                      fontSize: styling.name.font,
-                      color: styling.name.color,
-                    }}
-                    id="kepada"
-                    onClick={() => setSelettedComponent("name")}
-                    className={`font-semibold text-center  mb-5 ${
-                      selecttedComponent === "name" &&
-                      "outline-2 outline-green-400 outline-dashed"
-                    }`}
-                  >
-                    {splitName[0]}
-                  </p>
-                  <p
-                    className={`font-semibold text-center  w-[3 00px] m-auto  break-words ${
-                      selecttedComponent === "perihal" &&
-                      "outline-2 outline-green-400 outline-dashed"
-                    }`}
-                    style={{
-                      fontFamily: styling.perihal.family,
-                      fontSize: styling.perihal.font,
-                      color: styling.perihal.color,
-                    }}
-                    onClick={() => setSelettedComponent("perihal")}
-                  >
-                    {perihal}
-                  </p>
-                </div>
-              </div>
-            </Draggable>
-
-            <Draggable
-              bounds="parent"
-              position={defaultPositionKepsek}
-              onStop={(e, data) =>
-                setDefaultPositionKepsek({ x: data.x, y: data.y })
-              }
-            >
-              <div className="text-xs w-max absolute bottom-0 right-0 active:ouline-2 active:outline-blue-400 active:outline-dashed">
-                <p
-                  className={` font-bold text-base ${
-                    selecttedComponent === "kepsek" &&
-                    "outline-2 outline-green-400 outline-dashed"
+            <div className="absolute top-0 w-full h-full">
+              {textObjects.map((e, i) => (
+                <Draggable
+                  defaultClassName={`outline-none cursor-pointer ${
+                    selecttedComponent === i &&
+                    "border-dashed border-green-600 border-2"
                   }`}
-                  style={{
-                    fontFamily: styling.kepsek.family,
-                    fontSize: styling.kepsek.font,
-                    color: styling.kepsek.color,
+                  bounds="parent"
+                  position={e.position}
+                  onStop={(e, data) => {
+                    const parentWidth = ref.current.clientWidth;
+                    const parentHeight = ref.current.clientHeight;
+
+                    const percentageFromLeft = (data.x / parentWidth) * 100;
+                    const percentageFromTop = (data.y / parentHeight) * 100;
+                    console.log({ percentageFromLeft, percentageFromTop });
+                    setTextObjects((prev) => {
+                      const copy = [...prev];
+                      copy[i].position.x = data.x;
+                      copy[i].position.y = data.y;
+                      copy[i].percentageFromLeft = percentageFromLeft;
+                      copy[i].percentageFromTop = percentageFromTop;
+                      return copy;
+                    });
                   }}
-                  onClick={() => setSelettedComponent("kepsek")}
+                  key={i}
                 >
-                  {kepsek.data.data.user.username}
-                </p>
-                <p
-                  className={`${
-                    selecttedComponent === "ketKepsek" &&
-                    "outline-2 outline-green-400 outline-dashed"
-                  }`}
-                  style={{
-                    fontFamily: styling.ketKepsek.family,
-                    fontSize: styling.ketKepsek.font,
-                    color: styling.ketKepsek.color,
-                  }}
-                  onClick={() => setSelettedComponent("ketKepsek")}
-                >
-                  Kepala Sekolah
-                </p>
-              </div>
-            </Draggable>
-            <Draggable
-              bounds="parent"
-              position={defaultPositionNomor}
-              onStop={(e, data) =>
-                setDefaultPositionNomor({ x: data.x, y: data.y })
-              }
-            >
-              <div className="text-xs min-w-[300px] flex justify-center  absolute left-1/2 top-4 active:ouline-2 active:outline-blue-400 active:outline-dashed">
-                {!isPrint ? (
-                  <input
-                    value={nomor[`nomor`] ? nomor[`nomor`] : ""}
-                    placeholder="nomor sertifikat"
-                    onChange={(e) => {
-                      setNomor((prev) => ({
-                        ...prev,
-                        [`nomor`]: e.target.value,
-                      }));
+                  <EditContent
+                    value={e.text}
+                    className="w-max"
+                    onChange={(event) => {
+                      const { value } = event.target;
+                      setTextObjects((prev) => {
+                        const updatedObjects = [...prev];
+                        updatedObjects[i] = { ...prev[i], text: value };
+                        return updatedObjects;
+                      });
                     }}
-                    style={{
-                      fontFamily: styling.nomor.family,
-                      fontSize: styling.nomor.font,
-                      color: styling.nomor.color,
-                    }}
-                    onClick={() => setSelettedComponent("nomor")}
-                    className={`bg-white/0   outline-none text-center w-full   ${
-                      selecttedComponent === "nomor" &&
-                      "outline-2 outline-green-400 outline-dashed"
-                    }`}
+                    onClick={() => setSelettedComponent(i)}
+                    style={{ ...textObjects[i].style }}
+                    id={`text${i}`}
                   />
-                ) : (
-                  <div
-                    className="min-w-max text-center"
-                    style={{
-                      fontFamily: styling.nomor.family,
-                      fontSize: styling.nomor.font,
-                      color: styling.nomor.color,
-                    }}
-                  >
-                    {nomor[`nomor`]}
-                  </div>
-                )}
-              </div>
-            </Draggable>
-            {leadEvent && (
-              <Draggable
-                bounds="parent"
-                position={defaultPositionKepel}
-                onStop={(e, data) =>
-                  setDefaultPositionKepel({ x: data.x, y: data.y })
-                }
-              >
-                <div className="text-xs w-max absolute bottom-0">
-                  <p
-                    className={` font-bold text-base ${
-                      selecttedComponent === "kepel" &&
-                      "outline-2 outline-green-400 outline-dashed"
-                    }`}
-                    style={{
-                      fontFamily: styling.kepel.family,
-                      fontSize: styling.kepel.font,
-                      color: styling.kepel.color,
-                    }}
-                    onClick={() => setSelettedComponent("kepel")}
-                  >
-                    {leadEvent}
-                  </p>
-                  <p
-                    className={`  ${
-                      selecttedComponent === "ketKepel" &&
-                      "outline-2 outline-green-400 outline-dashed"
-                    }`}
-                    style={{
-                      fontFamily: styling.ketKepel.family,
-                      fontSize: styling.ketKepel.font,
-                      color: styling.ketKepel.color,
-                    }}
-                    onClick={() => setSelettedComponent("ketKepel")}
-                  >
-                    Ketua Pelaksana
-                  </p>
-                </div>
-              </Draggable>
-            )}
-            {isQrCode && (
-              <Draggable
-                bounds="parent"
-                position={defaultPositionQrCode}
-                onStop={(e, data) =>
-                  setDefaultPositionQrCode({ x: data.x, y: data.y })
-                }
-              >
-                <div className="absolute top-1/2 left-1/2 w-max active:ouline-2 active:outline-blue-400 active:outline-dashed">
-                  <QrCode
-                    value={`SERTIFIKAT INI DI KELUARKAN OLEH SMAN 1 KARANG INTAN UNTUK  atas ${perihal} dan sertifikat ini di keluarkan pada ${new Date().toLocaleString()}`}
-                    size={qrCodeSize}
-                  />
-                </div>
-              </Draggable>
-            )}
-          </div>
+                </Draggable>
+              ))}
+            </div>
+          </>
         )}
       </div>
 
-      {/* <ButtonCustom
-        text={
-          <div className="flex gap-2 justify-center items-center ">
-            Simpan Sertifikat {handleStoreSertifikat.isLoading && <Loader />}
-          </div>
-        }
-        disabled={handleStoreSertifikat.isLoading}
-        onClick={handleSubmit}
-      /> */}
       <ButtonCustom
         text={
           <div className="flex gap-2 justify-center items-center ">
@@ -754,10 +333,8 @@ export default function KartuPelajar() {
         }
         disabled={loading}
         onClick={() => {
-          setIsPrint(true);
-          generatePDF();
+          generatePDFDua();
         }}
-        // onClick={() => setIsPrint(true)}
       />
     </div>
   );

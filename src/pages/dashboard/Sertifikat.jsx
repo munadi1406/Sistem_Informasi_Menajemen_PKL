@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import Loader from "../../components/Loader";
 import Selects from "react-select";
 import makeAnimated from "react-select/animated";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback, lazy } from "react";
 import { getListTemplateSertifikat } from "../../api/templateSertifkat";
 import { endpoint } from "../../api/users";
 import TextInput from "../../components/TextInput";
@@ -10,14 +10,23 @@ import TextAreaCustom from "../../components/TextAreaCustom";
 import { getDetailKepsek } from "../../api/kepsek";
 const animatedComponents = makeAnimated();
 import QrCode from "../../components/QrCode";
-import { Checkbox, Slider, Select, Option } from "@material-tailwind/react";
+import {
+  Checkbox,
+  Slider,
+  Select,
+  Option,
+  Progress,
+} from "@material-tailwind/react";
 import ButtonCustom from "../../components/ButtonCustom";
 import LazyImage from "../../components/LazyImage";
-import Draggable from "react-draggable";
+import html2canvas from "html2canvas";
 import Workerurl from "@/services/worker?worker&url";
 import { wrap } from "comlink";
-import EditContent from "../../components/EditContent";
 import { fontList } from "../../utils/fontList";
+const DraggableComponent = lazy(
+  () => import("../../components/DraggableComponent"),
+);
+const EditContent = lazy(() => import("../../components/EditContent"));
 
 export default function KartuPelajar() {
   const [valueSearch, setValueSearch] = useState("");
@@ -27,10 +36,11 @@ export default function KartuPelajar() {
   const [leadEvent, setLeadEvent] = useState("");
   const [isQrCode, setIsQrCode] = useState(false);
   const [qrCodeSize, setQrCodeSize] = useState(30);
-  const [isPrint, setIsPrint] = useState(false);
+  const [nomor, setNomor] = useState({});
 
+  const [typeSertifikat, setTypeSertifikat] = useState("PENGHARGAAN");
   const [loading, setLoading] = useState(false);
-
+  const [certificateValue, setCertificateValue] = useState("CERTIFICATE");
   // const { setOpen, setStatus, setMsg } = useAlertNotification((state) => state);
 
   const { isLoading, data, refetch, isRefetching } = useQuery(
@@ -78,47 +88,30 @@ export default function KartuPelajar() {
   }, [valueSearch]);
   const ref = useRef();
 
-  const [selecttedComponent, setSelettedComponent] = useState();
+  const [defaultPosition, setDefaultPosition] = useState({ x: 0, y: 0 });
+  const [defaultPositionKepsek, setDefaultPositionKepsek] = useState({
+    x: 0,
+    y: 0,
+  });
+  const [defaultPositionKepel, setDefaultPositionKepel] = useState({
+    x: 0,
+    y: 0,
+  });
+  const [defaultPositionQrCode, setDefaultPositionQrCode] = useState({
+    x: 0,
+    y: 0,
+  });
+  const [defaultPositionNomor, setDefaultPositionNomor] = useState({
+    x: 0,
+    y: 0,
+  });
 
-  const [imageBlob, setImageBlob] = useState("");
-  const [textObjects, setTextObjects] = useState([
-    {
-      text: "SERTIFIKAT",
-      style: {
-        fontSize: "48px",
-        fontFamily: "AnandaBlackPersonalUseRegular",
-      },
-      position: { x: 10, y: 10 },
-    },
-    {
-      text: "Penghargaan",
-      style: {
-        fontSize: "20px",
-        fontFamily: "arial",
-      },
-      position: { x: 50, y: 50 },
-    },
-    {
-      text: "Dalam Rangka ",
-      style: {
-        fontSize: "20px",
-        fontFamily: "arial",
-      },
-      position: { x: 50, y: 50 },
-    },
-    {
-      text: "Oke Bray",
-      style: {
-        fontSize: "20px",
-        fontFamily: "arial",
-      },
-      position: { x: 50, y: 50 },
-    },
-  ]);
-  useEffect(() => {
-    console.table(textObjects[0].position);
-  }, [textObjects]);
-  const generatePDFDua = async () => {
+  const [selecttedComponent, setSelettedComponent] = useState("");
+  const pagesRef = useRef();
+
+  const [progress, setProgress] = useState(0);
+
+  const generatePDF = useCallback(async () => {
     try {
       setSelettedComponent(null);
       setLoading(true);
@@ -126,25 +119,59 @@ export default function KartuPelajar() {
       const worker = new Worker(Workerurl, { type: "module" });
       const workerApi = wrap(worker);
 
-      // Panggil fungsi generatePDF dari workerApi
+      const screenshots = await generateScreenshots((progress) => {
+        setProgress(progress);
+      });
+
       const { pdfData } = await workerApi.generatePDF({
-        imageBlob,
+        screenshots,
         splitName,
         perihal,
-        textObjects,
       });
-      console.log(pdfData);
+
       const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
 
       window.open(URL.createObjectURL(pdfBlob), "_blank");
 
-      setLoading(false);
-      setIsPrint(false);
       worker.terminate();
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
+
+      setProgress(0);
     }
+  }, [splitName, perihal]);
+
+  const generateScreenshots = async (updateProgress) => {
+    const screenshots = [];
+    const totalScreenshots = splitName.length;
+
+    for (let i = 0; i < totalScreenshots; i++) {
+      const name = splitName[i];
+
+      const kepadaElement = pagesRef.current.querySelector("#kepada");
+
+      if (kepadaElement) {
+        kepadaElement.innerHTML = name;
+      }
+
+      const canvas = await html2canvas(pagesRef.current, {
+        scale: 4,
+        logging: false,
+      });
+
+      const imageData = canvas.toDataURL("image/jpeg");
+      screenshots.push({ index: i, data: imageData });
+
+      const progress = ((i + 1) / totalScreenshots) * 100;
+      updateProgress(progress);
+    }
+
+    return screenshots;
   };
+
+  const [imageBlob, setImageBlob] = useState("");
 
   useEffect(() => {
     if (!value.template) return;
@@ -167,20 +194,71 @@ export default function KartuPelajar() {
     fetchImage();
   }, [value]);
 
-  const handleStyleChange = (type, value) => {
-    setTextObjects((prev) => {
-      const copyStyle = [...prev];
-      copyStyle[selecttedComponent] = {
-        ...prev[selecttedComponent],
-        [type]: value,
-      };
-      return copyStyle;
-    });
-  };
+  const [styling, setStyling] = useState({
+    sertifikat: {
+      family: "AnandaBlackPersonalUseRegular",
+      font: "32px",
+      color: "black",
+    },
+    name: {
+      family: "AnandaBlackPersonalUseRegular",
+      font: "20px",
+      color: "black",
+    },
+    perihal: {
+      family: "Arial",
+      font: "18px",
+      color: "black",
+    },
+    kepsek: {
+      family: "Arial",
+      font: "18px",
+      color: "black",
+    },
+    kepel: {
+      family: "Arial",
+      font: "18px",
+      color: "black",
+    },
+    penghargaan: {
+      family: "Arial",
+      font: "18px",
+      color: "black",
+    },
+    kepada: {
+      family: "Arial",
+      font: "18px",
+      color: "black",
+    },
+    nomor: {
+      family: "Arial",
+      font: "18px",
+      color: "black",
+    },
+    ketKepel: {
+      family: "Arial",
+      font: "14px",
+      color: "black",
+    },
+    ketKepsek: {
+      family: "Arial",
+      font: "14px",
+      color: "black",
+    },
+  });
 
-  useEffect(() => {
-    console.log({ selecttedComponent });
-  }, [selecttedComponent]);
+  const handleStyleChange = useMemo(
+    () => (type, value) => {
+      setStyling((prev) => ({
+        ...prev,
+        [selecttedComponent]: {
+          ...prev[selecttedComponent],
+          [type]: value,
+        },
+      }));
+    },
+    [selecttedComponent],
+  );
 
   if (isLoading) return <Loader />;
 
@@ -194,7 +272,6 @@ export default function KartuPelajar() {
   return (
     <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 -h-max">
       <h5 className="text-xl text-black font-semibold">Buat Sertifikat </h5>
-
       <Selects
         options={options}
         isLoading={isRefetching}
@@ -205,7 +282,10 @@ export default function KartuPelajar() {
         className="relative z-40"
         placeholder="Pilih Sertifikat"
       />
-      <TextInput label={"Nama Penerima Sertifikat"} onChange={handleChange} />
+      <TextAreaCustom
+        label={"Nama Penerima Sertifikat"}
+        onChange={handleChange}
+      />
 
       <TextAreaCustom
         label={"Dalam Rangka"}
@@ -234,7 +314,7 @@ export default function KartuPelajar() {
 
       <div
         className={`sticky top-5 grid lg:grid-cols-3 grid-cols-1 z-50 gap-2 bg-white transition-all duration-100 ease-in-out p-2 ${
-          selecttedComponent >= 0 ? "opacity-1" : "opacity-0"
+          selecttedComponent ? "opacity-1" : "opacity-0"
         }`}
       >
         <Select
@@ -242,6 +322,11 @@ export default function KartuPelajar() {
           onChange={(e) => handleStyleChange("family", e)}
           className="h-full w-full overflow-clip"
           color="blue"
+          value={`${
+            styling[selecttedComponent]
+              ? styling[selecttedComponent].family
+              : ""
+          }`}
         >
           {fontList.map((e, i) => (
             <Option key={i} value={e}>
@@ -254,77 +339,239 @@ export default function KartuPelajar() {
           className="h-full"
           type="number"
           onChange={(e) => handleStyleChange("font", `${e.target.value}px`)}
+          value={`${
+            styling[selecttedComponent]
+              ? styling[selecttedComponent]?.font?.split("px")[0]
+              : ""
+          }`}
         />
         <TextInput
           label={"Color"}
           className="h-full"
           type={"color"}
+          value={`${
+            styling[selecttedComponent] ? styling[selecttedComponent].color : ""
+          }`}
           onChange={(e) => handleStyleChange("color", `${e.target.value}`)}
         />
       </div>
 
-      <div
-        className="certificate w-full relative h-max border-red-600 border-2"
-        ref={ref}
-      >
+      <div className="certificate w-full h-max overflow-auto" ref={ref}>
         {value.template && imageBlob && splitName && (
-          <>
+          <div className="relative  w-full certificate-page" ref={pagesRef}>
             <LazyImage
               src={URL.createObjectURL(imageBlob)}
               alt={"image"}
-              className="w-full border-blue-600 border-2"
-              style={{ height: `calc(100vw * ${210 / 297})` }}
+              className="w-full"
               onClick={() => setSelettedComponent("")}
             />
-            <div className="absolute top-0 w-full h-full">
-              {textObjects.map((e, i) => (
-                <Draggable
-                  defaultClassName={`outline-none cursor-pointer ${
-                    selecttedComponent === i &&
-                    "border-dashed border-green-600 border-2"
-                  }`}
-                  bounds="parent"
-                  position={e.position}
-                  onStop={(e, data) => {
-                    const parentWidth = ref.current.clientWidth;
-                    const parentHeight = ref.current.clientHeight;
 
-                    const percentageFromLeft = (data.x / parentWidth) * 100;
-                    const percentageFromTop = (data.y / parentHeight) * 100;
-                    console.log({ percentageFromLeft, percentageFromTop });
-                    setTextObjects((prev) => {
-                      const copy = [...prev];
-                      copy[i].position.x = data.x;
-                      copy[i].position.y = data.y;
-                      copy[i].percentageFromLeft = percentageFromLeft;
-                      copy[i].percentageFromTop = percentageFromTop;
-                      return copy;
-                    });
-                  }}
-                  key={i}
-                >
-                  <EditContent
-                    value={e.text}
-                    className="w-max"
-                    onChange={(event) => {
-                      const { value } = event.target;
-                      setTextObjects((prev) => {
-                        const updatedObjects = [...prev];
-                        updatedObjects[i] = { ...prev[i], text: value };
-                        return updatedObjects;
-                      });
+            <DraggableComponent
+              bounds="parent"
+              position={defaultPosition}
+              onStop={(e, data) => setDefaultPosition({ x: data.x, y: data.y })}
+            >
+              <div
+                className={`absolute top-1/2 left-1/2 w-max h-max active:ouline-2 active:outline-blue-400 active:outline-dashed`}
+              >
+                <div className="w-max h-max ">
+                  <div className="flex justify-center w-[600px] mb-7 ">
+                    <EditContent
+                      value={certificateValue}
+                      className="w-max "
+                      onChange={(e) => setCertificateValue(e.target.value)}
+                      onClick={() => setSelettedComponent("sertifikat")}
+                      style={{
+                        fontFamily: styling.sertifikat.family,
+                        fontSize: styling.sertifikat.font,
+                        color: `${styling.sertifikat.color}`,
+                      }}
+                    />
+                  </div>
+                  <div className="flex justify-center items-center  w-full my-2">
+                    <EditContent
+                      value={typeSertifikat}
+                      className="w-max "
+                      onChange={(e) => setTypeSertifikat(e.target.value)}
+                      style={{
+                        fontFamily: styling.penghargaan.family,
+                        fontSize: styling.penghargaan.font,
+                        color: styling.penghargaan.color,
+                      }}
+                      onClick={() => setSelettedComponent("penghargaan")}
+                    />
+                  </div>
+                  <p
+                    className={`text-semibold text-center  text-lg font-semibold m-4 ${
+                      selecttedComponent === "kepada" &&
+                      "outline-2 outline-green-400 outline-dashed"
+                    }`}
+                    style={{
+                      fontFamily: styling.kepada.family,
+                      fontSize: styling.kepada.font,
+                      color: styling.kepada.color,
                     }}
-                    onClick={() => setSelettedComponent(i)}
-                    style={{ ...textObjects[i].style }}
-                    id={`text${i}`}
+                    onClick={() => setSelettedComponent("kepada")}
+                  >
+                    Diberikan Kepada :
+                  </p>
+                </div>
+                <div className="">
+                  <p
+                    style={{
+                      fontFamily: styling.name.family,
+                      fontSize: styling.name.font,
+                      color: styling.name.color,
+                    }}
+                    id="kepada"
+                    onClick={() => setSelettedComponent("name")}
+                    className={`font-semibold text-center  mb-5 ${
+                      selecttedComponent === "name" &&
+                      "outline-2 outline-green-400 outline-dashed"
+                    }`}
+                  >
+                    {splitName[0]}
+                  </p>
+                  <p
+                    className={`font-semibold text-center   m-auto  break-words ${
+                      selecttedComponent === "perihal" &&
+                      "outline-2 outline-green-400 outline-dashed"
+                    }`}
+                    style={{
+                      fontFamily: styling.perihal.family,
+                      fontSize: styling.perihal.font,
+                      color: styling.perihal.color,
+                    }}
+                    onClick={() => setSelettedComponent("perihal")}
+                  >
+                    {perihal}
+                  </p>
+                </div>
+              </div>
+            </DraggableComponent>
+
+            <DraggableComponent
+              bounds="parent"
+              position={defaultPositionKepsek}
+              onStop={(e, data) =>
+                setDefaultPositionKepsek({ x: data.x, y: data.y })
+              }
+            >
+              <div className="text-xs w-max absolute bottom-0 right-0 active:ouline-2 active:outline-blue-400 active:outline-dashed">
+                <p
+                  className={` font-bold text-base ${
+                    selecttedComponent === "kepsek" &&
+                    "outline-2 outline-green-400 outline-dashed"
+                  }`}
+                  style={{
+                    fontFamily: styling.kepsek.family,
+                    fontSize: styling.kepsek.font,
+                    color: styling.kepsek.color,
+                  }}
+                  onClick={() => setSelettedComponent("kepsek")}
+                >
+                  {kepsek.data.data.user.username}
+                </p>
+                <p
+                  className={`${
+                    selecttedComponent === "ketKepsek" &&
+                    "outline-2 outline-green-400 outline-dashed"
+                  }`}
+                  style={{
+                    fontFamily: styling.ketKepsek.family,
+                    fontSize: styling.ketKepsek.font,
+                    color: styling.ketKepsek.color,
+                  }}
+                  onClick={() => setSelettedComponent("ketKepsek")}
+                >
+                  Kepala Sekolah
+                </p>
+              </div>
+            </DraggableComponent>
+            <DraggableComponent
+              bounds="parent"
+              position={defaultPositionNomor}
+              onStop={(e, data) =>
+                setDefaultPositionNomor({ x: data.x, y: data.y })
+              }
+            >
+              <div className="text-xs min-w-[300px] flex justify-center  absolute left-1/2 top-4 active:ouline-2 active:outline-blue-400 active:outline-dashed">
+                <EditContent
+                  value={"Nomor Sertifikat"}
+                  className="w-max "
+                  style={{
+                    fontFamily: styling.nomor.family,
+                    fontSize: styling.nomor.font,
+                    color: styling.nomor.color,
+                  }}
+                  onClick={() => setSelettedComponent("nomor")}
+                />
+              </div>
+            </DraggableComponent>
+            {leadEvent && (
+              <DraggableComponent
+                bounds="parent"
+                position={defaultPositionKepel}
+                onStop={(e, data) =>
+                  setDefaultPositionKepel({ x: data.x, y: data.y })
+                }
+              >
+                <div className="text-xs w-max absolute bottom-0">
+                  <p
+                    className={` font-bold text-base ${
+                      selecttedComponent === "kepel" &&
+                      "outline-2 outline-green-400 outline-dashed"
+                    }`}
+                    style={{
+                      fontFamily: styling.kepel.family,
+                      fontSize: styling.kepel.font,
+                      color: styling.kepel.color,
+                    }}
+                    onClick={() => setSelettedComponent("kepel")}
+                  >
+                    {leadEvent}
+                  </p>
+                  <p
+                    className={`  ${
+                      selecttedComponent === "ketKepel" &&
+                      "outline-2 outline-green-400 outline-dashed"
+                    }`}
+                    style={{
+                      fontFamily: styling.ketKepel.family,
+                      fontSize: styling.ketKepel.font,
+                      color: styling.ketKepel.color,
+                    }}
+                    onClick={() => setSelettedComponent("ketKepel")}
+                  >
+                    Ketua Pelaksana
+                  </p>
+                </div>
+              </DraggableComponent>
+            )}
+            {isQrCode && (
+              <DraggableComponent
+                bounds="parent"
+                position={defaultPositionQrCode}
+                onStop={(e, data) =>
+                  setDefaultPositionQrCode({ x: data.x, y: data.y })
+                }
+              >
+                <div className="absolute top-1/2 left-1/2 w-max active:ouline-2 active:outline-blue-400 active:outline-dashed">
+                  <QrCode
+                    value={`SERTIFIKAT INI DI KELUARKAN OLEH SMAN 1 KARANG INTAN UNTUK  atas ${perihal} dan sertifikat ini di keluarkan pada ${new Date().toLocaleString()}`}
+                    size={qrCodeSize}
                   />
-                </Draggable>
-              ))}
-            </div>
-          </>
+                </div>
+              </DraggableComponent>
+            )}
+          </div>
         )}
       </div>
-
+      {progress > 0 && (
+        <div className="flex w-full flex-col gap-4">
+          <Progress value={progress} size="sm" label="Progress" color="blue" />
+        </div>
+      )}
       <ButtonCustom
         text={
           <div className="flex gap-2 justify-center items-center ">
@@ -333,7 +580,7 @@ export default function KartuPelajar() {
         }
         disabled={loading}
         onClick={() => {
-          generatePDFDua();
+          generatePDF();
         }}
       />
     </div>

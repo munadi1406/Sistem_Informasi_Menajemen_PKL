@@ -1,9 +1,14 @@
-import Draggable from "react-draggable";
+import { useMemo } from 'react';
+import Draggable from 'react-draggable';
 
-export default function DraggableComponent({ children, ...props }) {
-  return (
+const DraggableComponent = ({ children, ...props }) => {
+  const memoizedComponent = useMemo(() => (
     <Draggable bounds="parent" {...props}>
       {children}
     </Draggable>
-  );
-}
+  ), [children, props]);
+
+  return memoizedComponent;
+};
+
+export default DraggableComponent;

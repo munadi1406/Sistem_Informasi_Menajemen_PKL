@@ -14,7 +14,7 @@ import {
   Checkbox,
   Slider,
   Select,
-  Option,
+  Option, 
   Progress,
 } from "@material-tailwind/react";
 import ButtonCustom from "../../components/ButtonCustom";

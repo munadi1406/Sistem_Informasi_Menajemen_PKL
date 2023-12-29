@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 dependencies:
   '@heroicons/react':
     specifier: 2.0.12
@@ -14,9 +10,6 @@ dependencies:
   '@react-pdf/renderer':
     specifier: ^3.1.14
     version: 3.1.14(react@18.2.0)
-  '@tanstack/react-table':
-    specifier: ^8.10.6
-    version: 8.10.7(react-dom@18.2.0)(react@18.2.0)
   apexcharts:
     specifier: 3.35.5
     version: 3.35.5
@@ -992,23 +985,6 @@ packages:
   /@swc/types@0.1.5:
     resolution: {integrity: sha512-myfUej5naTBWnqOCc/MdVOLVjXUXtIA+NpDrDBKJtLLg2shUjBu3cZmB/85RyitKc55+lUUyl7oRfLOvkr2hsw==}
     dev: true
-
-  /@tanstack/react-table@8.10.7(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-bXhjA7xsTcsW8JPTTYlUg/FuBpn8MNjiEPhkNhIGCUR6iRQM2+WEco4OBpvDeVcR9SE+bmWLzdfiY7bCbCSVuA==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      react: '>=16'
-      react-dom: '>=16'
-    dependencies:
-      '@tanstack/table-core': 8.10.7
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    dev: false
-
-  /@tanstack/table-core@8.10.7:
-    resolution: {integrity: sha512-KQk5OMg5OH6rmbHZxuNROvdI+hKDIUxANaHlV+dPlNN7ED3qYQ/WkpY2qlXww1SIdeMlkIhpN/2L00rof0fXFw==}
-    engines: {node: '>=12'}
-    dev: false
 
   /@types/eslint-scope@3.7.7:
     resolution: {integrity: sha512-MzMFlSLBqNF2gcHWO0G1vP/YQyfvrxZ0bF+u7mzUdZ1/xK4A4sru+nraZz5i3iEIk1l1uyicaDVTB4QbbEkAYg==}
@@ -4499,3 +4475,7 @@ packages:
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false

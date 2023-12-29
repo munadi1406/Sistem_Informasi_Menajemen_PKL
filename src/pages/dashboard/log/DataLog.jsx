@@ -2,8 +2,7 @@ import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { Typography } from "@material-tailwind/react";
 import PropTypes from "prop-types";
 const TABLE_HEAD = [
-  "Ip Address",
-  "Username",
+  "User",
   "Sistem Operasi",
   "Browser",
   "URL",
@@ -58,23 +57,13 @@ export default function DataLog({ data }) {
               return (
                 <tr key={i}>
                   <td className={classes}>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {ipAddress}
-                    </Typography>
+                    <div>
+                      <h1 className="text-md font-semibold">{user?.username}</h1>
+                      <h3 className="text-xs text-blue-400">{ipAddress}</h3>
+                    </div>
+
                   </td>
-                  <td className={classes}>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {user.username}
-                    </Typography>
-                  </td>
+
                   <td className={classes}>
                     <Typography
                       variant="small"

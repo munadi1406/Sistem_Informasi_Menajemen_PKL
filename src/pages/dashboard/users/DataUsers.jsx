@@ -20,8 +20,7 @@ import { Spinner } from "@material-tailwind/react";
 import TextInput from "../../../components/TextInput";
 
 const TABLE_HEAD = [
-  "Username",
-  "Email",
+  "User",
   "Role",
   "Status",
   "Created At",
@@ -119,23 +118,12 @@ export default function DataUsers({
                 return (
                   <tr key={username}>
                     <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-bold"
-                      >
-                        {username}
-                      </Typography>
+                      <div>
+                        <h3 className="text-lg font-semibold">{username}</h3>
+                        <h3 className="text-xs text-blue-400">{email}</h3>
+                      </div>
                     </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {email}
-                      </Typography>
-                    </td>
+                 
                     <td className={classes}>
                       <Select
                         label={"Role"}
@@ -224,4 +212,5 @@ DataUsers.propTypes = {
   isFetchingNextPage: PropTypes.bool.isRequired,
   hasNextPage: PropTypes.bool.isRequired,
   fetchNextPage: PropTypes.func.isRequired,
+  isChangePassword:PropTypes.func.isRequired
 };

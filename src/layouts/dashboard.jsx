@@ -3,7 +3,6 @@ import { lazy, Suspense,useEffect } from 'react'
 const Sidenav = lazy(() => import('../widgets/layout/sidenav'));
 const DashboardNavbar = lazy(() => import('../widgets/layout/dashboard-navbar'));
 const Footer = lazy(() => import('../widgets/layout/footer'));
-import { useMaterialTailwindController } from "@/context";
 import JwtDecodedToken from "../utils/jwtDecode";
 import { useDataUser } from "../store/store";
 import { useNavigate } from "react-router-dom";
@@ -24,15 +23,12 @@ const Kepsek = lazy(()=>import( "../pages/dashboard/Kepsek"));
 const Users = lazy(()=>import( "../pages/dashboard/Users"));
 const Profile = lazy(() => import("../pages/dashboard/Profile"));
 const Home = lazy(() => import("../pages/dashboard/home"));
-const Notifications = lazy(() => import("../pages/dashboard/notifications"));
 const Tables = lazy(() => import("../pages/dashboard/tables"));
 const TemplateSertifikat = lazy(() => import("../pages/dashboard/TemplateSertifikat"));
 
 
 
 export function Dashboard() {
-  const [controller] = useMaterialTailwindController();
-  const { sidenavType } = controller;
   const { setUsername, setIdUsers, setRole } = useDataUser()
   const navigate = useNavigate()
 
@@ -61,9 +57,6 @@ export function Dashboard() {
     <AlertCustom/>
       <Suspense fallback={<SideNavSkeleton />}>
         <Sidenav
-          brandImg={
-            sidenavType === "dark" ? "/img/logo-ct.png" : "/img/logo-ct-dark.png"
-          }
         />
       </Suspense>
       <div className="p-4 md:ml-80 ">
@@ -74,7 +67,7 @@ export function Dashboard() {
           <Suspense fallback={<Loader/>}>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/notifications" element={<Notifications />} />
+              
               <Route path="/tables" element={<Tables />} />
               <Route path="/templateSertifikat" element={<TemplateSertifikat />} />
               <Route path="/templateSurat" element={<TemplateSurat />} />

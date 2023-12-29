@@ -2,7 +2,6 @@ import { useLocation, Link } from "react-router-dom";
 import {
   Navbar,
   Button,
-  IconButton,
   Breadcrumbs,
   Menu,
   MenuHandler,
@@ -12,7 +11,7 @@ import {
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import { useDataUser } from "../../store/store";
 import { logout } from "../../api/users";
-import { useQuery, useMutation } from "react-query";
+import {  useMutation } from "react-query";
 import Loader from "../../components/Loader";
 import {useNavigate} from 'react-router-dom'
 
@@ -24,11 +23,10 @@ export function DashboardNavbar() {
       const isSubmit = await logout();
       return isSubmit.data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       sessionStorage.clear();
       navigate('/')
     },
-    onError: (error) => {},
   });
   const fixedNavbar = true;
   const { pathname } = useLocation();
@@ -60,7 +58,7 @@ export function DashboardNavbar() {
           <div className="text-sm text-gray-600">{page}</div>
         </div>
         <div className="md:w-max flex items-center justify-end w-full flex-row ">
-          <div className="bg-green-600 text-white rounded-md text-xs py-1 px-3">
+          <div className="bg-indigo-300 text-white rounded-md text-xs py-1 px-3">
             {roles[role]}
           </div>
           <Menu>

@@ -33,7 +33,7 @@ export function Sidenav() {
             <Avatar src={Logo} size="xl" />
             <div className="flex flex-col gap-2 justify-center items-center">
               <span className="text-2xl font-extrabold text-blue-900 font-Nunito text-center">
-                SIMASAN
+                SIAMASAN
               </span>
             </div>
           </Link>

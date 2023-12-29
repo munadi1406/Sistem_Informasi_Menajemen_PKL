@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import TextInput from "../../components/TextInput";
 import ButtonCustom from "../../components/ButtonCustom";
 import { useMutation } from "react-query";
@@ -6,8 +7,9 @@ import { useState } from "react";
 import { Spinner } from "@material-tailwind/react";
 import AlertNotification from "../../components/AlertNotification";
 import { Checkbox } from "@material-tailwind/react";
+import WithContainerModal from "../../utils/WithContainerModal";
 
-export default function Register() {
+const Register = ()=> {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -89,3 +91,5 @@ export default function Register() {
     </div>
   );
 }
+
+export default WithContainerModal(Register)

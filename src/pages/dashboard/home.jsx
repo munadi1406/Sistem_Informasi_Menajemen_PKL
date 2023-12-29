@@ -11,7 +11,6 @@ import {
   getSuratMasukStat,
 } from "../../api/surat";
 import { getLogStat } from "../../api/log";
-import { getSertifikatStat } from "../../api/sertifikat";
 import { getTemplateSertifikatStat } from "../../api/templateSertifkat";
 import { Suspense, lazy } from "react";
 const Statistik = lazy(() => import("./home/Statistik"));

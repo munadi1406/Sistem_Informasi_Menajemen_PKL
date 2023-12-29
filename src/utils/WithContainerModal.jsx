@@ -20,10 +20,11 @@ const WithContainerModal = (OriginalComponent) => {
             />
           </div>
         </DialogHeader>
-        <DialogBody>
+        <DialogBody className="bg-white">
           <OriginalComponent {...props} />
         </DialogBody>
       </Dialog>
+   
     );
   };
   WrapperComponent.propTypes = {

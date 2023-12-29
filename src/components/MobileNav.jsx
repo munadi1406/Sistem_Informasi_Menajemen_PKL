@@ -9,7 +9,6 @@ import {
   FaArrowLeft,
   FaIdCard
 } from "react-icons/fa";
-import { LuBadgeHelp } from "react-icons/lu";
 import { TbCertificate } from "react-icons/tb";
 import {
   SpeedDial,
@@ -32,7 +31,7 @@ export default function MobileNav() {
     variant: "small",
     color: "blue-gray",
     className:
-      "absolute top-2/4 -left-2/4 -translate-y-2/4 -translate-x-3/4 font-normal  text-xs text-black rounded-full",
+      "absolute font-bold text-black top-2/4 -left-2/4 -translate-y-2/4 -translate-x-3/4  text-xs ",
   };
   const style = {
     boxStyle: "h-full flex flex-col justify-end pb-1 items-center",
@@ -159,27 +158,27 @@ export default function MobileNav() {
             {idUsers !== 3 && (
               <NavLink to={"./users"}>
                 <SpeedDialAction className="relative">
-                  <FaUsers className="h-5 w-5" />
+                  <FaUsers className="h-5 w-5 text-blue-700" />
                   <Typography {...labelProps}>Users</Typography>
                 </SpeedDialAction>
               </NavLink>
             )}
             <NavLink to={"./kartu-pelajar"}>
               <SpeedDialAction className="relative">
-                <FaIdCard className="h-5 w-5" />
+                <FaIdCard className="h-5 w-5 text-blue-700" />
                 <Typography {...labelProps}>Kartu Pelajar</Typography>
               </SpeedDialAction>
             </NavLink>
             <NavLink to={"./sertifikat"}>
               <SpeedDialAction className="relative">
-                <TbCertificate className="h-5 w-5" />
+                <TbCertificate className="h-5 w-5 text-blue-700" />
                 <Typography {...labelProps}>Sertifikat</Typography>
               </SpeedDialAction>
             </NavLink>
             {idUsers === 0 || idUsers === 1 ? (
               <NavLink to={"./log"}>
                 <SpeedDialAction className="relative">
-                  <FiActivity className="h-5 w-5" />
+                  <FiActivity className="h-5 w-5 text-blue-700" />
                   <Typography {...labelProps}>Log</Typography>
                 </SpeedDialAction>
               </NavLink>

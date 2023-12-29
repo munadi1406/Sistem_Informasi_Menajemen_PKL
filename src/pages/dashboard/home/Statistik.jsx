@@ -1,17 +1,17 @@
 import { FaChild, FaMailBulk, FaUser, FaUsers } from "react-icons/fa";
-import {lazy} from 'react'
-const CardStat =lazy(()=>import( "../../../components/CardStat"));
+import { lazy } from 'react'
+const CardStat = lazy(() => import("../../../components/CardStat"));
 import { AiFillMail } from "react-icons/ai";
 import { BiCertification, BiLogOut } from "react-icons/bi";
 import { IoEnterOutline } from "react-icons/io5";
 import Charts from "react-apexcharts";
-import Loader from "../../../components/Loader";
 import PropTypes from 'prop-types'
+const VisitorLog =lazy(()=>import( "../../../components/VisitorLog"));
 
-export default function Statistik({result}) {
+export default function Statistik({ result }) {
   return (
     <>
-       <div className="grid h-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full gap-2">
+      <div className="grid h-full lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 w-full gap-2">
         <CardStat
           icon={<FaUser />}
           count={result[0]?.data}
@@ -45,13 +45,13 @@ export default function Statistik({result}) {
           color={"bg-orange-400"}
         />
         <div className={"lg:col-span-full"}>
-        <CardStat
-          icon={<BiCertification />}
-          count={result[5]?.data}
-          desc={"Template Sertifikat"}
-          color={"bg-pink-400"}
-          
-        />
+          <CardStat
+            icon={<BiCertification />}
+            count={result[5]?.data}
+            desc={"Template Sertifikat"}
+            color={"bg-pink-400"}
+
+          />
         </div>
         <div className="lg:col-span-3 sm:col-span-full  grid sm:grid-cols-2 grid-cols-1 w-full gap-2">
           <CardStat
@@ -178,37 +178,16 @@ export default function Statistik({result}) {
             />
           )}
         </div>
-        <div className="bg-white rounded-lg shadow-sm col-span-2 flex flex-col gap-2 p-2 overflow-auto w-full">
-          {result[9]?.isLoading ? (
-            <Loader />
-          ) : (
-            <>
-              <div className="flex p-2 rounded-md bg-blue-600 justify-between text-white">
-                Total Pengunjung
-                <div>{result[9]?.data?.totalLog}</div>
-              </div>
-              <div className="flex p-2 rounded-md bg-red-300 justify-between text-white">
-                Total Per Tahun
-                <div>{result[9]?.data?.logsPerYear}</div>
-              </div>
-              <div className="flex p-2 rounded-md bg-yellow-400 justify-between text-white">
-                Total Per Bulan
-                <div>{result[9]?.data?.logsPerMonth}</div>
-              </div>
-              <div className="flex p-2 rounded-md bg-green-400 justify-between text-white">
-                Total Pengunjung Hari Ini
-                <div>{result[9]?.data?.logsPerDay}</div>
-              </div>
-            </>
-          )}
+        <div className="bg-white rounded-lg shadow-sm col-span-full flex flex-col gap-2 p-2 overflow-auto w-full">
+          <VisitorLog />
         </div>
-       
+
       </div>
     </>
   )
 }
 
 
-Statistik.propTypes={
-    result:PropTypes.array
+Statistik.propTypes = {
+  result: PropTypes.array
 }

@@ -1,13 +1,10 @@
-import { useState, lazy, Suspense } from "react";
+import { useState, lazy } from "react";
 import logoSma1 from "../../assets/logosma1.webp";
 import smaImage from "../../assets/sman.webp";
 import TextInput from "../../components/TextInput";
 const Register = lazy(() => import("./Register"));
 import { useNavigate } from "react-router-dom";
 import {
-  DialogBody,
-  DialogHeader,
-  Dialog,
   Checkbox,
   Spinner,
 } from "@material-tailwind/react";
@@ -41,18 +38,12 @@ export default function Login() {
   });
   return (
     <div className="h-screen w-screen lg:grid lg:grid-cols-2 overflow-clip flex justify-center items-center">
-      <Dialog open={open} handler={handleOpen}>
-        <DialogHeader>Register</DialogHeader>
-        <DialogBody>
-          <Suspense
-            fallback={
-              <div className="w-full h-56 bg-gray-600 animate-pulse rounded-md" />
-            }
-          >
-            <Register />
-          </Suspense>
-        </DialogBody>
-      </Dialog>
+
+      
+        <Register open={open} handleOpen={handleOpen} title={"Register"} />
+     
+
+
       <div className="relative lg:block hidden">
         <img
           src={smaImage}
@@ -88,9 +79,9 @@ export default function Login() {
             height="100%"
             alt="Logo Sma"
           />
-          <h1 className="font-bold text-3xl text-center">SIMASAN</h1>
+          <h1 className="font-bold text-3xl text-center">SIAMASAN</h1>
           <p className="text-center ">
-            Sistem Informasi Menajemen SMAN 1 Karang Intan
+            Sistem Informasi Administrasi SMAN 1 Karang Intan
           </p>
           <p className="text-sm font-semibold text-red-500">{msg}</p>
           <form

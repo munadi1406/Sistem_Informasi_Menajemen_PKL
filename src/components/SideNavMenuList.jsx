@@ -9,7 +9,6 @@ import { NavLink } from "react-router-dom";
 import { CiMail } from "react-icons/ci";
 import { PiCertificateLight } from "react-icons/pi";
 import { useDataUser } from "../store/store";
-import {TiDocumentText} from 'react-icons/ti'
 import {AiFillIdcard} from 'react-icons/ai'
 
 export default function SideNavMenuList() {
@@ -105,7 +104,7 @@ export default function SideNavMenuList() {
           <ListItemPrefix>
             <CiMail className="h-5 w-5" />
           </ListItemPrefix>
-          Surat
+          Buat Surat
         </ListItem>
       </NavLink>
       <NavLink to={"./suratMasuk"}>

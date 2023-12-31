@@ -97,7 +97,7 @@ const TemplateSertifikat = () => {
   });
   const [isSearch, setIsSearch] = useState();
   const [query, setQuery] = useState("");
-  const handleSearchTemplateSertifikat = useInfiniteQuery(`siswaSearch-${query}`, {
+  const handleSearchTemplateSertifikat = useInfiniteQuery(`templateSertifikat-${query}`, {
     queryFn: async ({ pageParam }) => {
       const data = await searchTemplateSertifikat(pageParam || 0, query);
       return data.data;
@@ -125,10 +125,8 @@ const TemplateSertifikat = () => {
 
   useEffect(()=>{
     if(inView){
-     
       fetchNextPage()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[inView])
 
   if (isLoading) {

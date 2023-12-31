@@ -1,22 +1,19 @@
 import { useQuery } from "react-query";
 import Loader from "../../components/Loader";
-import Selects from "react-select";
-import makeAnimated from "react-select/animated";
 import { useEffect, useState, useRef, useMemo, useCallback, lazy } from "react";
-import { getListTemplateSertifikat } from "../../api/templateSertifkat";
 import { endpoint } from "../../api/users";
 import TextInput from "../../components/TextInput";
 import TextAreaCustom from "../../components/TextAreaCustom";
 import { getDetailKepsek } from "../../api/kepsek";
-const animatedComponents = makeAnimated();
 import QrCode from "../../components/QrCode";
 import {
   Checkbox,
   Slider,
   Select,
-  Option, 
+  Option,
   Progress,
 } from "@material-tailwind/react";
+
 import ButtonCustom from "../../components/ButtonCustom";
 import LazyImage from "../../components/LazyImage";
 import html2canvas from "html2canvas";
@@ -27,32 +24,26 @@ const DraggableComponent = lazy(
   () => import("../../components/DraggableComponent"),
 );
 const EditContent = lazy(() => import("../../components/EditContent"));
-
+const CertificateModalList = lazy(() => import("../../components/template/CertificateModalList"));
+import CurrentTemplate from "../../context/Context";
 export default function KartuPelajar() {
-  const [valueSearch, setValueSearch] = useState("");
+
   const [value, setValue] = useState({});
   const [perihal, setPerihal] = useState("");
   const [splitName, setSplitName] = useState([]);
   const [leadEvent, setLeadEvent] = useState("");
   const [isQrCode, setIsQrCode] = useState(false);
   const [qrCodeSize, setQrCodeSize] = useState(30);
-  const [nomor, setNomor] = useState({});
-
+  // const [nomor, setNomor] = useState({});
   const [typeSertifikat, setTypeSertifikat] = useState("PENGHARGAAN");
   const [loading, setLoading] = useState(false);
   const [certificateValue, setCertificateValue] = useState("CERTIFICATE");
-  // const { setOpen, setStatus, setMsg } = useAlertNotification((state) => state);
+  const [openModalList, setOpenModalList] = useState(false);
+  const handleSetSertifikat = () => {
+    setOpenModalList(!openModalList)
+  }
 
-  const { isLoading, data, refetch, isRefetching } = useQuery(
-    `listSertifikatGenerate`,
-    {
-      queryFn: async ({ pageParam }) => {
-        const data = await getListTemplateSertifikat(pageParam || 0, "");
-        return data.data.data;
-      },
-      staleTime: 5000,
-    },
-  );
+
   const kepsek = useQuery("kepalaSekolah", {
     queryFn: async () => {
       const data = await getDetailKepsek();
@@ -61,19 +52,7 @@ export default function KartuPelajar() {
     staleTime: 5000,
   });
 
-  let searchTimeOut;
-  const handleSearch = (e) => {
-    if (e.length > 3) {
-      if (searchTimeOut) {
-        clearTimeout(searchTimeOut);
-      }
-      searchTimeOut = setTimeout(() => {
-        setValueSearch(e);
-      }, 2000);
-    } else {
-      setValueSearch("");
-    }
-  };
+
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -83,9 +62,7 @@ export default function KartuPelajar() {
     }
   };
 
-  useEffect(() => {
-    refetch();
-  }, [valueSearch]);
+
   const ref = useRef();
 
   const [defaultPosition, setDefaultPosition] = useState({ x: 0, y: 0 });
@@ -260,27 +237,18 @@ export default function KartuPelajar() {
     [selecttedComponent],
   );
 
-  if (isLoading) return <Loader />;
-
-  const options = data.data.data.map((item) => ({
-    label: item.name,
-    id: item.id,
-    template: item.template,
-    value: item.name,
-  }));
 
   return (
     <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 -h-max">
+      <CurrentTemplate.Provider value={{ setValue, handleSetSertifikat }}>
+        <CertificateModalList handleOpen={handleSetSertifikat} size={"xl"} open={openModalList} title={"List Template"} />
+      </CurrentTemplate.Provider>
       <h5 className="text-xl text-black font-semibold">Buat Sertifikat </h5>
-      <Selects
-        options={options}
-        isLoading={isRefetching}
-        onChange={(e) => setValue(e)}
-        closeMenuOnSelect={true}
-        components={animatedComponents}
-        onInputChange={handleSearch}
-        className="relative z-40"
-        placeholder="Pilih Sertifikat"
+      <TextInput
+        label={"Pilih Template"}
+        onClick={handleSetSertifikat}
+        readOnly={true}
+        value={value?.name}
       />
       <TextAreaCustom
         label={"Nama Penerima Sertifikat"}
@@ -313,20 +281,18 @@ export default function KartuPelajar() {
       )}
 
       <div
-        className={`sticky top-5 grid lg:grid-cols-3 grid-cols-1 z-50 gap-2 bg-white transition-all duration-100 ease-in-out p-2 ${
-          selecttedComponent ? "opacity-1" : "opacity-0"
-        }`}
+        className={`sticky top-5 grid lg:grid-cols-3 grid-cols-1 z-50 gap-2 bg-white transition-all duration-100 ease-in-out p-2 ${selecttedComponent ? "opacity-1" : "opacity-0"
+          }`}
       >
         <Select
           label="Font Family"
           onChange={(e) => handleStyleChange("family", e)}
           className="h-full w-full overflow-clip"
           color="blue"
-          value={`${
-            styling[selecttedComponent]
-              ? styling[selecttedComponent].family
-              : ""
-          }`}
+          value={`${styling[selecttedComponent]
+            ? styling[selecttedComponent].family
+            : ""
+            }`}
         >
           {fontList.map((e, i) => (
             <Option key={i} value={e}>
@@ -339,19 +305,17 @@ export default function KartuPelajar() {
           className="h-full"
           type="number"
           onChange={(e) => handleStyleChange("font", `${e.target.value}px`)}
-          value={`${
-            styling[selecttedComponent]
-              ? styling[selecttedComponent]?.font?.split("px")[0]
-              : ""
-          }`}
+          value={`${styling[selecttedComponent]
+            ? styling[selecttedComponent]?.font?.split("px")[0]
+            : ""
+            }`}
         />
         <TextInput
           label={"Color"}
           className="h-full"
           type={"color"}
-          value={`${
-            styling[selecttedComponent] ? styling[selecttedComponent].color : ""
-          }`}
+          value={`${styling[selecttedComponent] ? styling[selecttedComponent].color : ""
+            }`}
           onChange={(e) => handleStyleChange("color", `${e.target.value}`)}
         />
       </div>
@@ -375,7 +339,7 @@ export default function KartuPelajar() {
                 className={`absolute top-1/2 left-1/2 w-max h-max active:ouline-2 active:outline-blue-400 active:outline-dashed`}
               >
                 <div className="w-max h-max ">
-                  <div className="flex justify-center w-[600px] mb-7 ">
+                  <div className="flex justify-center  mb-7 ">
                     <EditContent
                       value={certificateValue}
                       className="w-max "
@@ -402,10 +366,9 @@ export default function KartuPelajar() {
                     />
                   </div>
                   <p
-                    className={`text-semibold text-center  text-lg font-semibold m-4 ${
-                      selecttedComponent === "kepada" &&
+                    className={`text-semibold w-max mx-auto text-center  text-lg font-semibold my-4 ${selecttedComponent === "kepada" &&
                       "outline-2 outline-green-400 outline-dashed"
-                    }`}
+                      }`}
                     style={{
                       fontFamily: styling.kepada.family,
                       fontSize: styling.kepada.font,
@@ -425,18 +388,16 @@ export default function KartuPelajar() {
                     }}
                     id="kepada"
                     onClick={() => setSelettedComponent("name")}
-                    className={`font-semibold text-center  mb-5 ${
-                      selecttedComponent === "name" &&
+                    className={`font-semibold text-center  mb-5 ${selecttedComponent === "name" &&
                       "outline-2 outline-green-400 outline-dashed"
-                    }`}
+                      }`}
                   >
                     {splitName[0]}
                   </p>
                   <p
-                    className={`font-semibold text-center   m-auto  break-words ${
-                      selecttedComponent === "perihal" &&
+                    className={`font-semibold text-center   m-auto  break-words ${selecttedComponent === "perihal" &&
                       "outline-2 outline-green-400 outline-dashed"
-                    }`}
+                      }`}
                     style={{
                       fontFamily: styling.perihal.family,
                       fontSize: styling.perihal.font,
@@ -459,10 +420,9 @@ export default function KartuPelajar() {
             >
               <div className="text-xs w-max absolute bottom-0 right-0 active:ouline-2 active:outline-blue-400 active:outline-dashed">
                 <p
-                  className={` font-bold text-base ${
-                    selecttedComponent === "kepsek" &&
+                  className={` font-bold text-base ${selecttedComponent === "kepsek" &&
                     "outline-2 outline-green-400 outline-dashed"
-                  }`}
+                    }`}
                   style={{
                     fontFamily: styling.kepsek.family,
                     fontSize: styling.kepsek.font,
@@ -473,10 +433,9 @@ export default function KartuPelajar() {
                   {kepsek.data.data.user.username}
                 </p>
                 <p
-                  className={`${
-                    selecttedComponent === "ketKepsek" &&
+                  className={`${selecttedComponent === "ketKepsek" &&
                     "outline-2 outline-green-400 outline-dashed"
-                  }`}
+                    }`}
                   style={{
                     fontFamily: styling.ketKepsek.family,
                     fontSize: styling.ketKepsek.font,
@@ -498,7 +457,9 @@ export default function KartuPelajar() {
               <div className="text-xs min-w-[300px] flex justify-center  absolute left-1/2 top-4 active:ouline-2 active:outline-blue-400 active:outline-dashed">
                 <EditContent
                   value={"Nomor Sertifikat"}
-                  className="w-max "
+                  className={`${selecttedComponent === "nomor" &&
+                  "outline-2 outline-green-400 outline-dashed"
+                  } w-max`}
                   style={{
                     fontFamily: styling.nomor.family,
                     fontSize: styling.nomor.font,
@@ -518,10 +479,9 @@ export default function KartuPelajar() {
               >
                 <div className="text-xs w-max absolute bottom-0">
                   <p
-                    className={` font-bold text-base ${
-                      selecttedComponent === "kepel" &&
+                    className={` font-bold text-base ${selecttedComponent === "kepel" &&
                       "outline-2 outline-green-400 outline-dashed"
-                    }`}
+                      }`}
                     style={{
                       fontFamily: styling.kepel.family,
                       fontSize: styling.kepel.font,
@@ -532,10 +492,9 @@ export default function KartuPelajar() {
                     {leadEvent}
                   </p>
                   <p
-                    className={`  ${
-                      selecttedComponent === "ketKepel" &&
+                    className={`  ${selecttedComponent === "ketKepel" &&
                       "outline-2 outline-green-400 outline-dashed"
-                    }`}
+                      }`}
                     style={{
                       fontFamily: styling.ketKepel.family,
                       fontSize: styling.ketKepel.font,

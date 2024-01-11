@@ -25,7 +25,7 @@ const ExportFromXlsx = ({handleOpen}) => {
     },
     onSuccess:(data)=>{
       setOpen(true)
-      setStatus(false)
+      setStatus(true)
       setMsg(data.message)
       handleOpen()
     },

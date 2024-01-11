@@ -196,7 +196,7 @@ const Form = ({ handleSubmit, isEdit, dataSurat }) => {
                       />
                       {Array.from({ length: jumlahOrang }).map((_, index) => (
                         <div key={index} className="flex flex-col gap-2">
-                          <div>{`Orang Ke ${index + 1}`}</div>
+                          <div>{`Data Ke ${index + 1}`}</div>
                           {e.split("_").map(
                             (variabelIsi, subIndex) =>
                               variabelIsi !== "isi" && (

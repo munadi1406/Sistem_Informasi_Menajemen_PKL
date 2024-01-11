@@ -199,7 +199,7 @@ export default function TemplateSurat() {
         title="Delete Template"
         handleDelete={handleDeleteTemplateSurat}
       />
-      <Preview open={openPreview} handleOpen={()=>setOpenPreview(false)} size={"xl"} TemplateById={TemplateById}/>
+      <Preview title="Preview Template Surat" open={openPreview} handleOpen={()=>setOpenPreview(false)} size={"xl"} TemplateById={TemplateById}/>
 
       <CardHeader floated={false} shadow={false} className="rounded-none">
         <div className="mb-8 flex items-center justify-between gap-8">

@@ -123,7 +123,7 @@ const Form = ({ handleOpen, isEdit, dataSuratKeluar, currentId, refetch }) => {
           defaultValue={payload.perihal}
         />
         <TextInput
-          label={"Nama Template"}
+          label={"Tanggal Keluar"}
           required
           onChange={handleChange}
           name="tanggalKeluar"

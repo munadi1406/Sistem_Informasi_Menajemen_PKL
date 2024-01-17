@@ -6,7 +6,7 @@ import Header from "../../../components/templateSuratLayout/Header";
 import Footer from "../../../components/templateSuratLayout/Footer";
 import Loader from "../../../components/Loader";
 import { useReactToPrint } from "react-to-print";
-import { useEffect, useRef, useState } from "react";
+import {  useRef } from "react";
 import { FaPrint } from "react-icons/fa";
 
 const Print = ({ handleChange, data, initialData, clearFilter }) => {

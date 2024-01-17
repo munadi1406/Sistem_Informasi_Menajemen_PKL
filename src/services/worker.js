@@ -228,14 +228,14 @@ import jsPDF from "jspdf";
 async function generatePDF({ screenshots, perihal }) {
   console.log("worker running");
   const pdf = new jsPDF("l", "mm", "a4");
-  console.log({ screenshots });
+  
   let image = screenshots || [];
   image.forEach((screenshot, i) => {
     if (i > 0) {
       pdf.addPage();
     }
-    console.log(screenshot);
-    console.log(i);
+   
+    
     pdf.addImage(
       screenshot.data,
       "JPEG",

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import TableSkeleton from "../../components/skeleton/TableSkeleton";
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
 import {
@@ -9,11 +9,10 @@ import {
 } from "@material-tailwind/react";
 import TextInput from "../../components/TextInput";
 import ButtonCustom from "../../components/ButtonCustom";
-import { FaPlusCircle } from "react-icons/fa";
+import { FaPlusCircle,FaFileExport } from "react-icons/fa";
 import { Typography } from "@material-tailwind/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Spinner } from "@material-tailwind/react";
-import { useState } from "react";
 import Form from "./siswa/Form";
 import { useAlertNotification } from "../../store/store";
 import DetailSiswa from "./siswa/DetailSiswa";
@@ -29,6 +28,7 @@ const DataSiswa = lazy(() => import("./siswa/DataSiswa"));
 import { BiImport } from "react-icons/bi";
 import Avatars from "../../components/Avatars";
 import { useInView } from "react-intersection-observer";
+const ReportStudent = lazy(()=>import( "../../components/student/ReportStudent"));
 
 
 export default function Siswa() {
@@ -41,6 +41,8 @@ export default function Siswa() {
   const [openModalEdit, setOpenModalEdit] = useState(false);
   const [openModalExport, setOpenModalExport] = useState(false);
   const [detailSiswaData, setDetailSiswaData] = useState({});
+  const [openModalReport, setOpenModalReport] = useState(false);
+  const handleOpenModalReport = () => setOpenModalReport(!openModalReport)
   const { ref, inView } = useInView();
   const handleOpenModalExport = () => {
     setOpenModalExport(!openModalExport);
@@ -149,6 +151,7 @@ export default function Siswa() {
 
   return (
     <>
+      <ReportStudent open={openModalReport} handleOpen={handleOpenModalReport} title={"Report Siswa"} />
       <Form
         open={openCreateForm || openModalEdit}
         handleOpen={openModalEdit ? handleOpenModalEdit : handleOpenForm}
@@ -171,7 +174,6 @@ export default function Siswa() {
         title={"Detail Siswa"}
         data={detailSiswaData}
       />
-
       <ExportFromXlsx
         open={openModalExport}
         handleOpen={handleOpenModalExport}
@@ -179,7 +181,7 @@ export default function Siswa() {
       />
       <Card className="h-full w-full">
         <CardHeader floated={false} shadow={false} className="rounded-none">
-          <div className="mb-8 flex items-center justify-between gap-8">
+          <div className="mb-8 flex items-center justify-between gap-8 flex-wrap">
             <div>
               <Typography variant="h5" color="blue-gray">
                 Data Siswa
@@ -202,10 +204,21 @@ export default function Siswa() {
                 size="sm"
                 text={
                   <>
+                    <FaFileExport className="h-4 w-4" /> Cetak Data Siswa
+                  </>
+                }
+                color="red"
+                onClick={handleOpenModalReport}
+              />
+              <ButtonCustom
+                className="flex items-center gap-3"
+                size="sm"
+                text={
+                  <>
                     <BiImport className="h-4 w-4" /> Import Dari Excel
                   </>
                 }
-                color="blue"
+                color="green"
                 onClick={handleOpenModalExport}
               />
             </div>

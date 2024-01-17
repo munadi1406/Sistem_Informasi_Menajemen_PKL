@@ -62,7 +62,7 @@ export default function Profile() {
       setMsg(data.message);
     },
     onError: (error) => {
-      setConfrimPassword(error.response.data.message);
+      setErrorMsgPassword(error.response.data.message);
     },
   });
 

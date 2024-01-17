@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import Loader from "../../components/Loader";
 import { useEffect, useState, useRef, useMemo, useCallback, lazy } from "react";
 import { endpoint } from "../../api/users";
@@ -26,8 +26,11 @@ const DraggableComponent = lazy(
 const EditContent = lazy(() => import("../../components/EditContent"));
 const CertificateModalList = lazy(() => import("../../components/template/CertificateModalList"));
 import CurrentTemplate from "../../context/Context";
+import History from "../../components/sertifikat/History";
+import { storeSertifikat } from "../../api/sertifikat";
+import { useAlertNotification } from "../../store/store";
 export default function KartuPelajar() {
-
+  const { setOpen, setStatus, setMsg } = useAlertNotification((state) => state);
   const [value, setValue] = useState({});
   const [perihal, setPerihal] = useState("");
   const [splitName, setSplitName] = useState([]);
@@ -39,6 +42,10 @@ export default function KartuPelajar() {
   const [loading, setLoading] = useState(false);
   const [certificateValue, setCertificateValue] = useState("CERTIFICATE");
   const [openModalList, setOpenModalList] = useState(false);
+
+  const [openHistory, setOpenHistory] = useState(false)
+  const handleOpenHistory = () => setOpenHistory(!openHistory)
+
   const handleSetSertifikat = () => {
     setOpenModalList(!openModalList)
   }
@@ -78,10 +85,30 @@ export default function KartuPelajar() {
     x: 0,
     y: 0,
   });
-  const [defaultPositionNomor, setDefaultPositionNomor] = useState({
-    x: 0,
-    y: 0,
-  });
+  // const [defaultPositionNomor, setDefaultPositionNomor] = useState({
+  //   x: 0,
+  //   y: 0,
+  // });
+
+  const { mutate } = useMutation({
+    mutationFn: async () => {
+      const data = await storeSertifikat({
+        nama: splitName.join(','),
+        dalamRangka: perihal
+      })
+      return data.data
+    },
+    onSuccess: (data) => {
+      setOpen(true);
+      setStatus(true);
+      setMsg(data.message);
+    },
+    onError: (error) => {
+      setOpen(true);
+      setStatus(false);
+      setMsg(error.response.data.message);
+    }
+  })
 
   const [selecttedComponent, setSelettedComponent] = useState("");
   const pagesRef = useRef();
@@ -92,33 +119,42 @@ export default function KartuPelajar() {
     try {
       setSelettedComponent(null);
       setLoading(true);
-
+  
       const worker = new Worker(Workerurl, { type: "module" });
       const workerApi = wrap(worker);
-
+  
       const screenshots = await generateScreenshots((progress) => {
         setProgress(progress);
       });
-
+  
       const { pdfData } = await workerApi.generatePDF({
         screenshots,
         splitName,
         perihal,
       });
-
+  
       const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
-
-      window.open(URL.createObjectURL(pdfBlob), "_blank");
-
+  
+      // Create a temporary anchor element
+      const tempLink = document.createElement("a");
+      tempLink.href = URL.createObjectURL(pdfBlob);
+      tempLink.download = "certificate.pdf"; // Specify the filename
+  
+      // Trigger a click on the anchor element to start the download
+      tempLink.click();
+  
+      // Cleanup
+      URL.revokeObjectURL(tempLink.href);
+      mutate()
       worker.terminate();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
-
       setProgress(0);
     }
   }, [splitName, perihal]);
+  
 
   const generateScreenshots = async (updateProgress) => {
     const screenshots = [];
@@ -240,6 +276,10 @@ export default function KartuPelajar() {
 
   return (
     <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 -h-max">
+      <History title={"History Pembuatan Sertifikat"} open={openHistory} handleOpen={handleOpenHistory} />
+      <div className="w-full">
+        <ButtonCustom text={"History"} onClick={handleOpenHistory} />
+      </div>
       <CurrentTemplate.Provider value={{ setValue, handleSetSertifikat }}>
         <CertificateModalList handleOpen={handleSetSertifikat} size={"xl"} open={openModalList} title={"List Template"} />
       </CurrentTemplate.Provider>
@@ -447,7 +487,7 @@ export default function KartuPelajar() {
                 </p>
               </div>
             </DraggableComponent>
-            <DraggableComponent
+            {/* <DraggableComponent
               bounds="parent"
               position={defaultPositionNomor}
               onStop={(e, data) =>
@@ -458,8 +498,8 @@ export default function KartuPelajar() {
                 <EditContent
                   value={"Nomor Sertifikat"}
                   className={`${selecttedComponent === "nomor" &&
-                  "outline-2 outline-green-400 outline-dashed"
-                  } w-max`}
+                    "outline-2 outline-green-400 outline-dashed"
+                    } w-max`}
                   style={{
                     fontFamily: styling.nomor.family,
                     fontSize: styling.nomor.font,
@@ -468,7 +508,7 @@ export default function KartuPelajar() {
                   onClick={() => setSelettedComponent("nomor")}
                 />
               </div>
-            </DraggableComponent>
+            </DraggableComponent> */}
             {leadEvent && (
               <DraggableComponent
                 bounds="parent"

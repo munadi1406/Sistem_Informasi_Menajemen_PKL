@@ -57,3 +57,9 @@ export const countStudent = async ()=>{
 }
 
 
+export const getListSiswaAll = async () => {
+  const data = await axiosJwt.get(`${endpoint}/siswa/all`);
+  return data;
+};
+
+

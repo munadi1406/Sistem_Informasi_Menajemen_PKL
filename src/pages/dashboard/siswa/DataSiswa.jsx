@@ -5,7 +5,6 @@ import {
   Typography,
   IconButton,
   Tooltip,
-  Avatar,
 } from "@material-tailwind/react";
 import PropTypes from "prop-types";
 import Avatars from "../../../components/Avatars";

@@ -82,7 +82,7 @@ export default function Statistik({ result }) {
                   (student) => student.jenis_kelamin,
                 ),
                 title: {
-                  text: "Statistik Jenis Kelamin",
+                  text: "Statistik Jenis Kelamin Peserta Didik",
                   align: "center",
                   floating: false,
                 },

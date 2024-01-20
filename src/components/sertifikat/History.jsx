@@ -68,7 +68,7 @@ const History = () => {
   function selectTab(nextTab) {
     startTransition(() => {
       setTab(nextTab);
-    });
+    }); 
   }
   useEffect(() => {
     if (inView) {

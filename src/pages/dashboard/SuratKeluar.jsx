@@ -25,6 +25,7 @@ import {
   getListSuratKeluar,
 } from "../../api/suratKeluar";
 import DetailSuratKeluar from "./suratKeluar/DetailSuratKeluar";
+import Helmet from "../../utils/Helmet";
 const DataSuratKeluar = lazy(() => import("./suratKeluar/DataSuratKeluar"));
 const ModalDeleteSuratKeluar = lazy(
   () => import("../../components/ModalDeleteSuratKeluar"),
@@ -194,6 +195,7 @@ export default function SuratKeluar() {
 
   return (
     <>
+    <Helmet title={"Surat Keluar"} />
       <Form
         open={openCreateForm || openModalEdit}
         handleOpen={openModalEdit ? handleOpenModalEdit : handleOpenForm}

@@ -23,7 +23,6 @@ const Kepsek = lazy(()=>import( "../pages/dashboard/Kepsek"));
 const Users = lazy(()=>import( "../pages/dashboard/Users"));
 const Profile = lazy(() => import("../pages/dashboard/Profile"));
 const Home = lazy(() => import("../pages/dashboard/home"));
-const Tables = lazy(() => import("../pages/dashboard/tables"));
 const TemplateSertifikat = lazy(() => import("../pages/dashboard/TemplateSertifikat"));
 
 
@@ -67,8 +66,6 @@ export function Dashboard() {
           <Suspense fallback={<Loader/>}>
             <Routes>
               <Route path="/" element={<Home />} />
-              
-              <Route path="/tables" element={<Tables />} />
               <Route path="/templateSertifikat" element={<TemplateSertifikat />} />
               <Route path="/templateSurat" element={<TemplateSurat />} />
               <Route path="/users" element={<Users />} />

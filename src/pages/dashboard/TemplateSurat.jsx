@@ -32,6 +32,7 @@ import { useAlertNotification } from "../../store/store";
 import ModalDelete from "../../components/ModalDelete";
 import { useInView } from "react-intersection-observer";
 import Preview from "./TemplateSurat/Preview";
+import Helmet from "../../utils/Helmet";
 
 export default function TemplateSurat() {
   const [openCreateForm, setOpenCreateForm] = useState(false);
@@ -183,6 +184,8 @@ export default function TemplateSurat() {
   }
 
   return (
+    <>
+   <Helmet title={"Template Surat"} />
     <Card className="h-full w-full">
       <Form
         open={openCreateForm || openModalEdit}
@@ -264,5 +267,6 @@ export default function TemplateSurat() {
         )}
       </CardFooter>
     </Card>
+    </>
   );
 }

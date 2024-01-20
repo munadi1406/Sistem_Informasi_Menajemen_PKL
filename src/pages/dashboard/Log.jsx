@@ -10,6 +10,7 @@ import Loader from "../../components/Loader";
 const DataLog = lazy(() => import("./log/DataLog"));
 import { useInView } from "react-intersection-observer";
 import { useAlertNotification, useDataUser } from "../../store/store";
+import Helmet from "../../utils/Helmet";
 const Card =lazy(()=>import( "../../components/Card"));
 const VisitorLog = lazy(()=>import( "../../components/VisitorLog"));
 
@@ -55,6 +56,7 @@ export default function Log() {
 
   return (
     <>
+    <Helmet title={"Visitor Log"}/>
       <Card header={<Typography variant="h5" color="blue-gray">Statistik</Typography>} body={<div className="w-full p-2"><VisitorLog /></div>} />
       <Card header={<div className="mb-8 flex items-center justify-between gap-8">
         <div>

@@ -61,7 +61,13 @@ export const changePasswordForAdmin = async (payload) => {
   return data;
 };
 
-export const logout = async (payload) => {
+export const logout = async () => {
   const data = await axiosJwt.put(`${endpoint}/logout`);
   return data;
 };
+
+
+export const evaluateUsers = async (filter)=>{
+  const data = await axiosJwt.get(`${endpoint}/users/evaluate${filter}`)
+  return data 
+}

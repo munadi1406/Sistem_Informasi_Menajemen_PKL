@@ -2,23 +2,71 @@ import Charts from "react-apexcharts";
 import { useQuery } from "react-query";
 import { getSertifikatStat } from "../../api/sertifikat";
 import Loader from "../Loader";
+import TextInput from "../TextInput";
+import ButtonCustom from "../ButtonCustom";
+import { useState,useEffect } from "react";
 
 
 const SertifikatStat = () => {
-    const {isLoading,data} = useQuery('sertifikatStat',{
+  const [filter, setFilter] = useState({});
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setFilter((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const filterActive = filter?.startDate && filter?.endDate ? `?startDate=${filter.startDate}&endDate=${filter.endDate}` : ''
+
+    const {isLoading,data,remove} = useQuery('sertifikatStat',{
         queryFn:async()=>{
-            const datas= await getSertifikatStat('')
+            const datas= await getSertifikatStat(filterActive)
             return datas.data.data
-        }
+        },
+        staleTime:10000,
+
     })
+    useEffect(() => {
+      if (filter.startDate && filter.endDate) {
+        remove()
+        
+        return
+      }
+    }, [filter]);
+    const clearFilter = () => {
+      setFilter({ startDate: null, endDate: null });
+      remove()
+      
+    };
 
 
     if(isLoading){
         return <Loader/>
     }
   return (
-    <div>
-        
+    <div className="p-2 mt-2 space-y-4">
+        <div className="w-full  space-y-3">
+            <div className="grid lg:grid-cols-3 grid-cols-1 w-full  gap-2">
+              <TextInput
+                type={"date"}
+                label={"Dari Tanggal"}
+                name="startDate"
+                onChange={handleChange}
+                value={filter.startDate || ""}
+              />
+              <TextInput
+                type={"date"}
+                label={"Sampai Tanggal"}
+                name="endDate"
+                onChange={handleChange}
+                value={filter.endDate || ""}
+              />
+              <div>
+                <ButtonCustom text={"Clear"} onClick={clearFilter} />
+              </div>
+            </div>
+          </div>
          <Charts
               type="bar"
               options={{

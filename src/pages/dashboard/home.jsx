@@ -13,6 +13,7 @@ import {
 import { getLogStat } from "../../api/log";
 import { getTemplateSertifikatStat } from "../../api/templateSertifkat";
 import { Suspense, lazy } from "react";
+import Helmet from "../../utils/Helmet";
 const Statistik = lazy(() => import("./home/Statistik"));
 
 export function Home() {
@@ -93,6 +94,7 @@ export function Home() {
 
   return (
     <>
+    <Helmet title={"Dashboard"}/>
       <Suspense fallback={<CardHomeSkeleton />}>
         <Statistik result={result} />
       </Suspense>

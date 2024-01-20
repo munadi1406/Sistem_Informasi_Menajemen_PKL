@@ -29,6 +29,7 @@ import ModalDeleteSurat from "../../components/ModalDeleteSurat";
 import ModalConfirmTTD from "../../components/ModalConfirmTTD";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
+import Helmet from "../../utils/Helmet";
 const DataSurat = lazy(() => import("./Surat/DataSurat"));
 
 export default function Surat() {
@@ -185,6 +186,7 @@ export default function Surat() {
 
   return (
     <>
+    <Helmet title={"Surat"} />
       <Formd
         open={openCreateForm || openModalEdit}
         handleOpen={openModalEdit ? handleOpenModalEdit : handleOpenForm}

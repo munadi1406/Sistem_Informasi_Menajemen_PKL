@@ -5,12 +5,12 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { useQuery } from "react-query";
 import { getListSiswa } from "../../api/siswa";
-import Loader from "../../components/Loader";
 import { useReactToPrint } from "react-to-print";
 import ButtonCustom from "../../components/ButtonCustom";
 import { AiOutlinePrinter } from "react-icons/ai";
 import KartuPelajarPageSkeleton from "../../components/skeleton/KartuPelajarPageSkeleton";
 import CardSkeleton from "../../components/skeleton/CardSkeleton";
+import Helmet from "../../utils/Helmet";
 const animatedComponents = makeAnimated();
 
 export default function KartuPelajar() {
@@ -34,7 +34,7 @@ export default function KartuPelajar() {
     }
   };
 
-  const { isLoading, data, refetch ,isRefetching} = useQuery(`listSiswaKartuPelajar`, {
+  const { isLoading, data, refetch, isRefetching } = useQuery(`listSiswaKartuPelajar`, {
     queryFn: async ({ pageParam }) => {
       const data = await getListSiswa(
         pageParam || 0,
@@ -78,7 +78,7 @@ export default function KartuPelajar() {
 
   if (isLoading) {
     return (
-       <KartuPelajarPageSkeleton/>
+      <KartuPelajarPageSkeleton />
     );
   }
   const options = data.data.data.map((item) => ({
@@ -89,7 +89,7 @@ export default function KartuPelajar() {
     alamat: item.alamat,
     ttl: item.ttl,
     jenisKelamin: item.jenis_kelamin,
-    image:item.image,
+    image: item.image,
   }));
 
   const handleChangeColor = (e) => {
@@ -103,74 +103,77 @@ export default function KartuPelajar() {
     setBodyColor(e.target.value);
     hexConversion(color, setIsLightBody);
   };
-  
-  
+
+
 
 
   return (
-    <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 ">
-      <h5 className="text-xl text-black font-semibold">Kartu Pelajar </h5>
-     
-      <TextInput
-        label={"Warna Header Kartu"}
-        type={"color"}
-        onChange={handleChangeColor}
-        defaultValue={headerColor}
-      />
-      <TextInput
-        label={"Warna Body Kartu"}
-        type={"color"}
-        onChange={handleChangeBodyColor}
-        defaultValue={bodyColor}
-      />
-      <Select
-        options={options}
-        isMulti
-        onChange={(e) => setValueCard(e)}
-        closeMenuOnSelect={false}
-        components={animatedComponents}
-        onInputChange={handleSearch}
-        className="relative z-30"
-        isLoading={isRefetching}
-      />
-      <ButtonCustom
-        className="flex items-center gap-3 w-max"
-        size="sm"
-        text={
-          <>
-            <AiOutlinePrinter className="h-4 w-4" /> Print
-          </>
-        }
-        color="blue"
-       onClick={() => {
-                  setIsPrint(true);
-                 
-                }}
-      />
-      <Suspense fallback={<div className="flex gap-2">
-        <CardSkeleton/>
-        <CardSkeleton/>
+    <>
+      <Helmet title={"Kartu Pelajar"} />
+      <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 ">
+        <h5 className="text-xl text-black font-semibold">Kartu Pelajar </h5>
+
+        <TextInput
+          label={"Warna Header Kartu"}
+          type={"color"}
+          onChange={handleChangeColor}
+          defaultValue={headerColor}
+        />
+        <TextInput
+          label={"Warna Body Kartu"}
+          type={"color"}
+          onChange={handleChangeBodyColor}
+          defaultValue={bodyColor}
+        />
+        <Select
+          options={options}
+          isMulti
+          onChange={(e) => setValueCard(e)}
+          closeMenuOnSelect={false}
+          components={animatedComponents}
+          onInputChange={handleSearch}
+          className="relative z-30"
+          isLoading={isRefetching}
+        />
+        <ButtonCustom
+          className="flex items-center gap-3 w-max"
+          size="sm"
+          text={
+            <>
+              <AiOutlinePrinter className="h-4 w-4" /> Print
+            </>
+          }
+          color="blue"
+          onClick={() => {
+            setIsPrint(true);
+
+          }}
+        />
+        <Suspense fallback={<div className="flex gap-2">
+          <CardSkeleton />
+          <CardSkeleton />
         </div>}>
-        <div className="flex flex-col w-full overflow-auto" ref={componentRef}>
-          {valueCard.map((e, i) => (
-            <div
-              key={i}
-              className={`card ${i !== 0 ? "print-page" : ""}`}
-              style={{ maxHeight: "300px" }}
-            >
-              {/* Your Card component */}
-              <Card
-                headerColor={headerColor}
-                isLight={isLight}
-                isLightBody={isLightBody}
-                cardData={e}
-                bodyColor={bodyColor}
-              />
-              
-            </div>
-          ))}
-        </div>
-      </Suspense>
-    </div>
+          <div className="flex flex-col w-full overflow-auto" ref={componentRef}>
+            {valueCard.map((e, i) => (
+              <div
+                key={i}
+                className={`card ${i !== 0 ? "print-page" : ""}`}
+                style={{ maxHeight: "300px" }}
+              >
+                {/* Your Card component */}
+                <Card
+                  headerColor={headerColor}
+                  isLight={isLight}
+                  isLightBody={isLightBody}
+                  cardData={e}
+                  bodyColor={bodyColor}
+                />
+
+              </div>
+            ))}
+          </div>
+        </Suspense>
+      </div>
+    </>
   );
 }

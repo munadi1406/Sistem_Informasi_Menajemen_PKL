@@ -28,6 +28,7 @@ const DataSiswa = lazy(() => import("./siswa/DataSiswa"));
 import { BiImport } from "react-icons/bi";
 import Avatars from "../../components/Avatars";
 import { useInView } from "react-intersection-observer";
+import Helmet from "../../utils/Helmet";
 const ReportStudent = lazy(()=>import( "../../components/student/ReportStudent"));
 
 
@@ -151,6 +152,7 @@ export default function Siswa() {
 
   return (
     <>
+    <Helmet title={"Siswa"} />
       <ReportStudent open={openModalReport} handleOpen={handleOpenModalReport} title={"Report Siswa"} />
       <Form
         open={openCreateForm || openModalEdit}

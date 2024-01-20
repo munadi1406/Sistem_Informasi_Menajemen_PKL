@@ -9,6 +9,7 @@ import DetailKepsekSkeleton from "../../components/skeleton/DetailKepsekSkeleton
 import FileDropZoneSkeleton from "../../components/skeleton/FileDropZoneSkeleton";
 import { Spinner } from "@material-tailwind/react";
 import { useAlertNotification, useKepsekImage } from "../../store/store";
+import Helmet from "../../utils/Helmet";
 
 export default function Kepsek() {
   const { setStatus, setMsg, setOpen } = useAlertNotification();
@@ -49,6 +50,8 @@ export default function Kepsek() {
   }
 
   return (
+    <>
+   <Helmet title={"Kepala Sekolah"}/>
     <div>
       <Card className="mt-6 w-full">
         <CardBody className="space-y-5">
@@ -87,5 +90,6 @@ export default function Kepsek() {
         </CardBody>
       </Card>
     </div>
+    </>
   );
 }

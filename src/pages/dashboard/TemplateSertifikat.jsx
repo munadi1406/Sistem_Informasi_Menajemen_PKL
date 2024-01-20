@@ -16,6 +16,7 @@ import {useInView} from 'react-intersection-observer'
 import ModalDeleteTemplateSertifikat from "../../components/ModalDeleteTemplateSertifikat"
 import { useEffect } from "react"
 import Preview from "./templateSertifikat/Preview"
+import Helmet from "../../utils/Helmet"
 const DataTemplateSertifikat = lazy(()=>import('./templateSertifikat/DataTemplateSertifikat'))
 
 const TemplateSertifikat = () => {
@@ -134,7 +135,7 @@ const TemplateSertifikat = () => {
   }
   return (
     <div>
-    
+    <Helmet title={"Template Sertifikat"} />
     <Form
         open={openCreateForm || openModalEdit}
         handleOpen={openModalEdit ? handleOpenModalEdit : handleOpenForm}

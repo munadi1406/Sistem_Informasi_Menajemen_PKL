@@ -26,9 +26,10 @@ const DraggableComponent = lazy(
 const EditContent = lazy(() => import("../../components/EditContent"));
 const CertificateModalList = lazy(() => import("../../components/template/CertificateModalList"));
 import CurrentTemplate from "../../context/Context";
-import History from "../../components/sertifikat/History";
+const  History = lazy(()=>import( "../../components/sertifikat/History"));
 import { storeSertifikat } from "../../api/sertifikat";
 import { useAlertNotification } from "../../store/store";
+import Helmet from "../../utils/Helmet";
 export default function KartuPelajar() {
   const { setOpen, setStatus, setMsg } = useAlertNotification((state) => state);
   const [value, setValue] = useState({});
@@ -275,6 +276,8 @@ export default function KartuPelajar() {
 
 
   return (
+    <>
+     <Helmet title={"Sertifikat"} />
     <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 -h-max">
       <History title={"History Pembuatan Sertifikat"} open={openHistory} handleOpen={handleOpenHistory} />
       <div className="w-full">
@@ -291,7 +294,7 @@ export default function KartuPelajar() {
         value={value?.name}
       />
       <TextAreaCustom
-        label={"Nama Penerima Sertifikat"}
+        label={"Nama Penerima (Jika Lebih Dari Satu Orang Pisahkan Antar Nama Dengan Koma)"}
         onChange={handleChange}
       />
 
@@ -577,11 +580,12 @@ export default function KartuPelajar() {
             Download dan Print {loading && <Loader />}
           </div>
         }
-        disabled={loading}
+        disabled={loading || splitName.length < 0 || !perihal}
         onClick={() => {
           generatePDF();
         }}
       />
     </div>
+    </>
   );
 }

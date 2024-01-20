@@ -23,6 +23,7 @@ import Form from "./suratMasuk/Form";
 import { useAlertNotification } from "../../store/store";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
+import Helmet from "../../utils/Helmet";
 const Print = lazy(() => import("./suratMasuk/Print"));
 const ModalDeleteSuratMasuk = lazy(
   () => import("../../components/ModalDeleteSuratMasuk"),
@@ -189,6 +190,7 @@ const [isPrint, setIsPrint] = useState(false);
 
   return (
     <>
+    <Helmet title={"Surat Masuk"} />
       <Form
         open={openCreateForm || openModalEdit}
         handleOpen={openModalEdit ? handleOpenModalEdit : handleOpenForm}

@@ -9,6 +9,7 @@ import {
 import Loader from "../../components/Loader";
 import { useState } from "react";
 import { useAlertNotification, useDataUser } from "../../store/store";
+import Helmet from "../../utils/Helmet";
 
 
 export default function Profile() {
@@ -71,62 +72,65 @@ export default function Profile() {
   }
 
   return (
-    <div className="flex flex-col gap-2 w-full ">
-      <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 ">
-        <h5 className="text-xl text-black font-semibold">Informasi Akun </h5>
+    <>
+      <Helmet title={data.username} />
+      <div className="flex flex-col gap-2 w-full ">
+        <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 ">
+          <h5 className="text-xl text-black font-semibold">Informasi Akun </h5>
 
-        <form
-          className="flex flex-col gap-2 w-full"
-          onSubmit={handleChangeUsername.mutate}
-        >
-          <TextInput
-            label={"Username"}
-            required
-            defaultValue={data.username}
-            onChange={(e) => setUsernames(e.target.value)}
-          />
-          <p className="text-xs font-semibold text-red-500">{errorMsg}</p>
-          <TextInput label={"Email"} disabled defaultValue={data.email} />
-          <div>
-            <ButtonCustom
-              text={handleChangeUsername.isLoading ? <Loader /> : "Simpan"}
-              type="submit"
-              disabled={handleChangeUsername.isLoading}
+          <form
+            className="flex flex-col gap-2 w-full"
+            onSubmit={handleChangeUsername.mutate}
+          >
+            <TextInput
+              label={"Username"}
+              required
+              defaultValue={data.username}
+              onChange={(e) => setUsernames(e.target.value)}
             />
-          </div>
-        </form>
-      </div>
-      <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 ">
-        <h5 className="text-xl text-black font-semibold">Ganti Password </h5>
-        <form
-          className="flex flex-col gap-2 w-full"
-          onSubmit={handleChangePassword.mutate}
-        >
-          <TextInput
-            label={"Password Baru"}
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <TextInput
-            label={"Konfirmasi Password Baru"}
-            required
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          <p className="text-xs font-semibold text-blue-600 capitalize">
-            Password minimal 6 karakter Harus Mengandung Huruf Besar, huruf
-            kecil, angka dan karakter khusus !!!
-          </p>
-          <div>
-            <ButtonCustom
-              text={
-                handleChangePassword.isLoading ? <Loader /> : "Ganti Password"
-              }
-              type="submit"
-              disabled={handleChangePassword.isLoading}
+            <p className="text-xs font-semibold text-red-500">{errorMsg}</p>
+            <TextInput label={"Email"} disabled defaultValue={data.email} />
+            <div>
+              <ButtonCustom
+                text={handleChangeUsername.isLoading ? <Loader /> : "Simpan"}
+                type="submit"
+                disabled={handleChangeUsername.isLoading}
+              />
+            </div>
+          </form>
+        </div>
+        <div className="bg-white rounded-md px-2 py-3 flex flex-col gap-4 ">
+          <h5 className="text-xl text-black font-semibold">Ganti Password </h5>
+          <form
+            className="flex flex-col gap-2 w-full"
+            onSubmit={handleChangePassword.mutate}
+          >
+            <TextInput
+              label={"Password Baru"}
+              required
+              onChange={(e) => setPassword(e.target.value)}
             />
-          </div>
-        </form>
+            <TextInput
+              label={"Konfirmasi Password Baru"}
+              required
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <p className="text-xs font-semibold text-blue-600 capitalize">
+              Password minimal 6 karakter Harus Mengandung Huruf Besar, huruf
+              kecil, angka dan karakter khusus !!!
+            </p>
+            <div>
+              <ButtonCustom
+                text={
+                  handleChangePassword.isLoading ? <Loader /> : "Ganti Password"
+                }
+                type="submit"
+                disabled={handleChangePassword.isLoading}
+              />
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

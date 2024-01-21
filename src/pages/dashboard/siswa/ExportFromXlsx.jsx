@@ -3,7 +3,6 @@
 import ButtonCustom from "../../../components/ButtonCustom";
 import WithContainerModal from "../../../utils/WithContainerModal";
 import { useState, lazy, Suspense } from "react";
-
 const FileDropZoneExport = lazy(() =>
   import("./../../../components/FileDropZoneExport"),
 );
@@ -11,6 +10,7 @@ import Loader from "../../../components/Loader";
 import { useMutation } from "react-query";
 import { storeDataSiswaWithXlsx } from "../../../api/siswa";
 import { useAlertNotification } from "../../../store/store";
+import PropTypes from 'prop-types'
 
 const ExportFromXlsx = ({handleOpen}) => {
   const [file, setFile] = useState([]);
@@ -71,4 +71,7 @@ const ExportFromXlsx = ({handleOpen}) => {
     </div>
   );
 };
+ExportFromXlsx.propTypes = {
+  handleOpen:PropTypes.func
+}
 export default WithContainerModal(ExportFromXlsx);

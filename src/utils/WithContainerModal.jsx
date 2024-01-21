@@ -20,7 +20,7 @@ const WithContainerModal = (OriginalComponent) => {
             />
           </div>
         </DialogHeader>
-        <DialogBody className="bg-white">
+        <DialogBody className="bg-white max-h-[80vh] overflow-auto">
           <OriginalComponent {...props} />
         </DialogBody>
       </Dialog>

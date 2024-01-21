@@ -3,7 +3,7 @@
 
 import ButtonCustom from "../../../components/ButtonCustom";
 import WithContainerModal from "../../../utils/WithContainerModal";
-import { useState, lazy, Suspense, useEffect } from "react";
+import { useState } from "react";
 import Loader from "../../../components/Loader";
 
 import TextInput from "../../../components/TextInput";

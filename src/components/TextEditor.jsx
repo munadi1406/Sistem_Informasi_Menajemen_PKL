@@ -4,12 +4,12 @@ import PropTypes from 'prop-types'
 
 
 
-export default function TextEditor({defaultValue,onChange}) {
-    
-    
+export default function TextEditor({ defaultValue, onChange }) {
+
+
     const modules = {
         toolbar: [
-            [{ header: ['1','2','3','4','5','6'] }, { font: [] }],
+            [{ header: ['1', '2', '3', '4', '5', '6'] }, { font: [] }],
             [{ size: [] }],
             ["bold", "italic", "underline", "strike", "blockquote"],
             [
@@ -39,11 +39,11 @@ export default function TextEditor({defaultValue,onChange}) {
         "indent",
         "align",
     ];
-    const initialValue =  '<h1 class="ql-align-center"><strong><u>Nama Surat</u></strong></h1><h2 class="ql-align-center"><span class="ql-size-small">Nomor : 400.3.8.6 / {nomor} -DM/SMAN1.KI/{date} </span></h2><p class="ql-align-center"><br></p><p class="ql-align-center"><br></p><p>\t\tBerdasarkan [berdasarkan], Perihal {perihal}, maka dengan ini kami sampaikan siswa perwakilan SMA Negeri 1 Karang Intan untuk mengikuti kegiatan tersebut di atas sebagai berikut :</p><p><br></p><p>[isi_nama_nip_tujuan_tanggal]</p><p><br></p><p><br></p><p>Demikian surat rekomendasi ini dibuat dengan sebenarnya, untukdapat dipergunakan sebagaimana mestinya.</p>'
+    const initialValue = '<h1 class="ql-align-center"><strong><u>Nama Surat</u></strong></h1><h2 class="ql-align-center"><span class="ql-size-small">Nomor : 400.3.8.6 / {nomor} -DM/SMAN1.KI/{date} </span></h2><p class="ql-align-center"><br></p><p class="ql-align-center"><br></p><p>\t\tBerdasarkan [berdasarkan], Perihal {perihal}, maka dengan ini kami sampaikan siswa perwakilan SMA Negeri 1 Karang Intan untuk mengikuti kegiatan tersebut di atas sebagai berikut :</p><p><br></p><p>[nama_nip_tujuan_tanggal]</p><p><br></p><p><br></p><p>Demikian surat rekomendasi ini dibuat dengan sebenarnya, untukdapat dipergunakan sebagaimana mestinya.</p>'
     return (
-        <div className="overflow-auto h-[200px] border-red-600 flex w-full ">
+        <div className=" border-red-600 flex w-full ">
             <ReactQuill
-                onChange={(e)=>onChange(e)}
+                onChange={(e) => onChange(e)}
                 value={defaultValue ? defaultValue : initialValue}
                 // defaultValue={initialValue}
                 modules={modules}
@@ -53,9 +53,11 @@ export default function TextEditor({defaultValue,onChange}) {
         </div>
     );
 }
-TextEditor.propTypes={
-    onChange:PropTypes.func
+TextEditor.propTypes = {
+    onChange: PropTypes.func,
+    defaultValue: PropTypes.any,
+
 }
 
-   
+
 

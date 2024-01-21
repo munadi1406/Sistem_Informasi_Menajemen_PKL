@@ -16,7 +16,7 @@ import {
 import ButtonCustom from "../../../components/ButtonCustom";
 import { Spinner } from "@material-tailwind/react";
 import TextInput from "../../../components/TextInput";
-import { useDataUser } from "../../../store/store";
+import { useAlertNotification, useDataUser } from "../../../store/store";
 
 export default function DataUsers({
   data,
@@ -24,7 +24,8 @@ export default function DataUsers({
   search,
   hasNextPage,
   fetchNextPage,
-  isChangePassword
+  isChangePassword,
+  refetch
 }) {
   const { role } = useDataUser((state) => state);
   const TABLE_HEAD = [
@@ -36,21 +37,43 @@ export default function DataUsers({
     "",
   ];
   const roles = ["Admin", "Kepala Sekolah", "Kepala Tas", "Pegawai"];
-
+  const { setOpen, setStatus, setMsg } = useAlertNotification((state) => state);
   const roleCurrent = role
   const { mutate, isLoading } = useMutation({
     mutationFn: async ({ id_users, status }) => {
       const change = await changeAccountStatus(id_users, status);
-      return change;
+      return change.data;
     },
+    onSuccess:(data)=>{
+      setOpen(true);
+      setStatus(true);
+      setMsg(data.message);
+      refetch()
+    },
+    onError:()=>{
+      setOpen(true);
+      setStatus(false);
+      setMsg("internal server error");
+    }
   });
 
   const handleChangeRole = useMutation({
     mutationFn: async ({ id_users, role }) => {
       const indexOfRole = roles.indexOf(role);
       const change = await changeRole(id_users, indexOfRole);
-      return change;
+      return change.data;
     },
+    onSuccess:(data)=>{
+      setOpen(true);
+      setStatus(true);
+      setMsg(data.message);
+      refetch()
+    },
+    onError:()=>{
+      setOpen(true);
+      setStatus(false);
+      setMsg("internal server error");
+    }
   });
 
   return (
@@ -219,5 +242,6 @@ DataUsers.propTypes = {
   isFetchingNextPage: PropTypes.bool.isRequired,
   hasNextPage: PropTypes.bool.isRequired,
   fetchNextPage: PropTypes.func.isRequired,
-  isChangePassword: PropTypes.func.isRequired
+  isChangePassword: PropTypes.func.isRequired,
+  refetch: PropTypes.func.isRequired,
 };

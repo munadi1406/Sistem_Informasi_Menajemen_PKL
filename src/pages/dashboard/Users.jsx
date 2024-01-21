@@ -30,7 +30,7 @@ export default function Users() {
     setChangePassword(!changePassword);
     setCurrentId(id);
   };
-  const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, data } =
+  const { isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, data,refetch } =
     useInfiniteQuery(`listUsers`, {
       queryFn: async ({ pageParam }) => {
         const data = await getListUsers(pageParam || 0);
@@ -90,6 +90,7 @@ export default function Users() {
             isFetchingNextPage={isFetchingNextPage}
             search={search}
             isChangePassword={handleIsShowChangePassword}
+            refetch={refetch}
           />
         )}
         {tab === 'evaluate' && (

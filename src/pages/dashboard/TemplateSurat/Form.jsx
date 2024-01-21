@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { lazy, Suspense } from "react";
 const TextEditor = lazy(() => import("../../../components/TextEditor"));
 import TextInput from "../../../components/TextInput";
@@ -11,12 +12,14 @@ import WithContainerModal from "../../../utils/WithContainerModal";
 const AlertNotification = lazy(
   () => import("../../../components/AlertNotification"),
 );
+const Desc =lazy(()=>import( "./Desc"));
 
 const Form = ({ handleSubmit, errorMsg, isEdit, data }) => {
   const [jenisSurat, setJenisSurat] = useState("");
   const [variabel, setVariabel] = useState({});
   const [variableSetting, setVariableSetting] = useState([]);
   const [templateContent, setTemplateContent] = useState("");
+  const [showRules,setShowRules] = useState(false);
   const handleSub = (e) => {
     e.preventDefault();
     const newObj = {};
@@ -96,6 +99,8 @@ const Form = ({ handleSubmit, errorMsg, isEdit, data }) => {
           className="w-[100px]"
         />
       </Suspense>
+      <p className="text-md cursor-pointer font-semibold text-blue-600 underline capitalize" onClick={()=>setShowRules(!showRules)}>{showRules ? "Sembunyikan" : 'baca'} Aturan Membuat Template !!!</p>
+      {showRules && <Desc/>}
       <form
         className="gap-2  w-full space-y-5 p-2 overflow-y-auto"
         onSubmit={handleSub}

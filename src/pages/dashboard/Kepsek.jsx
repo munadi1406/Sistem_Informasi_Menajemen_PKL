@@ -10,11 +10,15 @@ import FileDropZoneSkeleton from "../../components/skeleton/FileDropZoneSkeleton
 import { Spinner } from "@material-tailwind/react";
 import { useAlertNotification, useKepsekImage } from "../../store/store";
 import Helmet from "../../utils/Helmet";
+import { endpoint } from "../../api/users";
+import LazyImage from "../../components/LazyImage";
 
 export default function Kepsek() {
   const { setStatus, setMsg, setOpen } = useAlertNotification();
+  const [showSignature,setShowSignature] = useState(false)
+  const handleShowSignature = ()=> setShowSignature(!showSignature)
   const { setImage } = useKepsekImage();
-  const { data, isLoading } = useQuery("kepalaSekolah", {
+  const { data, isLoading,refetch } = useQuery("kepalaSekolah", {
     queryFn: async () => {
       const data = await getDetailKepsek();
       return data.data;
@@ -37,6 +41,7 @@ export default function Kepsek() {
       setStatus(true);
       setOpen(true);
       setMsg(data.data.message);
+      refetch()
     },
     onError: (error) => {
       setStatus(false);
@@ -73,9 +78,16 @@ export default function Kepsek() {
             />
             <div className="space-y-2">
               <div>Tanda Tangan</div>
-              <p className="text-blue-600 text-xs underline cursor-pointer">
-                Lihat Tanda Tangan Yang Sudah Di Upload?
+              <p className="text-blue-600 text-xs underline cursor-pointer" onClick={handleShowSignature}>
+                {showSignature ? 'Sembunyikan' : "Lihat"} Tanda Tangan Yang Sudah Di Upload?
               </p>
+              {showSignature && (
+                 <LazyImage
+                 src={`${endpoint}/kepsek/${data.data.tanda_tangan}`}
+                 alt="Kepsek Signature"
+                 width={150}
+               />
+              )}
               <Suspense fallback={<FileDropZoneSkeleton />}>
                 <FileDropZone onFilesAdded={setFileTtd} />
               </Suspense>
